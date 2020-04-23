@@ -1,0 +1,9 @@
+Effects
+Damage over time.
+Bleed -- Take damage at the start of your turn for each stack.  If it does not get reapplied after a turn, you no longer bleed.
+Poison -- Take damage equal to stacks.  Lose one stack.
+Burn -- Take damage equal to stacks.
+
+Disarm -- One less action point per stack of disarm.
+Cripple -- One less movement point per stack.  (Can still move through abilities)
+Immobilized -- Can't move this turn.

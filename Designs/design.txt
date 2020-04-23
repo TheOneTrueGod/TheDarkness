@@ -1,0 +1,33 @@
+This is a co-op D&D style game.
+Each game is a campaign that takes place over the course of several missions.
+The story behind the campaign is that the world has been covered by an encroaching darkness, and only special lights can push it back.
+The players are part of a caravan that has been sent into the darkness to retrieve a power source for the lights in the capital.
+Each player will have 1-3 characters in the caravan, but they can only bring one along on any given mission.
+Before each mission begins, the team will get to vote on which of several different missions they want to go on.  If there's a tie, a random one will be chosen.
+Missions will be turn-based combat, with a 'darkness' mechanic.  Example;  Caravan moves from point A to point B on the map.  Defend it until you reach point B.
+
+
+Screen flow
+    - Campaign List
+
+Campaign
+  - id; int
+  - Name
+  - States; SETUP, ACTIVE, COMPLETE
+  - 1-4 Player Ids (Can only be changed during SETUP)
+  - MissionList; array <mission_id>
+  - Current Mission; mission_id (int)
+  - Avatars; array <avatar_id>
+
+Mission
+  - id
+  - States; SETUP, ACTIVE, WON, LOST
+  - Characters; array <avatar_id>
+  - MissionData; JSON_DICT (map, characters, enemies, tokens)
+    - Characters correspond to an avatar, but also have mid-mission stats
+
+Avatar
+    - ID
+    - Type ()
+    - StatUpgrades
+    - AbilityUpgrades
