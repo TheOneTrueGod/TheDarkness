@@ -1,9 +1,14 @@
 Effects
 Damage over time.
-Bleed -- Take damage at the start of your turn for each stack.  If it does not get reapplied after a turn, you no longer bleed.
-Poison -- Take damage equal to stacks.  Lose one stack.
-Burn -- Take damage equal to stacks.
+Bleed X -- Take damage at the start of your turn for each stack.  If it does not get reapplied after a turn, you no longer bleed.
+Poison X -- Take damage equal to stacks.  Lose one stack.
+Burn X -- Take damage equal to stacks.
+
+Shock X -- After reaching 3 stacks, deals bonus damage
+Curse X -- Lose 1 stack of curse per turn.  Some abilities do special things when certain curse thresholds are reached
+Sunder X -- All attacks against this unit ignore X armour per attack
 
 Disarm -- One less action point per stack of disarm.
 Cripple -- One less movement point per stack.  (Can still move through abilities)
+Dazed -- One less of each action point per stack
 Immobilized -- Can't move this turn.
