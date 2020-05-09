@@ -1,0 +1,24 @@
+Teleportation.  Connects two points together and moves something through them.
+Each blink attack uses some number of charges.  Charges regenerate slowly -- one per turn
+General upgrades;  Faster recharge.  More max charges.
+
+Blink.  2 movement points.
+Teleport up to 3 squares.
+
+Portal punch.  Deal damage to a single target up to 3 spaces away.
+
+Void leak.  Causes a 2x2 area within 3 squares to become a damage and disarm field.
+Anyone who starts their turn in there takes damage and gets disarm 1
+
+Blink Flash.
+Damage enemies around you, disarm them, and teleport out up to 3 spaces.
+
+Charged blink
+Takes a lot of charges, but teleports very far.
+
+Blink Flurry
+high charge cost.
+Damage everyone within 3 squares.
+
+Rescue
+Teleports an ally to an adjacent space closest to this unit

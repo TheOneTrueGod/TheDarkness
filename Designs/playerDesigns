@@ -1,0 +1,10 @@
+A player unit will have three skill trees
+Weapon
+Offense
+Defense
+
+Each of these will be randomly Selected.
+Some trees might be support, which could fit into either slot.
+
+On their turn a player will have some number of action points, and some number of movement points
+Whenever a player takes damage, it will also reduce their max health

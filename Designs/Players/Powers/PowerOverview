@@ -1,0 +1,24 @@
+Lightning
+    Most abilities build charge
+    Every turn the charater loses charge
+    Some abilities deal more damage the higher your charge
+    If you go over the max, then you take a LOT of damage, but also deal damage around you.
+
+    Design goals;  Make it difficult to get rid of charge so the user has to manage their skill use.
+
+Earth
+
+Blink
+    Teleportation.  Connects two points together and moves something through them.
+    Each blink attack uses some number of charges.  Charges regenerate slowly -- one per turn
+    General upgrades;  Faster recharge.  More max charges.
+
+Pain Transfer
+    Support and damage based character
+    Has two resources -- one gains stacks when damage is dealt, and one gains stacks when healing happens
+    Stronger heals require spending damage stacks
+    Stronger damage requires spending heal stacks
+
+    Reminder about healing goals;  whenever a unit takes damage, they lose max health as well as current health.
+    It should be impossible to heal forever.
+

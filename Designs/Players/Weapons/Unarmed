@@ -1,0 +1,14 @@
+Attacks chain into each other, and many of them move the player after attacking
+High mobility, low status effects.
+
+Can only use any given ability once per combo, and each piece needs an action point.
+
+Punch -- Damage one opponent adjacent to you.  Always useable.
+
+Opener -- Chains into fade left / right.
+Fade left -- Punch, then slide one space left.  Chains out of Opener, Kick
+Fade right -- Punch, then slide one space right.  Chains out of Opener, Kick
+Advancing punch -- Move foward, then punch forward.  Chains out of fade left/right
+Kick -- Damage, and apply one cripple.  Chains out of fade left / right
+Dashing Strike -- Move two spaces in a straight line.  Damage the unit in the middle.  Chains out of Kick, spinning stirke, and opener
+Spinning Strike -- Damage everyone in a cross around this unit.  Chains out of dashing strike.

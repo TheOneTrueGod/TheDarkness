@@ -1,0 +1,27 @@
+Pretty obvious what it does.
+Single target, a few status effects.
+The crossbow can only shoot a couple of times before it needs to be reloaded
+
+Reload
+Reloads the crossbow with ammo
+
+Basic shot
+Uses 1 ammo
+
+Leg shot
+Damages and Cripples.  Takes two ammo
+
+Arm shot
+Damages and disarms.  Takes two ammo
+
+Flurry
+Deals damage to enemies in a 3x1 area. Takes three ammo
+
+Rapid shots
+Hits two different targets
+
+Reload Fire Ammo
+The next clip deals extra fire damage
+
+Reload and Shoot
+Exactly what it says

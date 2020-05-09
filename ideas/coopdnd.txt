@@ -1,0 +1,4 @@
+Create a caravan with a group.  The caravan holds some number of characters for each player.
+Units have movement points, and action points.
+When it is a unit's turn, they can spend their movement / action points accross their abilities.
+When creating a character, you get to choose a role, but your powerset will be random
