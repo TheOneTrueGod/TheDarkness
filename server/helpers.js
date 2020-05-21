@@ -11,7 +11,7 @@ function ServeFile(uri, response) {
       };
 
     if (uri == '' || uri == '/' || uri == '\\') {
-        uri = 'app/index.html';
+        uri = 'src/index.html';
     }
 
     var filename = path.join(process.cwd(), uri);
