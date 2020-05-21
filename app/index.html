@@ -2,4 +2,19 @@
 <body>
     <div id="reactContainer"></div>
 </body>
-<script src="build/local/tsc.js"></script>
+<script src="app/app.js"></script>
+
+<!--<head>
+    <script src="./node_modules/systemjs/dist/system.js"></script>
+</head>
+<body>
+    <div id="reactContainer"></div>
+    <script>
+        System.import('./built/local/tsc.js')
+          .then(() => { console.log("Hello World 1"); })
+          .then(() => System.import('app'))
+          .then(() => { console.log("Hello World"); })
+          .catch(console.error.bind(console))
+      </script>
+</body>
+-->

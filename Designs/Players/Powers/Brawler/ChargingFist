@@ -1,12 +1,9 @@
-Attacks chain into each other, and many of them move the player after attacking
+Use melee attacks to build up charge.
+Can unleash the charge with a few different ultimate attacks.
 High mobility, low status effects.
 
-Can only use any given ability once per combo, and each piece needs an action point.
-
-Punch -- Damage one opponent adjacent to you.  Always useable.
-
-Opener -- Chains into fade left / right.
-Fade left -- Punch, then slide one space left.  Chains out of Opener, Kick
+Punch -- Damage one opponent adjacent to you.
+Fade left -- Punch, then slide one space left.
 Fade right -- Punch, then slide one space right.  Chains out of Opener, Kick
 Advancing punch -- Move foward, then punch forward.  Chains out of fade left/right
 Kick -- Damage, and apply one cripple.  Chains out of fade left / right

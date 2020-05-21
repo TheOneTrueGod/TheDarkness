@@ -1,15 +1,20 @@
-
 import path from 'path';
 import fs from 'fs';
 // var path = require("path"),
 //    fs = require("fs");
 
-function ServeFile(filename, response) {
+function ServeFile(uri, response) {
     var contentTypesByExtension = {
         '.html': "text/html",
         '.css':  "text/css",
         '.js':   "text/javascript"
       };
+
+    if (uri == '' || uri == '/' || uri == '\\') {
+        uri = 'app/index.html';
+    }
+
+    var filename = path.join(process.cwd(), uri);
 
     fs.exists(filename, function(exists) {
         if(!exists) {
@@ -19,9 +24,6 @@ function ServeFile(filename, response) {
             return;
         }
 
-        if (uri == '') {
-            filename = 'app/index.html';
-        }
         if (fs.statSync(filename).isDirectory()) filename += '/index.html';
 
         fs.readFile(filename, "binary", function(err, file) {

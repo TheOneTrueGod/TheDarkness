@@ -1,17 +1,15 @@
-var http = require("http"),
-    url = require("url"),
-    path = require("path"),
-    port = process.argv[2] || 8888;
-
 import helpers from './server/helpers.js';
+import http from 'http';
+import url from 'url';
+
 const { ServeFile } = helpers;
+const port = process.argv[2] || 8888;
 
 http.createServer(function(request, response) {
 
-  var uri = url.parse(request.url).pathname
-    , filename = path.join(process.cwd(), uri);
-
-  ServeFile(filename, response);
+  var uri = url.parse(request.url).pathname;
+  
+  ServeFile(uri, response);
   
 }).listen(parseInt(port, 10));
 

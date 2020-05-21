@@ -6,7 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "watch": "npm-watch test",
+    "dev": "npm start & npm watch"
+  },
+  "watch": {
+    "test": {
+      "patterns": [
+        "app"
+      ],
+      "extensions": "js,ts,html,scss",
+      "quiet": false
+    }
   },
   "author": "jprevoe",
   "license": "ISC",
@@ -18,7 +29,9 @@
   },
   "dependencies": {
     "esm": "^3.2.25",
+    "npm-watch": "^0.6.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "systemjs": "^0.21"
   }
 }
