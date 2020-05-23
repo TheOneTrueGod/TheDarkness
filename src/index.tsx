@@ -1,7 +1,8 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+import App from './app/app';
 
 ReactDOM.render(
-    React.createElement("h2", null, "Hello, world!"),
+    <App />,
     document.getElementById('reactContainer'),
 );

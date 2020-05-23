@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
       "module": "esnext",
-      "moduleResolution": "node",
+      "moduleResolution": "classic",
       "noImplicitAny": true,
       "removeComments": true,
       "preserveConstEnums": true,
       "esModuleInterop": true,
+      "jsx": "react",
       "outDir": "dist",
       "sourceMap": true
     },

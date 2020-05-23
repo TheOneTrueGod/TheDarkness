@@ -1,3 +1,8 @@
+const path = require('path');
+const webpack = require('webpack');
+const pkg = require('./package.json');
+var childProcess = require('child_process');
+
 module.exports = {
     mode: "production",
 
@@ -6,7 +11,10 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx"]
+        extensions: [".ts", ".tsx"],
+        alias: {
+            //'styled-components': path.resolve('../node_modules/styled-components')
+        }
     },
 
     module: {
@@ -28,6 +36,10 @@ module.exports = {
             }
         ]
     },
+    plugins: [new webpack.DefinePlugin({
+        PRODUCTION: JSON.stringify(true),
+        __VERSION__: childProcess.execSync('git rev-list HEAD --count').toString(),
+    })],
 
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.
@@ -35,6 +47,12 @@ module.exports = {
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
         "react": "React",
-        "react-dom": "ReactDOM"
+        "react-dom": "ReactDOM",
+        'prop-types': {
+            root: 'PropTypes',
+            commonjs2: 'prop-types',
+            commonjs: 'prop-types',
+            amd: 'prop-types',
+        }
     }
 };
