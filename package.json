@@ -1,11 +1,15 @@
 {
   "name": "thedarkness",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A multiplayer game",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheOneTrueGod/TheDarkness"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack",
+    "build": "npm version patch -f && npx webpack",
     "start": "node server.mjs",
     "watch": "npm-watch build"
   },
@@ -31,9 +35,13 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@types/styled-components": "^5.1.0",
     "esm": "^3.2.25",
+    "npm-version": "^1.1.0",
     "npm-watch": "^0.6.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
+    "styled-components": "^5.1.0"
   }
 }
