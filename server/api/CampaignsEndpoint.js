@@ -1,11 +1,5 @@
 import Campaign from "../../object_defs/Campaign.js";
-import { getAllCampaignIds, saveCampaign, updateAllCampaignIds } from "../datastore/datastore.js";
-//const { Campaign } = CampaignModule;
-
-const campaigns = [
-    new Campaign(1, 'Hardcoded Campaign 1'),
-    new Campaign(2, 'Hardcoded Campaign 2'),
-];
+import { getAllCampaignIds, saveCampaign, updateAllCampaignIds, loadCampaign } from "../datastore/datastore.js";
 
 class CampaignsEndpoint {
     static getResponse(uri, request, body) {
@@ -18,7 +12,7 @@ class CampaignsEndpoint {
             request.method === 'GET' ||
             request.method === 'POST' && (!body || body.campaignId === undefined)
         ) {
-            return this.getCampaigns();
+            return this.getAllCampaigns();
         }
 
         if (request.method === 'POST' && body && body.campaignId !== undefined) {
@@ -39,17 +33,21 @@ class CampaignsEndpoint {
     }
 
     static getCampaign(campaignId) {
-        const campaign = campaigns.find(campaign => campaign.id === campaignId);
+        const campaignJSON = loadCampaign(campaignId);
+        const campaign = Campaign.fromJsonObject(campaignJSON);
         if (campaign) {
             return campaign.toNetworkObject();
         }
         throw new Error(`Campaign '${campaignId}' not found!`);
     }
 
-    static getCampaigns() {
+    static getAllCampaigns() {
         const campaignIds = getAllCampaignIds();
-        // Hardcode for now
-        return { campaigns: campaigns.map(campaign => campaign.toNetworkObject()) };
+        return { 
+            campaigns: campaignIds.map((campaignId) => {
+                return this.getCampaign(campaignId);
+            })
+        };
     }
 }
 

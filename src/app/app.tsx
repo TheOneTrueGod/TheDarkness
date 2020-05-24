@@ -29,7 +29,7 @@ function getRouteAndArgs(pathname: string): RouteAndArgs {
         return { route: Route.Login };
     }
 
-    if (pathname === '/' || pathname === '/game') {
+    if (pathname === '/' || pathname === '/game' || pathname === '/game/') {
         return { route: Route.CampaignSelect };
     }
 
