@@ -1,1 +1,0 @@
-{"_v":1,"name":"Test Campaign 1","id":1}

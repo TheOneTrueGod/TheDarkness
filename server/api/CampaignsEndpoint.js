@@ -1,5 +1,5 @@
 import Campaign from "../../object_defs/Campaign.js";
-import { getAllCampaignIds, saveCampaign } from "../datastore/datastore.js";
+import { getAllCampaignIds, saveCampaign, updateAllCampaignIds } from "../datastore/datastore.js";
 //const { Campaign } = CampaignModule;
 
 const campaigns = [
@@ -27,9 +27,14 @@ class CampaignsEndpoint {
     }
 
     static createCampaign() {
-        const newCampaign = new Campaign(1, "Test Campaign 1");
+        const campaignIds = getAllCampaignIds();
+        const newId = campaignIds.reduce((a, b) => Math.max(a, b), 0) + 1;
+        
+        const newCampaign = new Campaign(newId, `Test Campaign ${newId}`);
         saveCampaign(newCampaign);
-        saveCampaign(new Campaign(2, "Test Campaign 2"));
+        campaignIds.push(newId);
+        updateAllCampaignIds(campaignIds);
+
         return newCampaign;
     }
 

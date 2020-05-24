@@ -1,7 +1,10 @@
 import { saveDataToFile, loadDataFromFile } from "./flatFileDatastore.js";
 
+const savesDir = `./server/saves`;
+const campaignIdsFile = `${savesDir}/campaigns/campaignIds.txt`;
+
 function getFilenameForCampaignId(campaignId) {
-    return `./server/saves/campaigns/campaign${campaignId}.txt`;
+    return `${savesDir}/campaigns/campaign${campaignId}.txt`;
 }
 
 function loadCampaign(campaignId) {
@@ -21,12 +24,14 @@ function saveCampaign(campaign) {
 };
 
 function getAllCampaignIds() {
-    
+    const fileResults = loadDataFromFile(campaignIdsFile);
+    if (!fileResults) { return []; }
+    return JSON.parse(fileResults);
 };
 
 function updateAllCampaignIds(campaignIdList) {
     saveDataToFile(
-        "saves/campaigns/campaignIds.txt",
+        campaignIdsFile,
         JSON.stringify(campaignIdList)
     );
 }
