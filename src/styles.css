@@ -7,3 +7,8 @@ body {
 h1 {
     font-size: 48px;
 }
+
+a {
+    color: #D9B8C4;
+    text-decoration: none;
+}

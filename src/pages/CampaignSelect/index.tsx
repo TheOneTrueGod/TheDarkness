@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Campaign, { CampaignNetworkObject } from '../../../object_defs/Campaign.js'
+import CampaignRow from './CampaignRow';
 
 export default function CampaignSelect () {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaigns: [] });
     useEffect(() => {
         fetch(
-            '/api/get-campaigns',
-            { method: 'GET' }
+            '/api/get-campaign',
+            { method: 'POST' }
         )
         .then(res => res.json())
         .then(response => {
@@ -24,7 +25,7 @@ export default function CampaignSelect () {
         {!campaignData.isLoading && (
             <div> {
                 campaignData.campaigns.map((campaign: Campaign) => {
-                    return <div>{campaign.name}</div>;
+                    return <CampaignRow campaign={campaign} />;
                 })}
             </div>
         )}

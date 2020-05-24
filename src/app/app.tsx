@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import CampaignSelect from '../pages/CampaignSelect/index';
+import GameView from '../pages/GameView/index';
 import Login from '../pages/Login/index';
 import NotFound from '../pages/NotFound/index';
+import LayoutBody from '../components/layout/body';
   
 
 const Header = styled.h1`
@@ -13,12 +15,13 @@ const Header = styled.h1`
 enum Route {
     Login,
     CampaignSelect,
+    GameView,
     NotFound,
 };
 
 interface RouteAndArgs {
     route: Route;
-    args?: Object;
+    campaignId?: number;
 };
 
 function getRouteAndArgs(pathname: string): RouteAndArgs {
@@ -30,19 +33,25 @@ function getRouteAndArgs(pathname: string): RouteAndArgs {
         return { route: Route.CampaignSelect };
     }
 
+    if (pathname.startsWith("/game/")) {
+        const gameId: string = pathname.match(/\d+/i)[0];
+        return { route: Route.GameView, campaignId: parseInt(gameId) };
+    }
+
     return {
         route: Route.NotFound
     }
 }
 
 export default function App () {
-    const { route, args } = getRouteAndArgs(window.location.pathname);
+    const { route, campaignId } = getRouteAndArgs(window.location.pathname);
     return <>
         <Header>The Darkness</Header>
-        <div>
+        <LayoutBody>
             { route === Route.Login && <Login /> }
             { route === Route.CampaignSelect && <CampaignSelect /> }
+            { route === Route.GameView && <GameView campaignId={campaignId} /> }
             { route === Route.NotFound && <NotFound /> }
-        </div>
+        </LayoutBody>
     </>;
 };

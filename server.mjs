@@ -13,9 +13,18 @@ http.createServer(function(request, response) {
   if (uri.startsWith('/api')) {
     response.writeHead(200, {"Content-Type": "application/json"});
     try {
-      const responseObject = getResponse(uri, request);
-      response.write(JSON.stringify(responseObject));
-      response.end();
+      var body = "";
+      // Stream the body out
+      request.on('readable', function() {
+        const chunkValue = request.read();
+        if (chunkValue !== null) {
+          body += chunkValue;
+        }
+      }).on('end', function() {
+        const responseObject = getResponse(uri, request, JSON.parse(body));
+        response.write(JSON.stringify(responseObject));
+        response.end();
+      });
     } catch (err) {
       response.writeHead(500);
       response.write(JSON.stringify({ error: err.toString() }));

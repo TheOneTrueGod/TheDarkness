@@ -7,7 +7,7 @@
       "preserveConstEnums": true,
       "esModuleInterop": true,
       "jsx": "react",
-      "outDir": "dist",
+      "outDir": "_dist",
       "sourceMap": true
     },
     "include": ["src/*"],

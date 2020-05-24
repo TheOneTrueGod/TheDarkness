@@ -1,13 +1,19 @@
 const ObjectVersion = 1;
 class Campaign {
-    constructor(name) {
+    constructor(id, name) {
         this.name = name;
+        this.id = id;
+    }
+
+    getCampaignUri() {
+        return '/game/' + this.id;
     }
 
     toNetworkObject() {
         return {
             _v: ObjectVersion,
             name: this.name,
+            id: this.id,
         }
     }
 
@@ -15,7 +21,7 @@ class Campaign {
         if (networkObject._v !== ObjectVersion) {
             throw new Error(`Recieved object version incompatible.  Network object: '${networkObject}' Object Version: '${ObjectVersion}`)
         }
-        return new Campaign(networkObject.name);
+        return new Campaign(networkObject.id, networkObject.name);
     }
 };
 

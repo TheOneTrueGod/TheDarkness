@@ -1,10 +1,8 @@
 import { CampaignsEndpoint } from './getCampaigns.js';
 
-//const { getCampaigns } = getCampaignModule;
-
-function getResponse(uri, request) {
-    if (uri.startsWith('/api/get-campaigns')) {
-        return { data: CampaignsEndpoint.getResponse(request) };
+function getResponse(uri, request, body) {
+    if (uri.startsWith('/api/get-campaign')) {
+        return { data: CampaignsEndpoint.getResponse(request, body) };
     }
     throw new Error(`Resource not found: ${uri}`)
 }
