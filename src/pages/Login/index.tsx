@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const InputSection = styled.h1`
@@ -7,6 +7,9 @@ const InputSection = styled.h1`
 `;
 
 export default function Login () {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
     function logIn(username: string, password: string) {
         fetch(
             '/api/login',
@@ -30,9 +33,15 @@ export default function Login () {
     return (
         <>
             <h2>Login Page</h2>
-            <InputSection><input name="Username"></input></InputSection>
-            <InputSection><input name="Password"></input></InputSection>
-            <InputSection><button>Login</button></InputSection>
+            <InputSection><input name="Username" value={username} onChange={(event) => {
+                setUsername(event.target.value);
+            }} /></InputSection>
+            <InputSection><input name="Password" value={password} onChange={(event) => {
+                setPassword(event.target.value);
+            }}/></InputSection>
+            <InputSection><button onClick={() => {
+                logIn(username, password);
+            }}>Login</button></InputSection>
         </>
     );
 };
