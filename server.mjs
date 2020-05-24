@@ -1,43 +1,66 @@
-import helpers from './server/helpers.js';
 import api from './server/api/api.js'
-import http from 'http';
-import url from 'url';
+import path from 'path';
 
-const { ServeFile } = helpers;
+import express from 'express';
+import session from 'express-session'; 
+import bodyParser from 'body-parser';
+import User from "./object_defs/User.js";
+
 const { getResponse } = api;
 const port = process.argv[2] || 8888;
 
-http.createServer(function(request, response) {
-  var uri = url.parse(request.url).pathname;
-  
-  if (uri.startsWith('/api')) {
-    response.writeHead(200, {"Content-Type": "application/json"});
-    try {
-      var body = "";
-      // Stream the body out
-      request.on('readable', function() {
-        const chunkValue = request.read();
-        if (chunkValue !== null) {
-          body += chunkValue;
-        }
-      }).on('end', function() {
-        const parsedBody = body ? JSON.parse(body) : {};
-        const responseObject = getResponse(uri, request, parsedBody);
-        response.write(JSON.stringify(responseObject));
-        response.end();
-      });
-    } catch (err) {
-      response.writeHead(500);
-      response.write(JSON.stringify({ error: err.toString() }));
-      response.end();
-    }
-    return;
-  }
+const app = express();
 
-  if (uri.startsWith('/game')) {
-    uri = '';
+//app.use(cookieParser());
+app.use(session({secret: 'ssshhhhh'}));
+app.use(bodyParser.json());
+
+app.get(
+  [
+    '/dist/*',
+    '/public/*',
+    '/node_modules/*',
+    '/favicon.ico'
+  ], (req, res) => {
+    res.sendFile(path.resolve(`./${req.originalUrl}`));
   }
-  ServeFile(uri, response);
-}).listen(parseInt(port, 10));
+);
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.resolve('./public/index.html'));
+});
+
+const Users = [
+  new User(1, "TheOneTrueGod", "getin", "afbzxcWr"),
+  new User(2, "Tabitha", "getin", "afqwerpcWr"),
+  new User(3, "TJ", "getin", "bbjwerPO"),
+  new User(4, "Chip", "getin", "ggueWper"),
+  new User(5, "Sean", "getin", "bnsasweR"),
+  new User(6, "Mitch", "getin", "bjppqwerO"),
+]
+
+app.post('/api/login', (request, response) => {
+  const username = request.body.username;
+  const password = request.body.password;
+  const user = Users.find((user) => { return user.name === username && user.password === password })
+  if (!user) { return response.status(504).send({ error: "user not found" }); }
+
+  request.session.userToken = user.token;
+});
+
+app.post(
+  '/api/*',
+  (request, response) => {
+    const userToken = request.session.userToken;
+    if (!userToken) {
+      return response.status(504).send({ error: "unauthorized" });
+    }
+
+    const responseObject = getResponse(request.originalUrl, request, request.body);
+    response.send(responseObject);
+  }
+);
+
+app.listen(parseInt(port, 10));
 
 console.log("Static file server running at\n  => http://localhost:" + port + "/\nCTRL + C to shutdown");

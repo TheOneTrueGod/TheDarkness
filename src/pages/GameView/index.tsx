@@ -41,7 +41,7 @@ export default function CampaignSelect ({ campaignId } : CampaignProps) {
     useEffect(() => {
         fetch(
             '/api/campaign',
-            { 
+            {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'

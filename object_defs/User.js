@@ -1,9 +1,11 @@
 const ObjectVersion = 1;
 
-class User extends Networkable {
-    constructor(id, name) {
+class User {
+    constructor(id, name, password, token) {
         this.name = name;
         this.id = id;
+        this.password = password;
+        this.token = token;
     }
 
     toNetworkObject() {
@@ -18,14 +20,14 @@ class User extends Networkable {
         if (networkObject._v !== ObjectVersion) {
             throw new Error(`Recieved object version incompatible.  Network object: '${networkObject}' Object Version: '${ObjectVersion}`)
         }
-        return new User(networkObject.id, networkObject.name);
+        return new User(networkObject.id, networkObject.name, "", "");
     }
 
     static fromJsonObject(jsonData) {
         if (jsonData._v !== ObjectVersion) { 
             throw new Error(`User Json Data Version Mismatch.  Current version: ${ObjectVersion}.  Json version: ${jsonData._v}`);
         }
-        const user = new User(jsonData.id, jsonData.name);
+        const user = new User(jsonData.id, jsonData.name, "", "");
         return user;
     }
 
@@ -37,3 +39,5 @@ class User extends Networkable {
         };
     }
 }
+
+export default User;
