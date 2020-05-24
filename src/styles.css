@@ -12,3 +12,7 @@ a {
     color: #D9B8C4;
     text-decoration: none;
 }
+
+div {
+    box-sizing: border-box;
+}

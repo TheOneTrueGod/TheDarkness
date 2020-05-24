@@ -21,7 +21,8 @@ http.createServer(function(request, response) {
           body += chunkValue;
         }
       }).on('end', function() {
-        const responseObject = getResponse(uri, request, JSON.parse(body));
+        const parsedBody = body ? JSON.parse(body) : {};
+        const responseObject = getResponse(uri, request, parsedBody);
         response.write(JSON.stringify(responseObject));
         response.end();
       });
