@@ -34,7 +34,7 @@ export default function CampaignSelect () {
         { campaignData.isLoading && <div>Loading...</div> }
         {!campaignData.isLoading && (
         <>
-            <div onClick={() => { createNewCampaign() }}>Create new Campaign</div>
+            {campaignData.campaigns.length <= 10 && <div onClick={() => { createNewCampaign() }}>Create new Campaign</div>}
             <div> {
                 campaignData.campaigns.map((campaign: Campaign) => {
                     return <CampaignRow campaign={campaign} />;

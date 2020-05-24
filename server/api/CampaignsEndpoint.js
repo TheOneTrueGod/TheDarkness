@@ -23,6 +23,8 @@ class CampaignsEndpoint {
     static createCampaign() {
         const campaignIds = getAllCampaignIds();
         const newId = campaignIds.reduce((a, b) => Math.max(a, b), 0) + 1;
+
+        if (campaignIds.length > 10) { throw new Error("Too many campaigns"); }
         
         const newCampaign = new Campaign(newId, `Test Campaign ${newId}`);
         saveCampaign(newCampaign);
