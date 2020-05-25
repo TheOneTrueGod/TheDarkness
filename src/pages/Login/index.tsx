@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { makeAPICall } from '../../app/helpers';
 
 const InputSection = styled.h1`
     display: flex;
     margin: 10px 0;
 `;
 
+const ErrorDiv = styled.div`
+    color: red;
+    font-size: 12px;
+`;
+
+type LoginResponse = {
+    success: boolean;
+}
+
 export default function Login () {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     function logIn(username: string, password: string) {
-        fetch(
-            '/api/login',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({
-                    username: 'TheOneTrueGod',
-                    password: 'getin',
-                })
-            }
-        )
-        .then(res => res.json())
-        .then(response => {
-            console.log("Success!", response);
-        });
+        makeAPICall('/api/login', { username, password })
+            .then((response: LoginResponse) => {
+                if (response.success) {
+                    window.location.href = '/';
+                } else {
+                    setError("Username or password invalid");
+                }
+            });
     }
 
     return (
@@ -39,6 +41,7 @@ export default function Login () {
             <InputSection><input name="Password" value={password} onChange={(event) => {
                 setPassword(event.target.value);
             }}/></InputSection>
+            {error && <InputSection><ErrorDiv>{ error }</ErrorDiv></InputSection>}
             <InputSection><button onClick={() => {
                 logIn(username, password);
             }}>Login</button></InputSection>

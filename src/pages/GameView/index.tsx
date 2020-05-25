@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Campaign, { CampaignNetworkObject } from '../../../object_defs/Campaign.js'
+import { makeAPICall } from '../../app/helpers';
 
 export type CampaignProps = {
     campaignId: number;
@@ -36,24 +37,18 @@ const CampaignName = styled.h2`
     text-align: center;
 `;
 
+type CampaignAPIResponse = {
+    data: CampaignNetworkObject,
+};
+
 export default function CampaignSelect ({ campaignId } : CampaignProps) {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaign: undefined });
     useEffect(() => {
-        fetch(
-            '/api/campaign',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({ campaignId })
-            }
-        )
-        .then(res => res.json())
-        .then(response => {
-            const campaign: Campaign = Campaign.fromNetworkObject(response.data);
-            setCampaignData({ isLoading: false, campaign });
-        });
+        makeAPICall('/api/campaign', { campaignId })
+            .then((response: CampaignAPIResponse) => {
+                const campaign: Campaign = Campaign.fromNetworkObject(response.data);
+                setCampaignData({ isLoading: false, campaign });
+            });
     }, []);
 
     const campaign = campaignData.campaign;

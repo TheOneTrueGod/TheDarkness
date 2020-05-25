@@ -46,6 +46,12 @@ app.post('/api/login', (request, response) => {
   if (!user) { return response.status(504).send({ error: "user not found" }); }
 
   request.session.userToken = user.token;
+  return response.send({ data: {}, success: true });
+});
+
+app.post('/api/logout', (request, response) => {
+  request.session.userToken = undefined;
+  return response.send({ data: {}, success: true });
 });
 
 app.post(

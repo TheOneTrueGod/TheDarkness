@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Campaign, { CampaignNetworkObject } from '../../../object_defs/Campaign.js'
 import CampaignRow from './CampaignRow';
+import { makeAPICall } from '../../app/helpers';
+
+type CampaignDetails = {
+    data: {
+        campaigns: Array<CampaignNetworkObject>
+    }
+}
 
 export default function CampaignSelect () {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaigns: [] });
     useEffect(() => {
-        fetch(
-            '/api/campaign',
-            { method: 'POST' }
-        )
-        .then(res => res.json())
-        .then(response => {
-            const campaignList: Array<Campaign> = [];
-            response.data.campaigns.forEach((networkCampaign: CampaignNetworkObject) => {
-                campaignList.push(Campaign.fromNetworkObject(networkCampaign))
+        makeAPICall('/api/campaign')
+            .then((response: CampaignDetails) => {
+                const campaignList: Array<Campaign> = [];
+                response.data.campaigns.forEach((networkCampaign: CampaignNetworkObject) => {
+                    campaignList.push(Campaign.fromNetworkObject(networkCampaign))
+                });
+                setCampaignData({ isLoading: false, campaigns: campaignList });
             });
-            setCampaignData({ isLoading: false, campaigns: campaignList });
-        });
     }, []);
 
     function createNewCampaign() {
-        fetch('/api/create-campaign',{
-            method: 'POST',
-        })
-        .then(res => res.json())
+        makeAPICall('/api/create-campaign', {})
         .then(response => {
             console.log("Success!", response);
         });
