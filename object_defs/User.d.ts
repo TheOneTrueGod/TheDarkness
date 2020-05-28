@@ -3,15 +3,15 @@ declare class User {
     id: number;
     constructor(id: number, name: string);
 
-    toNetworkObject(): UserNetworkObject;
+    toJSONObject(): UserJSONObject;
 
     getUserUri(): string;
 
-    public static fromNetworkObject(networkObject: UserNetworkObject): User;
+    public static fromJSONObject(jsonObject: UserJSONObject): User;
 
 }
 
-export interface UserNetworkObject {
+export interface UserJSONObject {
     _v: number;
     id: number;
     name: string;

@@ -58,11 +58,12 @@ app.post(
   '/api/*',
   (request, response) => {
     const userToken = request.session.userToken;
-    if (!userToken) {
+    const user = Users.find((user) => { return user.token === userToken });
+    if (!userToken || !user) {
       return response.status(504).send({ error: "unauthorized" });
     }
 
-    const responseObject = getResponse(request.originalUrl, request, request.body);
+    const responseObject = getResponse(user, request.originalUrl, request, request.body);
     response.send(responseObject);
   }
 );

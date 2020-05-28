@@ -3,40 +3,34 @@ class Campaign {
     constructor(id, name) {
         this.name = name;
         this.id = id;
+        this.playerIds = [];
+        this.activeMissionIds = [];
+        this.missionIndex = 1;
     }
 
     getCampaignUri() {
         return '/game/' + this.id;
     }
 
-    toNetworkObject() {
-        return {
-            _v: ObjectVersion,
-            name: this.name,
-            id: this.id,
-        }
-    }
-
-    static fromNetworkObject(networkObject) {
-        if (networkObject._v !== ObjectVersion) {
-            throw new Error(`Recieved object version incompatible.  Network object: '${networkObject}' Object Version: '${ObjectVersion}`)
-        }
-        return new Campaign(networkObject.id, networkObject.name);
-    }
-
-    static fromJsonObject(jsonData) {
+    static fromJSONObject(jsonData) {
         if (jsonData._v !== ObjectVersion) { 
             throw new Error(`Campaign Json Data Version Mismatch.  Current version: ${ObjectVersion}.  Json version: ${jsonData._v}`);
         }
         const campaign = new Campaign(jsonData.id, jsonData.name);
+        campaign.playerIds = jsonData.playerIds;
+        campaign.activeMissionIds = jsonData.activeMissionIds;
+        campaign.missionIndex = jsonData.missionIndex;
         return campaign;
     }
 
-    toJsonObject() {
+    toJSONObject() {
         return {
             _v: ObjectVersion,
             name: this.name,
-            id: this.id
+            id: this.id,
+            playerIds: this.playerIds,
+            activeMissionIds: this.activeMissionIds,
+            missionIndex: this.missionIndex
         };
     }
 };

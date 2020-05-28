@@ -53,7 +53,7 @@ export default function App () {
     const { route, campaignId } = getRouteAndArgs(window.location.pathname);
     if (route === Route.Logout) {
         makeAPICall('/api/logout', {})
-            .then(() => { window.location.replace("/"); })
+            .then(() => { window.location.href = "/"; })
             .catch(() => { alert("An error occured"); });
     }
     return <>

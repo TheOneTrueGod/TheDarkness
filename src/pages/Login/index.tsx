@@ -12,10 +12,6 @@ const ErrorDiv = styled.div`
     font-size: 12px;
 `;
 
-type LoginResponse = {
-    success: boolean;
-}
-
 export default function Login () {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -23,12 +19,11 @@ export default function Login () {
 
     function logIn(username: string, password: string) {
         makeAPICall('/api/login', { username, password })
-            .then((response: LoginResponse) => {
-                if (response.success) {
-                    window.location.href = '/';
-                } else {
-                    setError("Username or password invalid");
-                }
+            .then(() => {
+                window.location.href = '/';
+            })
+            .catch(() => {
+                setError("Username or password invalid");
             });
     }
 

@@ -1,6 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 
+const deleteFolderRecursive = function(folderPath) {
+    if (fs.existsSync(folderPath)) {
+      fs.readdirSync(folderPath).forEach((file, index) => {
+        const curPath = path.join(folderPath, file);
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+      fs.rmdirSync(folderPath);
+    }
+  };
+
 function loadDataFromFile(fileName) {
     if (!fs.existsSync(fileName)) {
         return undefined;
@@ -23,4 +37,5 @@ function saveDataToFile(fileName, dataToWrite) {
 export {
     loadDataFromFile,
     saveDataToFile,
+    deleteFolderRecursive
 }

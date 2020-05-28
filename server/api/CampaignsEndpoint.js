@@ -1,11 +1,14 @@
-import Campaign from "../../object_defs/Campaign.js";
-import { getAllCampaignIds, saveCampaign, updateAllCampaignIds, loadCampaign } from "../datastore/datastore.js";
+import Campaign from "../../object_defs/Campaign/Campaign.js";
+import { getAllCampaignIds, saveCampaign, updateAllCampaignIds, loadCampaign, deleteCampaign } from "../datastore/datastore.js";
 
 class CampaignsEndpoint {
-    static getResponse(uri, request, body) {
-        if (uri.startsWith('/api/create-campaign')) {
+    static getResponse(user, uri, request, body) {
+        if (uri.startsWith('/api/delete-campaign')) {
+            this.deleteCampaign(body.campaignId);
+            return { };
+        } else if (uri.startsWith('/api/create-campaign')) {
             const newCampaign = this.createCampaign();
-            return { id: newCampaign.id };
+            return { campaignId: newCampaign.id };
         }
 
         if (
@@ -18,6 +21,18 @@ class CampaignsEndpoint {
         if (request.method === 'POST' && body && body.campaignId !== undefined) {
             return this.getCampaign(body.campaignId);
         }
+    }
+
+    static deleteCampaign(campaignId) {
+        const campaignIds = getAllCampaignIds();
+        const idIndex = campaignIds.indexOf(campaignId);
+        if (idIndex == -1) {
+            throw new Error(`Couldn't find campaign ${campaignId} in all Ids`);
+        }
+
+        campaignIds.splice(idIndex, 1);
+        updateAllCampaignIds(campaignIds);
+        deleteCampaign(campaignId);
     }
 
     static createCampaign() {
@@ -36,9 +51,9 @@ class CampaignsEndpoint {
 
     static getCampaign(campaignId) {
         const campaignJSON = loadCampaign(campaignId);
-        const campaign = Campaign.fromJsonObject(campaignJSON);
+        const campaign = Campaign.fromJSONObject(campaignJSON);
         if (campaign) {
-            return campaign.toNetworkObject();
+            return campaign.toJSONObject();
         }
         throw new Error(`Campaign '${campaignId}' not found!`);
     }

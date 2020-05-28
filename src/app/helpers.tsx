@@ -12,13 +12,15 @@ function makeAPICall(url: string, body: object = {}) {
         )
         .then(res => {
             if (res.status >= 200 && res.status < 300) {
-                resolve(res.json());
-                return;
+                return res.json();
             } else if (res.status === 504) {
                 window.location.replace("/login");
+                return;
             }
 
             reject(res);
+        }).then(resJSON => {
+            resolve(resJSON);
         });
     });
 }

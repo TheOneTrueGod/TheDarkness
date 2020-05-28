@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import Campaign, { CampaignNetworkObject } from '../../../object_defs/Campaign.js'
+import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js'
 import CampaignRow from './CampaignRow';
 import { makeAPICall } from '../../app/helpers';
+import styled from 'styled-components';
 
 type CampaignDetails = {
-    data: {
-        campaigns: Array<CampaignNetworkObject>
-    }
+    data: { campaigns: Array<CampaignJSONObject> }
 }
+
+const CreateCampaignLink = styled.a`
+    cursor: pointer;
+`;
 
 export default function CampaignSelect () {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaigns: [] });
@@ -15,8 +18,8 @@ export default function CampaignSelect () {
         makeAPICall('/api/campaign')
             .then((response: CampaignDetails) => {
                 const campaignList: Array<Campaign> = [];
-                response.data.campaigns.forEach((networkCampaign: CampaignNetworkObject) => {
-                    campaignList.push(Campaign.fromNetworkObject(networkCampaign))
+                response.data.campaigns.forEach((jsonObject: CampaignJSONObject) => {
+                    campaignList.push(Campaign.fromJSONObject(jsonObject))
                 });
                 setCampaignData({ isLoading: false, campaigns: campaignList });
             });
@@ -24,8 +27,10 @@ export default function CampaignSelect () {
 
     function createNewCampaign() {
         makeAPICall('/api/create-campaign', {})
-        .then(response => {
+        .then((response: { data: { campaignId: number } } ) => {
             console.log("Success!", response);
+            debugger;
+            window.location.href = `/game/${response.data.campaignId}`;
         });
     }
 
@@ -34,10 +39,12 @@ export default function CampaignSelect () {
         { campaignData.isLoading && <div>Loading...</div> }
         {!campaignData.isLoading && (
         <>
-            {campaignData.campaigns.length <= 10 && <div onClick={() => { createNewCampaign() }}>Create new Campaign</div>}
+            { campaignData.campaigns.length <= 10 &&
+                <CreateCampaignLink onClick={() => { createNewCampaign() }}>Create new Campaign</CreateCampaignLink>
+            }
             <div> {
                 campaignData.campaigns.map((campaign: Campaign) => {
-                    return <CampaignRow campaign={campaign} />;
+                    return <CampaignRow key={campaign.id} campaign={campaign} />;
                 })}
             </div>
         </>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Campaign, { CampaignNetworkObject } from '../../../object_defs/Campaign.js'
+import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js'
 import { makeAPICall } from '../../app/helpers';
 
 export type CampaignProps = {
@@ -38,7 +38,7 @@ const CampaignName = styled.h2`
 `;
 
 type CampaignAPIResponse = {
-    data: CampaignNetworkObject,
+    data: CampaignJSONObject,
 };
 
 export default function CampaignSelect ({ campaignId } : CampaignProps) {
@@ -46,7 +46,7 @@ export default function CampaignSelect ({ campaignId } : CampaignProps) {
     useEffect(() => {
         makeAPICall('/api/campaign', { campaignId })
             .then((response: CampaignAPIResponse) => {
-                const campaign: Campaign = Campaign.fromNetworkObject(response.data);
+                const campaign: Campaign = Campaign.fromJSONObject(response.data);
                 setCampaignData({ isLoading: false, campaign });
             });
     }, []);
@@ -61,7 +61,12 @@ export default function CampaignSelect ({ campaignId } : CampaignProps) {
         <CampaignName> { campaign.name } </CampaignName>
         <OptionsContainer>
             <Full><Option onClick={() => {
-
+                makeAPICall('/api/create-mission').then(
+                    (data: { id: number }) => {
+                        console.log(data);
+                        window.location.href = `/game/${campaignId}/mission/${data.id}`;
+                    }
+                )
             }}>Create Mission</Option></Full>
             <Half>
                 <InnerContainer>
