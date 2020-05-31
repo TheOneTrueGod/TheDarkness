@@ -8,7 +8,7 @@ const Body = styled.div`
 `;
 
 type LayoutBodyProps = {
-    children: Array<JSX.Element>;
+    children: JSX.Element | Array<JSX.Element>;
 }
 
 export default function LayoutBody ({ children }: LayoutBodyProps): JSX.Element {

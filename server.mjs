@@ -5,6 +5,8 @@ import express from 'express';
 import session from 'express-session'; 
 import bodyParser from 'body-parser';
 import User from "./object_defs/User.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { getResponse } = api;
 const port = process.argv[2] || 8888;
@@ -12,7 +14,7 @@ const port = process.argv[2] || 8888;
 const app = express();
 
 //app.use(cookieParser());
-app.use(session({secret: 'ssshhhhh'}));
+app.use(session({secret: 'basdfxzcvqwer98712345xzcvdsfgqwer'}));
 app.use(bodyParser.json());
 
 app.get(
@@ -58,9 +60,14 @@ app.post(
   '/api/*',
   (request, response) => {
     const userToken = request.session.userToken;
-    const user = Users.find((user) => { return user.token === userToken });
+    let user = Users.find((user) => { return user.token === userToken });
     if (!userToken || !user) {
-      return response.status(504).send({ error: "unauthorized" });
+      if (process.env.FORCE_LOGIN) {
+        user = Users.find((user) => { return user.name === "TheOneTrueGod" });
+      }
+      if (!user) {
+        return response.status(504).send({ error: "unauthorized" });
+      }
     }
 
     const responseObject = getResponse(user, request.originalUrl, request, request.body);

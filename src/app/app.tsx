@@ -6,6 +6,13 @@ import Login from '../pages/Login/index';
 import NotFound from '../pages/NotFound/index';
 import LayoutBody from '../components/layout/body';
 import { makeAPICall } from './helpers';
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Redirect
+} from "react-router-dom";
   
 
 const Header = styled.h1`
@@ -13,57 +20,28 @@ const Header = styled.h1`
     justify-content: center;
 `;
 
-enum Route {
-    Login,
-    Logout,
-    CampaignSelect,
-    GameView,
-    NotFound,
-};
-
-interface RouteAndArgs {
-    route: Route;
-    campaignId?: number;
-};
-
-function getRouteAndArgs(pathname: string): RouteAndArgs {
-    if (pathname.startsWith('/logout')) {
-        return { route: Route.Logout };
-    }
-
-    if (pathname.startsWith('/login')) {
-        return { route: Route.Login };
-    }
-
-    if (pathname === '/' || pathname === '/game' || pathname === '/game/') {
-        return { route: Route.CampaignSelect };
-    }
-
-    if (pathname.startsWith("/game/")) {
-        const gameId: string = pathname.match(/\d+/i)[0];
-        return { route: Route.GameView, campaignId: parseInt(gameId) };
-    }
-
-    return {
-        route: Route.NotFound
-    }
-}
-
 export default function App () {
-    const { route, campaignId } = getRouteAndArgs(window.location.pathname);
-    if (route === Route.Logout) {
-        makeAPICall('/api/logout', {})
-            .then(() => { window.location.href = "/"; })
-            .catch(() => { alert("An error occured"); });
-    }
     return <>
         <Header>The Darkness</Header>
-        <LayoutBody>
-            { route === Route.Logout && <div>Logging out...</div>}
-            { route === Route.Login && <Login /> }
-            { route === Route.CampaignSelect && <CampaignSelect /> }
-            { route === Route.GameView && <GameView campaignId={campaignId} /> }
-            { route === Route.NotFound && <NotFound /> }
-        </LayoutBody>
+        <Router>
+            <LayoutBody>
+                <Switch>
+                <Route path="/logout" render={() => {
+                    makeAPICall('/api/logout', {})
+                        .then(() => { window.location.href = "/"; })
+                        .catch(() => { alert("An error occured"); });
+                    return <div>Logging out...</div>;
+                }}/>
+                <Route path="/login"><Login /></Route>
+                <Route path="/game/:campaignId" render={(props) => {
+                    const campaignId = props.match.params.campaignId;
+                    return <GameView campaignId={campaignId} />
+                }}/>
+                <Route path="/game"><CampaignSelect /></Route>
+                <Route exact path="/"><Redirect to="/game" /></Route>
+                <Route path="*"><NotFound /></Route>
+                </Switch>
+            </LayoutBody>
+        </Router>
     </>;
 };

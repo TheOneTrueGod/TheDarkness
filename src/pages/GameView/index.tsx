@@ -57,28 +57,30 @@ export default function CampaignSelect ({ campaignId } : CampaignProps) {
         return <div>Loading...</div>;
     }
 
-    return <>
-        <CampaignName> { campaign.name } </CampaignName>
-        <OptionsContainer>
-            <Full><Option onClick={() => {
-                makeAPICall('/api/create-mission').then(
-                    (data: { id: number }) => {
-                        console.log(data);
-                        window.location.href = `/game/${campaignId}/mission/${data.id}`;
-                    }
-                )
-            }}>Create Mission</Option></Full>
-            <Half>
-                <InnerContainer>
-                    <Half><Option>View Mission 1</Option></Half>
-                    <Half><Option>Cancel</Option></Half>
-                </InnerContainer>
-            </Half>
-            <Half><Option>Join Mission 2</Option></Half>
-            <Half><Option>Join Mission 3</Option></Half>
-            <Full><Option onClick={() => {
+    return (
+        <>
+            <CampaignName> { campaign.name } </CampaignName>
+            <OptionsContainer>
+                <Full><Option onClick={() => {
+                    makeAPICall('/api/create-mission').then(
+                        (data: { id: number }) => {
+                            console.log(data);
+                            window.location.href = `/game/${campaignId}/mission/${data.id}`;
+                        }
+                    )
+                }}>Create Mission</Option></Full>
+                <Half>
+                    <InnerContainer>
+                        <Half><Option>View Mission 1</Option></Half>
+                        <Half><Option>Cancel</Option></Half>
+                    </InnerContainer>
+                </Half>
+                <Half><Option>Join Mission 2</Option></Half>
+                <Half><Option>Join Mission 3</Option></Half>
+                <Full><Option onClick={() => {
 
-            }}>End Week</Option></Full>
-        </OptionsContainer>
-    </>;
+                }}>End Week</Option></Full>
+            </OptionsContainer>
+        </>
+    );
 };
