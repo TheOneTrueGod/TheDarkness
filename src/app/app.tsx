@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import CampaignSelect from '../pages/CampaignSelect/index';
 import GameView from '../pages/GameView/index';
-import Login from '../pages/Login/index';
+import Login from '../pages/Login/login';
+import Logout from '../pages/Login/logout';
 import NotFound from '../pages/NotFound/index';
 import LayoutBody from '../components/layout/body';
 import { makeAPICall } from './helpers';
@@ -26,12 +27,7 @@ export default function App () {
         <Router>
             <LayoutBody>
                 <Switch>
-                <Route path="/logout" render={() => {
-                    makeAPICall('/api/logout', {})
-                        .then(() => { window.location.href = "/"; })
-                        .catch(() => { alert("An error occured"); });
-                    return <div>Logging out...</div>;
-                }}/>
+                <Route path="/logout" ><Logout /></Route>
                 <Route path="/login"><Login /></Route>
                 <Route path="/game/:campaignId" render={(props) => {
                     const campaignId = props.match.params.campaignId;
