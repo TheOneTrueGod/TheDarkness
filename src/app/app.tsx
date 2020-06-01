@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CampaignSelect from '../pages/CampaignSelect/index';
-import GameView from '../pages/GameView/index';
+import CampaignView from '../pages/CampaignView/index';
 import Login from '../pages/Login/login';
 import Logout from '../pages/Login/logout';
 import NotFound from '../pages/NotFound/index';
@@ -29,10 +29,9 @@ export default function App () {
                 <Switch>
                 <Route path="/logout" ><Logout /></Route>
                 <Route path="/login"><Login /></Route>
-                <Route path="/game/:campaignId" render={(props) => {
-                    const campaignId = props.match.params.campaignId;
-                    return <GameView campaignId={campaignId} />
-                }}/>
+                <Route path="/game/:campaignId" render={(props) =>
+                    <CampaignView campaignId={props.match.params.campaignId} />
+                }/>
                 <Route path="/game"><CampaignSelect /></Route>
                 <Route exact path="/"><Redirect to="/game" /></Route>
                 <Route path="*"><NotFound /></Route>
