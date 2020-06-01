@@ -9,7 +9,7 @@ class MissionsEndpoint {
             if (!campaign) { throw new Error(`Couldn't find campaign ${body.campaignId}`); }
 
             const newMission = this.createMission(user, campaign);
-            return { id: newMission.id };
+            return { missionId: newMission.id };
         }
 
         if (request.method === 'POST' && body && body.missionId !== undefined) {
@@ -26,7 +26,7 @@ class MissionsEndpoint {
 
         saveCampaign(campaign);
         saveMission(newMission);
-        
+
         return newMission;
     }
 

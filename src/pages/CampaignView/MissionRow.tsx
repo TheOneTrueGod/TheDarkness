@@ -2,6 +2,8 @@ import React from "react";
 import DataLoader from "../../components/DataLoader/dataLoader";
 import MissionInterface from "../../../object_defs/Campaign/Mission/Mission.js";
 import styled from 'styled-components';
+import { getMissionUrl } from "./MissionSelect";
+import { Link } from "react-router-dom";
 
 const InnerContainer = styled.div`
     display: flex;
@@ -44,7 +46,9 @@ export default function MissionRow ({ campaignId, missionId } : MissionRowProps)
                     );
                 }
                 return (
-                    <Half><Option>Join Mission { mission.id }</Option></Half>
+                    <Half><Link to={getMissionUrl(campaignId, missionId)}>
+                        <Option>Join Mission { mission.id }</Option>
+                    </Link></Half>
                 );
             }}
         </DataLoader>

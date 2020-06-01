@@ -4,6 +4,8 @@ import MissionRow from './MissionRow';
 import { makeAPICall } from '../../app/helpers';
 import styled from 'styled-components';
 
+import { Redirect } from "react-router-dom";
+
 const InnerContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -34,19 +36,39 @@ export type MissionSelectProps = {
     campaign: Campaign;
 };
 
+export function getMissionUrl(campaignId: number, missionId: number): string {
+    return `/game/${campaignId}/mission/${missionId}`;
+}
+
 export default function MissionSelect ({ campaign } : MissionSelectProps) {
+    const [createMissionAPICall, setCreateMissionAPICall] 
+        = useState({ isLoading: false, newMissionId: -1 });
+    
+    if (createMissionAPICall.newMissionId !== -1) {
+        return <Redirect to={getMissionUrl(campaign.id, createMissionAPICall.newMissionId)} />;
+    }
+
     return (
         <OptionsContainer>
             <Full><Option onClick={() => {
+                setCreateMissionAPICall({ ...createMissionAPICall, isLoading: true});
+
                 makeAPICall('/api/create-mission', { campaignId: campaign.id }).then(
-                    (data: { id: number }) => {
-                        window.location.href = `/game/${campaign.id}/mission/${data.id}`;
+                    (data: { data: { missionId: number } }) => {
+                        setCreateMissionAPICall({ 
+                            newMissionId: data.data.missionId,
+                            isLoading: false
+                        });
                     }
                 )
             }}>Create Mission</Option></Full>
 
             {campaign.activeMissionIds.map(missionId => 
-                <MissionRow key={missionId} campaignId={campaign.id} missionId={missionId} />
+                <MissionRow 
+                    key={missionId}
+                    campaignId={campaign.id}
+                    missionId={missionId}
+                />
             )}
 
             <Full><Option onClick={() => {
