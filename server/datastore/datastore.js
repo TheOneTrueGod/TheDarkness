@@ -61,7 +61,7 @@ function loadMission(campaignId, missionId) {
 function saveMission(mission) {
     const json = mission.toJSONObject();
     saveDataToFile(
-        getFilenameForMissionId(mission.campaignId, mission.id),
+        getFilenameForMission(mission.campaignId, mission.id),
         JSON.stringify(json)
     );
 }

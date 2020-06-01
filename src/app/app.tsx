@@ -6,7 +6,6 @@ import Login from '../pages/Login/login';
 import Logout from '../pages/Login/logout';
 import NotFound from '../pages/NotFound/index';
 import LayoutBody from '../components/layout/body';
-import { makeAPICall } from './helpers';
 
 import {
     BrowserRouter as Router,

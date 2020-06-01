@@ -1,37 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js'
+import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js';
+import MissionSelect from './MissionSelect'
 import { makeAPICall } from '../../app/helpers';
 
 export type CampaignProps = {
     campaignId: number;
 };
-
-const InnerContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin: -20px;
-`;
-
-const OptionsContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-`;
-
-const Cell = styled.div`
-    padding: 20px;
-`;
-const Half = styled(Cell)`width: 50%;`;
-const Full = styled(Cell)`width: 100%;`;
-
-const Option = styled.div`
-    border-radius: 10px;
-    border: 3px solid #7E4F68;
-    text-align: center;
-    padding: 20px;
-    cursor: pointer;
-`;
 
 const CampaignName = styled.h2`
     text-align: center;
@@ -60,27 +35,7 @@ export default function CampaignSelect ({ campaignId } : CampaignProps) {
     return (
         <>
             <CampaignName> { campaign.name } </CampaignName>
-            <OptionsContainer>
-                <Full><Option onClick={() => {
-                    makeAPICall('/api/create-mission').then(
-                        (data: { id: number }) => {
-                            console.log(data);
-                            window.location.href = `/game/${campaignId}/mission/${data.id}`;
-                        }
-                    )
-                }}>Create Mission</Option></Full>
-                <Half>
-                    <InnerContainer>
-                        <Half><Option>View Mission 1</Option></Half>
-                        <Half><Option>Cancel</Option></Half>
-                    </InnerContainer>
-                </Half>
-                <Half><Option>Join Mission 2</Option></Half>
-                <Half><Option>Join Mission 3</Option></Half>
-                <Full><Option onClick={() => {
-
-                }}>End Week</Option></Full>
-            </OptionsContainer>
+            <MissionSelect campaign={campaign} />
         </>
     );
 };
