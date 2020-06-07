@@ -4,6 +4,7 @@ import MissionInterface from "../../../object_defs/Campaign/Mission/Mission.js";
 import styled from 'styled-components';
 import { getMissionUrl } from "./MissionSelect";
 import { Link } from "react-router-dom";
+import User from '../../../object_defs/User.js';
 
 const InnerContainer = styled.div`
     display: flex;
@@ -27,21 +28,21 @@ const Option = styled.div`
 `;
 
 export type MissionRowProps = {
+    user: User;
     missionId: number;
     campaignId: number;
 };
 
-export default function MissionRow ({ campaignId, missionId } : MissionRowProps) {
+export default function MissionRow ({ campaignId, missionId, user } : MissionRowProps) {
     return (
         <DataLoader apiURL={'/api/missions'} args={{ campaignId, missionId }}>
             {(mission: MissionInterface) => {
-                if (mission.creatorId === 55123423432) {
+                if (mission.creatorId === user.id) {
                     return (
                         <Half>
-                            <InnerContainer>
-                                <Half><Option>View Mission { mission.id }</Option></Half>
-                                <Half><Option>Cancel</Option></Half>
-                            </InnerContainer>
+                            <Link to={getMissionUrl(campaignId, missionId)}>
+                                <Option>View Mission { mission.id }</Option>
+                            </Link>
                         </Half>
                     );
                 }

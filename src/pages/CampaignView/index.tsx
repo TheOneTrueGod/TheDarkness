@@ -4,21 +4,24 @@ import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Camp
 import MissionSelect from './MissionSelect'
 import { makeAPICall } from '../../app/helpers';
 import User from '../../../object_defs/User.js';
+import MissionView from './MissionView/MissionView';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Redirect
+} from "react-router-dom";
 
 export type CampaignProps = {
     user: User;
     campaignId: number;
 };
 
-const CampaignName = styled.h2`
-    text-align: center;
-`;
-
 type CampaignAPIResponse = {
     data: CampaignJSONObject,
 };
 
-export default function CampaignView ({ campaignId } : CampaignProps) {
+export default function CampaignView ({ campaignId, user } : CampaignProps) {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaign: undefined });
     useEffect(() => {
         makeAPICall('/api/campaign', { campaignId })
@@ -36,8 +39,16 @@ export default function CampaignView ({ campaignId } : CampaignProps) {
 
     return (
         <>
-            <CampaignName> { campaign.name } </CampaignName>
-            <MissionSelect campaign={campaign} />
+            <Router>
+                <Switch>
+                    <Route path="/game/:campaignId/mission/:missionId" render={(props) =>
+                        <MissionView user={user} campaignId={campaignId} missionId={props.match.params.missionId} />
+                    }/>
+                    <Route path="/game/:campaignId">
+                        <MissionSelect user={user} campaign={campaign} />
+                    </Route>
+                </Switch>
+            </Router>
         </>
     );
 };
