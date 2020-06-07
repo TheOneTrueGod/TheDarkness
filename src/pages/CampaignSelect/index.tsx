@@ -3,6 +3,11 @@ import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Camp
 import CampaignRow from './CampaignRow';
 import { makeAPICall } from '../../app/helpers';
 import styled from 'styled-components';
+import User from '../../../object_defs/User.js';
+
+export type CampaignSelectProps = {
+    user: User;
+};
 
 type CampaignDetails = {
     data: { campaigns: Array<CampaignJSONObject> }
@@ -12,7 +17,7 @@ const CreateCampaignLink = styled.a`
     cursor: pointer;
 `;
 
-export default function CampaignSelect () {
+export default function CampaignSelect ({ user } : CampaignSelectProps) {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaigns: [] });
     useEffect(() => {
         makeAPICall('/api/campaign')

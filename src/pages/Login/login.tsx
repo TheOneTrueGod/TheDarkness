@@ -18,7 +18,7 @@ export default function Login () {
     const [error, setError] = useState("");
 
     function logIn(username: string, password: string) {
-        makeAPICall('/api/login', { username, password })
+        makeAPICall('/api/auth/login', { username, password })
             .then(() => {
                 window.location.href = '/';
             })

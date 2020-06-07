@@ -60,7 +60,7 @@ export default function MissionSelect ({ campaign } : MissionSelectProps) {
                             isLoading: false
                         });
                     }
-                )
+                );
             }}>Create Mission</Option></Full>
 
             {campaign.activeMissionIds.map(missionId => 

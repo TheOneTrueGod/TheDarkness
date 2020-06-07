@@ -4,7 +4,7 @@ import path from 'path';
 import express from 'express';
 import session from 'express-session'; 
 import bodyParser from 'body-parser';
-import User from "./object_defs/User.js";
+import AuthEndpoint, { Users } from "./server/api/AuthEndpoint.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -13,7 +13,6 @@ const port = process.argv[2] || 8888;
 
 const app = express();
 
-//app.use(cookieParser());
 app.use(session({secret: 'basdfxzcvqwer98712345xzcvdsfgqwer'}));
 app.use(bodyParser.json());
 
@@ -32,28 +31,11 @@ app.get('/*', (req, res) => {
   res.sendFile(path.resolve('./public/index.html'));
 });
 
-const Users = [
-  new User(1, "TheOneTrueGod", "getin", "afbzxcWr"),
-  new User(2, "Tabitha", "getin", "afqwerpcWr"),
-  new User(3, "TJ", "getin", "bbjwerPO"),
-  new User(4, "Chip", "getin", "ggueWper"),
-  new User(5, "Sean", "getin", "bnsasweR"),
-  new User(6, "Mitch", "getin", "bjppqwerO"),
-]
-
-app.post('/api/login', (request, response) => {
-  const username = request.body.username;
-  const password = request.body.password;
-  const user = Users.find((user) => { return user.name === username && user.password === password })
-  if (!user) { return response.status(504).send({ error: "user not found" }); }
-
-  request.session.userToken = user.token;
-  return response.send({ data: {}, success: true });
-});
-
-app.post('/api/logout', (request, response) => {
-  request.session.userToken = undefined;
-  return response.send({ data: {}, success: true });
+app.post('/api/auth/*', (request, response) => {
+  response.send({ 
+    data: AuthEndpoint.getResponse(request.originalUrl, request, response),
+    success: true,
+  });
 });
 
 app.post(

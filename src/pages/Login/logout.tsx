@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 export default function Logout () {
     const [logoutSuccess, setLogoutSuccess] = useState(false);
 
-    makeAPICall('/api/logout', {})
+    makeAPICall('/api/auth/logout', {})
         .then(() => { setLogoutSuccess(true); })
         .catch(() => { alert("An error occured"); });
 

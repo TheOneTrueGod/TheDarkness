@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js';
 import MissionSelect from './MissionSelect'
 import { makeAPICall } from '../../app/helpers';
+import User from '../../../object_defs/User.js';
 
 export type CampaignProps = {
+    user: User;
     campaignId: number;
 };
 
@@ -16,7 +18,7 @@ type CampaignAPIResponse = {
     data: CampaignJSONObject,
 };
 
-export default function CampaignSelect ({ campaignId } : CampaignProps) {
+export default function CampaignView ({ campaignId } : CampaignProps) {
     const [campaignData, setCampaignData] = useState({ isLoading: true, campaign: undefined });
     useEffect(() => {
         makeAPICall('/api/campaign', { campaignId })

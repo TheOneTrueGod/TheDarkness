@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CampaignSelect from '../pages/CampaignSelect/index';
 import CampaignView from '../pages/CampaignView/index';
+import CampaignWrapper from '../pages/CampaignWrapper/CampaignWrapper'; 
 import Login from '../pages/Login/login';
 import Logout from '../pages/Login/logout';
 import NotFound from '../pages/NotFound/index';
@@ -28,10 +29,7 @@ export default function App () {
                 <Switch>
                 <Route path="/logout" ><Logout /></Route>
                 <Route path="/login"><Login /></Route>
-                <Route path="/game/:campaignId" render={(props) =>
-                    <CampaignView campaignId={props.match.params.campaignId} />
-                }/>
-                <Route path="/game"><CampaignSelect /></Route>
+                <Route path="/game"><CampaignWrapper /></Route>
                 <Route exact path="/"><Redirect to="/game" /></Route>
                 <Route path="*"><NotFound /></Route>
                 </Switch>
