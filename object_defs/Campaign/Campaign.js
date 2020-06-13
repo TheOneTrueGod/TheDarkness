@@ -1,5 +1,23 @@
 import CampaignUnit from "./CampaignUnit.js";
 
+export function CreateInitialUnits(campaign, user) {
+    campaign.addCampaignUnit(
+        new CampaignUnit(
+            user.id,
+            campaign.unitIndex,
+            `${user.name} - ${campaign.unitIndex}`
+        )
+    );
+
+    campaign.addCampaignUnit(
+        new CampaignUnit(
+            user.id,
+            campaign.unitIndex,
+            `${user.name} - ${campaign.unitIndex}`
+        )
+    );
+}
+
 const ObjectVersion = 1;
 class Campaign {
     constructor(id, name) {
@@ -8,7 +26,13 @@ class Campaign {
         this.playerIds = [];
         this.activeMissionIds = [];
         this.missionIndex = 1;
+        this.unitIndex = 1;
         this.campaignUnits = [];
+    }
+
+    addCampaignUnit(campaignUnit) {
+        this.campaignUnits.push(campaignUnit);
+        this.unitIndex += 1;
     }
 
     getCampaignUri() {

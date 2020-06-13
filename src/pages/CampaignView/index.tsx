@@ -28,7 +28,7 @@ export default function CampaignView ({ campaignId, user } : CampaignProps) {
     if (campaignData.isLoading) {
         return <div>Loading...</div>;
     }
-    
+
     if (
         !joinAPICall.isLoading &&
         !joinAPICall.error &&
@@ -56,7 +56,7 @@ export default function CampaignView ({ campaignId, user } : CampaignProps) {
             <Router>
                 <Switch>
                     <Route path="/game/:campaignId/mission/:missionId" render={(props) =>
-                        <MissionView user={user} campaignId={campaignId} missionId={props.match.params.missionId} />
+                        <MissionView user={user} campaign={campaign} missionId={props.match.params.missionId} />
                     }/>
                     <Route path="/game/:campaignId">
                         <MissionSelect user={user} campaign={campaign} />

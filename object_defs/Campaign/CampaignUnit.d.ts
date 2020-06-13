@@ -1,4 +1,4 @@
-import { NetworkableJSONObject, NetworkableObject } from "../../NetworkableObject";
+import { NetworkableJSONObject, NetworkableObject } from "../NetworkableObject";
 
 declare class CampaignUnitInterface {
     readonly ownerId: number;

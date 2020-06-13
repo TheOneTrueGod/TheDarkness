@@ -1,11 +1,10 @@
 const ObjectVersion = 1;
 
 class CampaignUnit {
-    constructor(ownerId, unitId, unitName, ownerName) {
+    constructor(ownerId, unitId, unitName) {
         this.ownerId = ownerId;
         this.unitId = unitId;
         this.unitName = unitName;
-        this.ownerName = ownerName;
     }
 
     static fromJSONObject(jsonData) {
@@ -21,8 +20,7 @@ class CampaignUnit {
             _v: ObjectVersion,
             ownerId: this.ownerId,
             unitId: this.unitId,
-            unitName: this.unitName,
-            ownerName: this.ownerName
+            unitName: this.unitName
         };
     }
 };

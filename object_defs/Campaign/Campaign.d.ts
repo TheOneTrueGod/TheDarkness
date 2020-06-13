@@ -1,4 +1,5 @@
 import { NetworkableJSONObject, NetworkableObject } from "../NetworkableObject";
+import CampaignUnit from "./CampaignUnit";
 
 declare class CampaignInterface {
     readonly id: number;
@@ -6,6 +7,8 @@ declare class CampaignInterface {
     playerIds: Array<number>;
     activeMissionIds: Array<number>;
     missionIndex: number;
+    unitIndex: number;
+    campaignUnits: Array<CampaignUnit>;
 }
 
 export interface CampaignJSONObject extends CampaignInterface, NetworkableJSONObject {}

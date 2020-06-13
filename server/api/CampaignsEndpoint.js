@@ -1,5 +1,6 @@
 import Campaign from "../../object_defs/Campaign/Campaign.js";
 import { getAllCampaignIds, saveCampaign, updateAllCampaignIds, loadCampaign, deleteCampaign } from "../datastore/datastore.js";
+import { CreateInitialUnits } from "../../object_defs/Campaign/Campaign.js";
 
 class CampaignsEndpoint {
     static getResponse(user, uri, request, body) {
@@ -37,6 +38,7 @@ class CampaignsEndpoint {
         }
 
         campaign.playerIds.push(user.id);
+        CreateInitialUnits(campaign, user);
         saveCampaign(campaign);
         return {};
     }
