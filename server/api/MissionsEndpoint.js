@@ -12,6 +12,10 @@ class MissionsEndpoint {
             return { missionId: newMission.id };
         }
 
+        if (uri.startsWith('/api/missions/add-unit')) {
+            return this.addUnitToMission(body.campaignId, body.missionId)
+        }
+
         if (request.method === 'POST' && body && body.missionId !== undefined) {
             return this.getMission(body.campaignId, body.missionId);
         }

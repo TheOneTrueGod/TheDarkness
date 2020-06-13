@@ -1,3 +1,5 @@
+import CampaignUnit from "./CampaignUnit.js";
+
 const ObjectVersion = 1;
 class Campaign {
     constructor(id, name) {
@@ -6,6 +8,7 @@ class Campaign {
         this.playerIds = [];
         this.activeMissionIds = [];
         this.missionIndex = 1;
+        this.campaignUnits = [];
     }
 
     getCampaignUri() {
@@ -20,6 +23,7 @@ class Campaign {
         campaign.playerIds = jsonData.playerIds;
         campaign.activeMissionIds = jsonData.activeMissionIds;
         campaign.missionIndex = jsonData.missionIndex;
+        campaign.campaignUnits = jsonData.campaignUnits.map((campaignUnit) => { return CampaignUnit.fromJSONObject(campaignUnit); })
         return campaign;
     }
 
@@ -30,7 +34,8 @@ class Campaign {
             id: this.id,
             playerIds: this.playerIds,
             activeMissionIds: this.activeMissionIds,
-            missionIndex: this.missionIndex
+            missionIndex: this.missionIndex,
+            campaignUnits: this.campaignUnits.map((campaignUnit) => campaignUnit.toJSONObject())
         };
     }
 };

@@ -11,16 +11,34 @@ class CampaignsEndpoint {
             return { campaignId: newCampaign.id };
         }
 
+        if (uri.startsWith('/api/campaign/join')) {
+            this.joinCampaign(user, body.campaignId);
+            return { };
+        }
+
         if (
             request.method === 'GET' ||
             request.method === 'POST' && (!body || body.campaignId === undefined)
         ) {
-            return this.getAllCampaigns();
+            return { 
+                campaigns: this.getAllCampaigns().map((campaign) => campaign.toJSONObject())
+            };
         }
 
         if (request.method === 'POST' && body && body.campaignId !== undefined) {
-            return this.getCampaign(body.campaignId);
+            return this.getCampaign(body.campaignId).toJSONObject();
         }
+    }
+
+    static joinCampaign(user, campaignId) {
+        const campaign = this.getCampaign(campaignId);
+        if (campaign.playerIds.indexOf(user.id) !== -1) {
+            return {};
+        }
+
+        campaign.playerIds.push(user.id);
+        saveCampaign(campaign);
+        return {};
     }
 
     static deleteCampaign(campaignId) {
@@ -53,18 +71,16 @@ class CampaignsEndpoint {
         const campaignJSON = loadCampaign(campaignId);
         const campaign = Campaign.fromJSONObject(campaignJSON);
         if (campaign) {
-            return campaign.toJSONObject();
+            return campaign;
         }
         throw new Error(`Campaign '${campaignId}' not found!`);
     }
 
     static getAllCampaigns() {
         const campaignIds = getAllCampaignIds();
-        return { 
-            campaigns: campaignIds.map((campaignId) => {
-                return this.getCampaign(campaignId);
-            })
-        };
+        return campaignIds.map((campaignId) => {
+            return this.getCampaign(campaignId);
+        });
     }
 }
 

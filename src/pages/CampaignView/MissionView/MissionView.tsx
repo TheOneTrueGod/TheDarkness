@@ -22,11 +22,9 @@ export default function MissionView ({ campaignId, missionId, user } : MissionPr
     }
 
     const mission = missionData.networkObject;
-
-    console.log(mission);
     return (
         <>
-            {mission.missionState === MissionState.planning && <MissionPreparation mission={mission} />}
+            {mission.missionState === MissionState.planning && <MissionPreparation mission={mission} user={user} />}
         </>
     );
 };

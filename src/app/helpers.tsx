@@ -17,7 +17,6 @@ function makeAPICall(url: string, body: object = {}) {
                 window.location.replace("/login");
                 return;
             }
-
             reject(res);
         }).then(resJSON => {
             resolve(resJSON);
