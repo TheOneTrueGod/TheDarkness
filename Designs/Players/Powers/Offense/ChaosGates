@@ -1,0 +1,23 @@
+Based around creating tokens that the player can attack from.
+Once the tokens are placed, they are difficult to get back to the player.
+If a rift token winds up on a player's space, it is returned to the player
+The player only has a limited number of these that they can place at one. (four? upgradable?)
+Each token can only attack once per turn (upgradable?)
+
+Open Rift (2AP) // Expensive to open, but easier to use if they're positioned well
+Opens a chaos gate at a target location
+
+Shifting Rifts (1 MP)
+All rifts move 1 space towards the target
+
+Rift Burst (1AP, 1 rift action)
+The target rift deals 2 damage to one adjacent enemy
+
+Rift Explosion (1AP, 1 rift action)
+Target rift deals 1 damage to all adjacent enemies
+
+Rift Slash (2 AP, counts as a rift action)
+All rifts move 1 space in the chosen cardinal direction, and deal damage to all enemies on any square they occupied during this movement
+
+Singularity (2AP, counts as a rift action)
+All rifts return to the player, dealing 2 damage to the first enemy caught in the path
