@@ -12,7 +12,7 @@ interface IAPICaller<T extends NetworkableObject> {
     networkObject: T;
 }
 
-export type NetworkAPIResponse = {
+type NetworkAPIResponse = {
     data: NetworkableJSONObject,
 };
 
@@ -29,7 +29,7 @@ type CreateAPICallableType<T extends NetworkableObject> = {
 
 export function CreateAPICallableState<T extends NetworkableObject>(
     uri: string, // The URI to call to fetch the data
-    networkObjectTransformer: NetworkObjectTransformerFunc<T> | undefined
+    networkObjectTransformer: NetworkObjectTransformerFunc<T>
 ): CreateAPICallableType<T> {
     const [ apiCallableState, setAPICallableState ] = 
         useState<IAPICaller<T>>({
