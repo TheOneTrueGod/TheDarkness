@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
 import Campaign, { CampaignJSONObject } from '../../../object_defs/Campaign/Campaign.js';
 import MissionSelect from './MissionSelect'
-import { makeAPICall } from '../../app/helpers';
 import User from '../../../object_defs/User.js';
 import MissionView from './MissionView/MissionView';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect
 } from "react-router-dom";
+import { CreateAPICallableState } from '../../components/APICallableState';
 
 export type CampaignProps = {
     user: User;
@@ -22,16 +20,13 @@ type CampaignAPIResponse = {
 };
 
 export default function CampaignView ({ campaignId, user } : CampaignProps) {
-    const [campaignData, setCampaignData] = useState({ isLoading: true, campaign: undefined });
-    useEffect(() => {
-        makeAPICall('/api/campaign', { campaignId })
-            .then((response: CampaignAPIResponse) => {
-                const campaign: Campaign = Campaign.fromJSONObject(response.data);
-                setCampaignData({ isLoading: false, campaign });
-            });
-    }, []);
+    const { apiCallableState: campaignData, makeCall } = CreateAPICallableState<Campaign>(
+        '/api/campaign',
+        Campaign.fromJSONObject
+    );
+    useEffect(() => { makeCall({ campaignId }) }, []);
 
-    const campaign = campaignData.campaign;
+    const campaign = campaignData.networkObject;
 
     if (campaignData.isLoading) {
         return <div>Loading...</div>;

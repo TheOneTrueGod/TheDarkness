@@ -33,8 +33,6 @@ export default function CampaignSelect ({ user } : CampaignSelectProps) {
     function createNewCampaign() {
         makeAPICall('/api/create-campaign', {})
         .then((response: { data: { campaignId: number } } ) => {
-            console.log("Success!", response);
-            debugger;
             window.location.href = `/game/${response.data.campaignId}`;
         });
     }

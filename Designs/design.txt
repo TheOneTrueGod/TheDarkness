@@ -31,3 +31,21 @@ Avatar
     - Type ()
     - StatUpgrades
     - AbilityUpgrades
+
+Ideas for how battles can be managed
+When a player or AI uses an abilities, it adds "actions" to an action queue.
+The first action to be added is the "useAbility" action.
+These actions can wind up causing other actions to be added.
+The actions get resolved one by one.
+
+For example;
+A player uses an ability to move his swordsman from (2, 2) to (2, 3)
+"UseAbility(swordsman, move, [(2,2), (2,3)])" gets added to the queue.
+ - UseAbility<move> throws event "unit about to move out of square".
+ - An adjacent wolf catches that event and adds a "UseAbility(wolf, attack, swordsman)" to retaliate
+ - UseAbility<move> adds a "MoveUnit((2, 2), (2, 3))" to the queue
+ - UseAbility<wolfattack> resolves.  The wolf attacks the swordsman.
+ - MoveUnit resolves.  The swordsman moves.
+
+Animations can happen as part of an action resolving, but should be distinct from the data.
+The next action won't do its stuff until the animations are finished.

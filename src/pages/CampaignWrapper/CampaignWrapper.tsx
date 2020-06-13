@@ -1,39 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Redirect
 } from "react-router-dom";
-import { makeAPICall } from '../../app/helpers';
 import User, { UserJSONObject } from '../../../object_defs/User.js';
 import CampaignSelect from '../CampaignSelect/index';
 import CampaignView from '../CampaignView/index';
+import { CreateAPICallableState } from '../../components/APICallableState';
 
 export type CampaignWrapperProps = {
 };
 
-type UserAPIResponse = {
-    data: UserJSONObject,
-};
-
 export default function CampaignWrapper ({ } : CampaignWrapperProps) {
-    const [userData, setUserData] = useState({ isLoading: true, user: undefined });
-    useEffect(() => {
-        makeAPICall('/api/auth/get-user')
-            .then((response: UserAPIResponse) => {
-                const user: User = User.fromJSONObject(response.data);
-                setUserData({ isLoading: false, user });
-            }).catch(() => {
-                setUserData({ isLoading: false, user: undefined })
-            });
-    }, []);
+    const { apiCallableState: userData, makeCall } = CreateAPICallableState<User>(
+        '/api/auth/get-user',
+        User.fromJSONObject
+    );
+    useEffect(() => { makeCall({}) }, []);
 
     if (userData.isLoading) {
         return <div>Loading...</div>;
     }
 
-    if (userData.user === undefined) {
+    const user = userData.networkObject;
+
+    if (user === undefined) {
         return <Redirect to="/login" />;
     }
 
@@ -42,9 +35,9 @@ export default function CampaignWrapper ({ } : CampaignWrapperProps) {
             <Router>
                 <Switch>
                     <Route path="/game/:campaignId" render={(props) =>
-                        <CampaignView user={userData.user} campaignId={props.match.params.campaignId} />
+                        <CampaignView user={user} campaignId={props.match.params.campaignId} />
                     }/>
-                    <Route path="/game"><CampaignSelect user={userData.user}  /></Route>
+                    <Route path="/game"><CampaignSelect user={user}  /></Route>
                 </Switch>
             </Router>
         </>

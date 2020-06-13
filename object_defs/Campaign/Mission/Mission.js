@@ -1,4 +1,12 @@
+import MissionUnit from "./MissionUnit.js";
+
 const ObjectVersion = 1;
+
+export const MissionState = {
+    planning: 'planning',
+    active: 'active',
+    finished: 'finished',
+}
 
 class Mission {
     constructor(id, campaignId, creatorId) {
@@ -9,6 +17,7 @@ class Mission {
         this.pastBattleIds = [];
         this.activeBattleId = 0;
         this.battleIndex = 1;
+        this.unitList = [];
     }
 
     static fromJSONObject(jsonData) {
@@ -21,6 +30,7 @@ class Mission {
         mission.pastBattleIds = jsonData.pastBattleIds;
         mission.activeBattleId = jsonData.activeBattleId;
         mission.battleIndex = jsonData.battleIndex;
+        mission.unitList = jsonData.unitList.map((missionUnit) => { return MissionUnit.fromJSONObject(missionUnit); })
         return mission;
     }
 
@@ -34,6 +44,7 @@ class Mission {
             pastBattleIds: this.pastBattleIds,
             activeBattleId: this.activeBattleId,
             battleIndex: this.battleIndex,
+            unitList: this.unitList.map((missionUnit) => missionUnit.toJSONObject())
         };
     }
 };
