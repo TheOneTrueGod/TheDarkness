@@ -24,7 +24,7 @@ class Mission {
         if (jsonData._v !== ObjectVersion) { 
             throw new Error(`Mission Json Data Version Mismatch.  Current version: ${ObjectVersion}.  Json version: ${jsonData._v}`);
         }
-        const mission = new Mission(jsonData.id, jsonData.name);
+        const mission = new Mission(jsonData.id, jsonData.campaignId, jsonData.name);
         mission.missionState = jsonData.missionState;
         mission.creatorId = jsonData.creatorId;
         mission.pastBattleIds = jsonData.pastBattleIds;

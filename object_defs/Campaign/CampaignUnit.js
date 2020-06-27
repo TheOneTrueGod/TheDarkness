@@ -1,10 +1,13 @@
+import MissionUnit from "./Mission/MissionUnit.js";
+
 const ObjectVersion = 1;
 
 class CampaignUnit {
-    constructor(ownerId, unitId, unitName) {
+    constructor(ownerId, unitId, unitName, ownerName) {
         this.ownerId = ownerId;
         this.unitId = unitId;
         this.unitName = unitName;
+        this.ownerName = ownerName;
     }
 
     static fromJSONObject(jsonData) {
@@ -19,9 +22,14 @@ class CampaignUnit {
         return {
             _v: ObjectVersion,
             ownerId: this.ownerId,
+            ownerName: this.ownerName,
             unitId: this.unitId,
             unitName: this.unitName
         };
+    }
+    
+    makeMissionUnit() {
+        return new MissionUnit(this.ownerId, this.unitId, this.unitName, this.ownerName);
     }
 };
 

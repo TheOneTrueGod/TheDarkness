@@ -5,7 +5,8 @@ export function CreateInitialUnits(campaign, user) {
         new CampaignUnit(
             user.id,
             campaign.unitIndex,
-            `${user.name} - ${campaign.unitIndex}`
+            `${user.name} - ${campaign.unitIndex}`,
+            `${user.name}`
         )
     );
 
@@ -13,7 +14,8 @@ export function CreateInitialUnits(campaign, user) {
         new CampaignUnit(
             user.id,
             campaign.unitIndex,
-            `${user.name} - ${campaign.unitIndex}`
+            `${user.name} - ${campaign.unitIndex}`,
+            `${user.name}`
         )
     );
 }
