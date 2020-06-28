@@ -46,8 +46,12 @@ function updateAllCampaignIds(campaignIdList) {
 }
 
 /* missions */
+function getFolderForMissionId(campaignId, missionId) {
+    return `${getFolderForCampaignId(campaignId)}/mission${missionId}/`;
+}
+
 function getFilenameForMission(campaignId, missionId) {
-    return `${getFolderForCampaignId(campaignId)}/mission${missionId}.txt`;
+    return `${getFolderForMissionId(campaignId, missionId)}/mission.txt`;
 }
 
 function loadMission(campaignId, missionId) {
@@ -60,7 +64,6 @@ function loadMission(campaignId, missionId) {
 
 function saveMission(mission) {
     const json = mission.toJSONObject();
-    console.log(getFilenameForMission(mission.campaignId, mission.id));
     saveDataToFile(
         getFilenameForMission(mission.campaignId, mission.id),
         JSON.stringify(json)

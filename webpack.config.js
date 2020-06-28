@@ -48,11 +48,11 @@ module.exports = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
-        'prop-types': {
+        /*'prop-types': {
             root: 'PropTypes',
             commonjs2: 'prop-types',
             commonjs: 'prop-types',
             amd: 'prop-types',
-        }
+        }*/
     }
 };

@@ -20,11 +20,16 @@ type MakeCallFunctionType = (
     data: object,
 ) => Promise<void>;
 
+type SetNetworkObjectFunctionType<T extends NetworkableObject> = (
+    networkObject: T,
+) => void;
+
 type NetworkObjectTransformerFunc<T extends NetworkableObject> = (responseData: NetworkableJSONObject) => T;
 
 type CreateAPICallableType<T extends NetworkableObject> = {
     apiCallableState: IAPICaller<T>,
     makeCall: MakeCallFunctionType,
+    setNetworkObject: SetNetworkObjectFunctionType<T>,
 };
 
 export function CreateAPICallableState<T extends NetworkableObject>(
@@ -52,7 +57,15 @@ export function CreateAPICallableState<T extends NetworkableObject>(
             });
     }
 
-    return { apiCallableState, makeCall }
+    let setNetworkObject: SetNetworkObjectFunctionType<T> = (networkObject: T): void => {
+        setAPICallableState({
+            isLoading: apiCallableState.isLoading,
+            error: apiCallableState.error,
+            networkObject
+        });
+    }
+
+    return { apiCallableState, makeCall, setNetworkObject }
 }
 
 // Intended to be used like this;

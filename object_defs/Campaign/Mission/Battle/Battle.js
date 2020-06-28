@@ -30,7 +30,6 @@ class Battle {
     toJSONObject() {
         return {
             _v: ObjectVersion,
-            ...x,
             id: this.id,
             campaignId: this.campaignId,
             missionId: this.missionId,

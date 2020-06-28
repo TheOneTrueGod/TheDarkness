@@ -14,10 +14,17 @@ class Mission {
         this.campaignId = campaignId;
         this.missionState = 'planning';
         this.creatorId = creatorId;
-        this.pastBattleIds = [];
-        this.activeBattleId = 0;
+        this.events = [];
         this.battleIndex = 1;
+
         this.unitList = [];
+        this.caravan = {
+            unitSlots: 4,
+            unitList: [],
+
+            cargoList: [],
+            weightLimit: 20,
+        }
     }
 
     static fromJSONObject(jsonData) {
@@ -27,25 +34,50 @@ class Mission {
         const mission = new Mission(jsonData.id, jsonData.campaignId, jsonData.name);
         mission.missionState = jsonData.missionState;
         mission.creatorId = jsonData.creatorId;
-        mission.pastBattleIds = jsonData.pastBattleIds;
-        mission.activeBattleId = jsonData.activeBattleId;
+        mission.events = jsonData.events;
+
+        const caravan = jsonData.caravan;
+        mission.caravan = {
+            unitSlots: caravan.unitSlots,
+            unitList: caravan.unitList.map((missionUnit) => { return MissionUnit.fromJSONObject(missionUnit); }),
+
+            cargoList: caravan.cargoList,
+            weightLimit: caravan.weightLimit,
+        }
+
+        mission.events = jsonData.events;
+        mission.currentEvent = jsonData.currentEvent;
         mission.battleIndex = jsonData.battleIndex;
-        mission.unitList = jsonData.unitList.map((missionUnit) => { return MissionUnit.fromJSONObject(missionUnit); })
         return mission;
     }
 
-    toJSONObject() {
-        return {
+    toJSONObject(includeAllEvents = true) {
+        const jsonObject = {
             _v: ObjectVersion,
             id: this.id,
             campaignId: this.campaignId,
             missionState: this.missionState,
             creatorId: this.creatorId,
-            pastBattleIds: this.pastBattleIds,
-            activeBattleId: this.activeBattleId,
+            events: this.events,
             battleIndex: this.battleIndex,
-            unitList: this.unitList.map((missionUnit) => missionUnit.toJSONObject())
+            
+            caravan: {
+                unitSlots: this.caravan.unitSlots,
+                unitList: this.caravan.unitList.map((missionUnit) => missionUnit.toJSONObject()),
+
+                cargoList: this.caravan.cargoList,
+                weightLimit: this.caravan.weightLimit,
+            }
         };
+
+        if (includeAllEvents) {
+            jsonObject.events = this.events;
+        } else {
+            jsonObject.events = [];
+            jsonObject.currentEvent = this.events.length ? this.events[this.events.length - 1] : undefined;
+        }
+
+        return jsonObject;
     }
 };
 
