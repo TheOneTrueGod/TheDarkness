@@ -38,7 +38,7 @@ export default function BattleView ({ campaign, mission, battleId, user } : Batt
     const battle = battleData.networkObject;
     return (
         <>
-            <GameContainer />
+            <GameContainer battle={battle} />
         </>
     );
 };
