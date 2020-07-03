@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import BattleMap from "../../../object_defs/Campaign/Mission/Battle/BattleMap.js";
-import Constants from "../Constants";
+import BattleConstants from "../BattleConstants";
 import { SpriteList } from "../SpriteUtils";
 import { TileCoord } from '../BattleTypes.js';
 
@@ -29,9 +29,9 @@ export function renderBattleMap(
     terrainContainer: PIXI.Sprite,
     pixiLoader: PIXI.Loader,
 ) {
-    const { x: tileSizeX, y: tileSizeY } = Constants.getTileSize();
-
+    const { x: tileSizeX, y: tileSizeY } = BattleConstants.getTileSize();
     const { x: mapSizeX, y: mapSizeY } = getMapSize(battleMap);
+
     for (let x = 0; x < mapSizeX; x++) {
         for (let y = 0; y < mapSizeY; y++) {
             const terrainSprite = getTerrainSprite(
@@ -47,17 +47,6 @@ export function renderBattleMap(
             );
         }
     }
-
-    let renderer = PIXI.autoDetectRenderer();
-    let sprite = PIXI.Sprite.from("spinObj_01.png");
-
-    sprite.position.x = 800/2;
-    sprite.position.y = 600/2;
-    sprite.anchor.x = 0.5;
-    sprite.anchor.y = 0.5;
-
-
-    //renderer.render(sprite, terrainContainer);
 };
 
 export function getBattleMapTileSize(battleMap: BattleMap) {

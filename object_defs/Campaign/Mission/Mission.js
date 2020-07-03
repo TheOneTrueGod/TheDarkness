@@ -17,7 +17,6 @@ class Mission {
         this.events = [];
         this.battleIndex = 1;
 
-        this.unitList = [];
         this.caravan = {
             unitSlots: 4,
             unitList: [],
