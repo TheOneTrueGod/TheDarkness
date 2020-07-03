@@ -20,6 +20,7 @@ app.get(
   [
     '/dist/*',
     '/public/*',
+    '/assets/*',
     '/node_modules/*',
     '/favicon.ico'
   ], (req, res) => {

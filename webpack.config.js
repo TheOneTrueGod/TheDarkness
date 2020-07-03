@@ -48,6 +48,7 @@ module.exports = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",
+        "pixi.js": "PIXI",
         /*'prop-types': {
             root: 'PropTypes',
             commonjs2: 'prop-types',

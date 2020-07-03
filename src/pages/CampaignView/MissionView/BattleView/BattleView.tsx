@@ -4,6 +4,7 @@ import Battle, { BattleJSONObject } from '../../../../../object_defs/Campaign/Mi
 import { CreateAPICallableState } from '../../../../components/APICallableState'
 import Campaign from '../../../../../object_defs/Campaign/Campaign.js';
 import Mission from '../../../../../object_defs/Campaign/Mission/Mission.js';
+import GameContainer from '../../../../battle/GameContainer';
 
 export type BattleViewProps = {
     user: User;
@@ -37,7 +38,7 @@ export default function BattleView ({ campaign, mission, battleId, user } : Batt
     const battle = battleData.networkObject;
     return (
         <>
-            
+            <GameContainer />
         </>
     );
 };

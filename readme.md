@@ -13,4 +13,4 @@ Run `npm run-script build` in order to rebuild.
 # Tools I'm using
 React Components: https://react-bootstrap.github.io/components/alerts
 React Game Kit: https://github.com/FormidableLabs/react-game-kit
-  (A maybe tutorial here: https://formidable.com/blog/2016/09/15/introducing-react-game-kit/)
+  (A maybe tutorial here: https://formidable.com/blog/2016/09/15/introducing-react-game-kit/p)
