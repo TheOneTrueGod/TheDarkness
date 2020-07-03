@@ -12,6 +12,8 @@ class Battle {
         this.battleMap = initialize ? new BattleMap() : null;
         this.unitList = [];
         this.initiativeNumber = 0;
+
+        this.caravanPosition = { x: 5, y: 5 };
     }
 
     static fromJSONObject(jsonData) {
@@ -24,6 +26,7 @@ class Battle {
             BattleUnit.fromJSONObject(unitJSONData)
         );
         battle.initiativeNumber = jsonData.initiativeNumber;
+        battle.caravanPosition = jsonData.caravanPosition;
         return battle;
     }
 
@@ -36,6 +39,7 @@ class Battle {
 
             battleMap: this.battleMap.toJSONObject(),
             unitList: this.unitList.map(unit => unit.toJSONObject() ),
+            caravanPosition: this.caravanPosition,
             initiativeNumber: this.initiativeNumber
         };
     }

@@ -4,7 +4,9 @@ import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import { renderBattleMap } from '../battle/BattleMap/Terrain';
 import { SpriteList } from './SpriteUtils';
 import BattleUnit from './BattleUnits/BattleUnit';
+import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
+import UnitManager from './Managers/UnitManager';
 
 export type GameContainerProps = {
     battle: Battle,
@@ -22,7 +24,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         terrain: PIXI.Sprite,
         units: PIXI.Container,
     };
-    unitList: Array<BattleUnit>;
+    unitManager: UnitManager;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -35,7 +37,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             terrain: new PIXI.Sprite(),
             units: new PIXI.Container(),
         };
-        this.unitList = [];
+        this.unitManager = new UnitManager();
     }
 
     // Step 1 -- container mounted
@@ -48,8 +50,10 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
     // Step 2 -- load assets
     preLoad = () => {
-        this.pixiLoader.add(SpriteList.BROADSWORD, '/assets/broadsword.png')
-        this.pixiLoader.add(SpriteList.TERRAIN, '/assets/terrain.png')
+        this.pixiLoader
+            .add(SpriteList.BROADSWORD, '/assets/broadsword.png')
+            .add(SpriteList.CARAVAN, '/assets/old-wagon.png')
+            .add(SpriteList.TERRAIN, '/assets/terrain.png')
             .load(this.initialize);
      };
 
@@ -62,12 +66,22 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
 
+        const caravanUnit = new CaravanUnit(battle.caravanPosition);
+        this.addBattleUnit(caravanUnit);
+
         for (let i = 0; i < mission.caravan.unitList.length; i++) {
             const missionUnit = mission.caravan.unitList[i];
-            const battleUnit = BattleUnit.fromMissionUnit(missionUnit, i);
-            this.unitList.push(battleUnit)
-            this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
+            const battleUnit = BattleUnit.fromMissionUnit(missionUnit, {
+                x: battle.caravanPosition.x - 1 + i,
+                y: battle.caravanPosition.y + 2,
+            });
+            this.addBattleUnit(battleUnit);
         }
+    }
+
+    addBattleUnit(battleUnit: BattleUnit) {
+        this.unitManager.addBattleUnit(battleUnit);
+        this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
     }
 
     render() {

@@ -1,10 +1,12 @@
 import { NetworkableJSONObject, NetworkableObject } from "../../../NetworkableObject";
 import BattleMap, { BattleMapJSONObject } from "./BattleMap";
+import { TileCoord } from "../../../../src/battle/BattleTypes";
 
 declare class BattleInterface {
     readonly id: number;
     readonly campaignId: number;
     readonly missionId: number;
+    caravanPosition: TileCoord;
 }
 
 export interface BattleJSONObject extends BattleInterface, NetworkableJSONObject {

@@ -5,7 +5,7 @@ import { SpriteList } from "../SpriteUtils";
 import { TileCoord } from '../BattleTypes.js';
 
 function getMapSize(battleMap: BattleMap): TileCoord {
-    return { x: 80, y: 60 };
+    return { x: battleMap.mapSize.x, y: battleMap.mapSize.y };
 }
 
 function getTerrainSprite(terrainTexture: PIXI.Texture, terrainType: number): PIXI.Sprite {

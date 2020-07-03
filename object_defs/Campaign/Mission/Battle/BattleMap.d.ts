@@ -1,9 +1,12 @@
 import { NetworkableJSONObject, NetworkableObject } from "../../../NetworkableObject";
+import { TileCoord } from "../../../../src/battle/BattleTypes";
 
 declare class BattleMapInterface {
+    mapSize: TileCoord
 }
 
-export interface BattleMapJSONObject extends BattleMapInterface, NetworkableJSONObject {}
+export interface BattleMapJSONObject extends BattleMapInterface, NetworkableJSONObject {
+}
 
 declare class BattleMap extends BattleMapInterface implements NetworkableObject {
     constructor();

@@ -7,19 +7,27 @@ export default class BattleUnit {
     sprite: PIXI.Sprite | null;
     position: TileCoord;
 
-    constructor(tempIndex: number) {
+    constructor(position: TileCoord) {
         this.sprite = null;
-        this.position = { x: 2 + tempIndex * 2, y: 2 };
+        this.position = { x: position.x, y: position.y };
     }
 
-    static fromMissionUnit(missionUnit: MissionUnit, tempIndex: number) {
-        return new BattleUnit(tempIndex);
+    static fromMissionUnit(missionUnit: MissionUnit, position: TileCoord) {
+        return new BattleUnit(position);
+    }
+
+    getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
+        return pixiLoader.resources[SpriteList.BROADSWORD].texture;
+    }
+
+    getUnitSize(): TileCoord {
+        return { x: 1, y: 1 };
     }
 
     getSprite(pixiLoader: PIXI.Loader) {
         if (this.sprite) { return this.sprite; }
 
-        const spriteTexture = pixiLoader.resources[SpriteList.BROADSWORD].texture;
+        const spriteTexture = this.getSpriteTexture(pixiLoader);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
         const tileSize = BattleConstants.getTileSize();
@@ -27,8 +35,9 @@ export default class BattleUnit {
         this.sprite.position.x = this.position.x * tileSize.x;
         this.sprite.position.y = this.position.y * tileSize.y;
 
-        this.sprite.width = tileSize.x;
-        this.sprite.height = tileSize.y;
+        const unitSize = this.getUnitSize();
+        this.sprite.width = tileSize.x * unitSize.x;
+        this.sprite.height = tileSize.y * unitSize.y;
 
         return this.sprite;
     }
