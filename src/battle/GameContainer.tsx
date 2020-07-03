@@ -64,7 +64,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         for (let i = 0; i < mission.caravan.unitList.length; i++) {
             const missionUnit = mission.caravan.unitList[i];
-            console.log(i);
             const battleUnit = BattleUnit.fromMissionUnit(missionUnit, i);
             this.unitList.push(battleUnit)
             this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
