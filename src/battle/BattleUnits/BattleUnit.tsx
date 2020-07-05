@@ -1,10 +1,11 @@
 import MissionUnit from "../../../object_defs/Campaign/Mission/MissionUnit.js";
 import { SpriteList } from "../SpriteUtils";
 import { TileCoord, UnitOwner } from "../BattleTypes";
-import BattleConstants from "../BattleConstants";
+import { getTileSize } from "../BattleConstants";
 
 interface SpriteDecorations {
-    readyForAction: PIXI.Sprite | null
+    readyForAction: PIXI.Sprite | null,
+    selected: PIXI.Sprite | null,
 };
 
 export default class BattleUnit {
@@ -21,7 +22,8 @@ export default class BattleUnit {
         this.initiativeNumber = 0;
         this.owner = owner;
         this.spriteDecorations = {
-            readyForAction: null
+            readyForAction: null,
+            selected: null,
         };
     }
 
@@ -43,7 +45,7 @@ export default class BattleUnit {
         const spriteTexture = this.getSpriteTexture(pixiLoader);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
-        const tileSize = BattleConstants.getTileSize();
+        const tileSize = getTileSize();
         
         this.sprite.position.x = this.position.x * tileSize.x;
         this.sprite.position.y = this.position.y * tileSize.y;
@@ -61,6 +63,9 @@ export default class BattleUnit {
     createSpriteDecorations(sprite: PIXI.Sprite) {
         this.spriteDecorations.readyForAction = this.createReadyForActionSprite(sprite.width, sprite.height);
         sprite.addChild(this.spriteDecorations.readyForAction);
+
+        this.spriteDecorations.selected = this.createSelectedSprite(sprite.width, sprite.height);
+        sprite.addChild(this.spriteDecorations.selected);
     }
 
     createReadyForActionSprite(width: number, height: number): PIXI.Sprite {
@@ -73,7 +78,21 @@ export default class BattleUnit {
         return RFASprite;
     }
 
+    createSelectedSprite(width: number, height: number): PIXI.Sprite {
+        const RFASprite = new PIXI.Sprite();
+        var graphics = new PIXI.Graphics();
+        graphics.lineStyle(4, 0xFFFFFF);
+        graphics.drawRect(0, 0, width, height);
+        RFASprite.addChild(graphics);
+        RFASprite.visible = false;
+        return RFASprite;
+    }
+
     setShowReadyForAction(ready: boolean) {
         this.spriteDecorations.readyForAction.visible = ready;
+    }
+
+    setSelected(selected: boolean) {
+        this.spriteDecorations.selected.visible = selected;
     }
 };

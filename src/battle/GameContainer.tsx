@@ -7,7 +7,8 @@ import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
 import AssetLoader from './Managers/AssetLoader';
 import { OWNER_PLAYERS, UnitOwner } from './BattleTypes';
-import { getCurrentTurn } from "./BattleHelpers";
+import { getCurrentTurn, createInitialBattleUnits } from "./BattleHelpers";
+import InteractionHandler from "./Managers/InteractionHandler";
 
 export type GameContainerProps = {
     battle: Battle,
@@ -26,7 +27,9 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         units: PIXI.Container,
     };
     unitManager: UnitManager;
+    interactionHandler: InteractionHandler;
     currentTurn: UnitOwner;
+    selectedUnit: BattleUnit;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -40,6 +43,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             units: new PIXI.Container(),
         };
         this.unitManager = new UnitManager();
+        this.interactionHandler = new InteractionHandler(this.unitManager);
         this.currentTurn = null;
     }
 
@@ -60,28 +64,28 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.pixiApp.stage.addChild(this.renderContainers.units);
 
         renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
+        createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
-        const caravanUnit = new CaravanUnit(battle.unitIndex ++, OWNER_PLAYERS, battle.caravanPosition);
-        this.addBattleUnit(caravanUnit);
-
-        for (let i = 0; i < mission.caravan.unitList.length; i++) {
-            const missionUnit = mission.caravan.unitList[i];
-            const battleUnit = BattleUnit.fromMissionUnit(
-                battle.unitIndex ++,
-                missionUnit,
-                {
-                    x: battle.caravanPosition.x - 1 + i,
-                    y: battle.caravanPosition.y + 2,
-                }
-            );
-            this.addBattleUnit(battleUnit);
-        }
-
-        this.currentTurn = getCurrentTurn(battle.initiativeNumber, this.unitManager.unitList);
-        this.unitManager.updateCurrentTurn(this.currentTurn);
+        this.interactionHandler.addEventListeners(this.pixiApp.stage, this.updateSelectedUnit);
+        this.updateCurrentTurn();
     }
 
-    addBattleUnit(battleUnit: BattleUnit) {
+    updateCurrentTurn() {
+        const previousTurn = this.currentTurn;
+        const { battle } = this.props;
+        this.currentTurn = getCurrentTurn(battle.initiativeNumber, this.unitManager.unitList);
+        if (previousTurn !== this.currentTurn) {
+            this.unitManager.updateCurrentTurn(this.currentTurn);
+        }
+    }
+
+    updateSelectedUnit = (selectedUnit: BattleUnit) => {
+        this.selectedUnit && this.selectedUnit.setSelected(false);
+        this.selectedUnit = selectedUnit;
+        this.selectedUnit.setSelected(true);
+    }
+
+    addBattleUnit = (battleUnit: BattleUnit) => {
         this.unitManager.addBattleUnit(battleUnit);
         this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
     }
