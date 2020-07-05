@@ -10,6 +10,7 @@ class Battle {
         this.missionId = missionId;
 
         this.battleMap = initialize ? new BattleMap() : null;
+        this.unitIndex = 1;
         this.unitList = [];
         this.initiativeNumber = 0;
 
@@ -27,6 +28,7 @@ class Battle {
         );
         battle.initiativeNumber = jsonData.initiativeNumber;
         battle.caravanPosition = jsonData.caravanPosition;
+        battle.unitIndex = jsonData.unitIndex;
         return battle;
     }
 
@@ -40,7 +42,8 @@ class Battle {
             battleMap: this.battleMap.toJSONObject(),
             unitList: this.unitList.map(unit => unit.toJSONObject() ),
             caravanPosition: this.caravanPosition,
-            initiativeNumber: this.initiativeNumber
+            initiativeNumber: this.initiativeNumber,
+            unitIndex: this.unitIndex,
         };
     }
 };

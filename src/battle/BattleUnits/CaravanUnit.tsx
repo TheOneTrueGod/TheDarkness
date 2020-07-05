@@ -1,10 +1,10 @@
 import BattleUnit from "./BattleUnit";
 import { SpriteList } from "../SpriteUtils";
-import { TileCoord } from "../BattleTypes";
+import { TileCoord, UnitOwner } from "../BattleTypes";
 
 export default class CaravanUnit extends BattleUnit {
-    constructor(position: TileCoord) {
-        super(position);
+    constructor(id: number, owner: UnitOwner, position: TileCoord) {
+        super(id, owner, position);
     }
 
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {

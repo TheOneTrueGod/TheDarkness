@@ -1,12 +1,13 @@
-import * as PIXI from 'pixi.js';
 import React from 'react';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import { renderBattleMap } from '../battle/BattleMap/Terrain';
-import { SpriteList } from './SpriteUtils';
 import BattleUnit from './BattleUnits/BattleUnit';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
+import AssetLoader from './Managers/AssetLoader';
+import { OWNER_PLAYERS, UnitOwner } from './BattleTypes';
+import { getCurrentTurn } from "./BattleHelpers";
 
 export type GameContainerProps = {
     battle: Battle,
@@ -25,6 +26,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         units: PIXI.Container,
     };
     unitManager: UnitManager;
+    currentTurn: UnitOwner;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -38,6 +40,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             units: new PIXI.Container(),
         };
         this.unitManager = new UnitManager();
+        this.currentTurn = null;
     }
 
     // Step 1 -- container mounted
@@ -45,19 +48,11 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.pixiContainer = element;
         if(this.pixiContainer && this.pixiContainer.children.length<=0) {
             this.pixiContainer.appendChild(this.pixiApp.view);
-            this.preLoad();
+            AssetLoader.preLoad(this.pixiLoader, this.initialize);
         }
     }
-    // Step 2 -- load assets
-    preLoad = () => {
-        this.pixiLoader
-            .add(SpriteList.BROADSWORD, '/assets/broadsword.png')
-            .add(SpriteList.CARAVAN, '/assets/old-wagon.png')
-            .add(SpriteList.TERRAIN, '/assets/terrain.png')
-            .load(this.initialize);
-     };
 
-     // Step 3 -- initialize the stage
+     // Step 2 -- initialize the stage
     initialize = () => {
         const { battle, mission } = this.props;
 
@@ -66,17 +61,24 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
 
-        const caravanUnit = new CaravanUnit(battle.caravanPosition);
+        const caravanUnit = new CaravanUnit(battle.unitIndex ++, OWNER_PLAYERS, battle.caravanPosition);
         this.addBattleUnit(caravanUnit);
 
         for (let i = 0; i < mission.caravan.unitList.length; i++) {
             const missionUnit = mission.caravan.unitList[i];
-            const battleUnit = BattleUnit.fromMissionUnit(missionUnit, {
-                x: battle.caravanPosition.x - 1 + i,
-                y: battle.caravanPosition.y + 2,
-            });
+            const battleUnit = BattleUnit.fromMissionUnit(
+                battle.unitIndex ++,
+                missionUnit,
+                {
+                    x: battle.caravanPosition.x - 1 + i,
+                    y: battle.caravanPosition.y + 2,
+                }
+            );
             this.addBattleUnit(battleUnit);
         }
+
+        this.currentTurn = getCurrentTurn(battle.initiativeNumber, this.unitManager.unitList);
+        this.unitManager.updateCurrentTurn(this.currentTurn);
     }
 
     addBattleUnit(battleUnit: BattleUnit) {

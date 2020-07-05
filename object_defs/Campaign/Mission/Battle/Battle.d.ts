@@ -7,6 +7,8 @@ declare class BattleInterface {
     readonly campaignId: number;
     readonly missionId: number;
     caravanPosition: TileCoord;
+    unitIndex: number;
+    initiativeNumber: number;
 }
 
 export interface BattleJSONObject extends BattleInterface, NetworkableJSONObject {
