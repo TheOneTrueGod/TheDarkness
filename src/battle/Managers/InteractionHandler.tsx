@@ -1,7 +1,7 @@
-import { positionToTileCoord } from "../BattleHelpers";
+import { positionToTileCoord, getCardinalDirectionFromAngle } from "../BattleHelpers";
 import UnitManager from "./UnitManager";
 import BattleUnit from "../BattleUnits/BattleUnit";
-import { TileCoord } from "../BattleTypes";
+import { TileCoord, CardinalDirection } from "../BattleTypes";
 import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
 
@@ -46,8 +46,25 @@ export default class InteractionHandler {
                     this.clickOnTerrain(tileCoord);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
-                if (this.selectedUnit !== null) {
-                    issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.MOVE, tileCoord));
+                if (this.selectedUnit !== null && (
+                    tileCoord.x !== this.selectedUnit.tileCoord.x ||
+                    tileCoord.y !== this.selectedUnit.tileCoord.y
+                )) {
+                    const angle = Math.atan2(
+                        tileCoord.y - this.selectedUnit.tileCoord.y,
+                        tileCoord.x - this.selectedUnit.tileCoord.x
+                    );
+                    const direction = getCardinalDirectionFromAngle(angle);
+                    
+                    const targetCoord = {
+                        x: this.selectedUnit.tileCoord.x
+                            + (direction === CardinalDirection.WEST ? -1 : 0)
+                            + (direction === CardinalDirection.EAST ? 1 : 0),
+                        y: this.selectedUnit.tileCoord.y
+                            + (direction === CardinalDirection.NORTH ? -1 : 0)
+                            + (direction === CardinalDirection.SOUTH ? 1 : 0),
+                    };
+                    issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.MOVE, targetCoord));
                 }
             }
 

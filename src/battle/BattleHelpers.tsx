@@ -1,5 +1,5 @@
 import BattleUnit from './BattleUnits/BattleUnit';
-import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition } from './BattleTypes';
+import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition, CardinalDirection } from './BattleTypes';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
@@ -57,4 +57,20 @@ export function createInitialBattleUnits(
         );
         addBattleUnit(battleUnit);
     }
+}
+
+export function getCardinalDirectionFromAngle(angle: number): CardinalDirection {
+    if (-Math.PI * 3.0 / 4.0 < angle && angle <= -Math.PI * 1.0 / 4.0) {
+        return CardinalDirection.NORTH;
+    }
+
+    if (-Math.PI * 1.0 / 4.0 < angle && angle <= Math.PI * 1.0 / 4.0) {
+        return CardinalDirection.EAST;
+    }
+
+    if (Math.PI * 1.0 / 4.0 < angle && angle <= Math.PI * 3.0 / 4.0) {
+        return CardinalDirection.SOUTH;
+    }
+
+    return CardinalDirection.WEST;
 }

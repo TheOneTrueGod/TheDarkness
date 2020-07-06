@@ -54,8 +54,6 @@ export default class UnitManager {
     
     getUnitAtTileCoord(tileCoord: TileCoord): BattleUnit | null {
         const tileNumber = tileCoordToInteger(tileCoord);
-        console.log(tileNumber);
-        console.log(this.unitsByPosition);
         const unit = this.unitsByPosition[tileNumber];
         return unit || null;
     }
