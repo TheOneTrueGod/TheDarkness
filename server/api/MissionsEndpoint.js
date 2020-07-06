@@ -1,4 +1,4 @@
-import Mission, { MissionState } from "../../object_defs/Campaign/Mission/Mission.js";
+import Mission from "../../object_defs/Campaign/Mission/Mission.js";
 import Campaign from "../../object_defs/Campaign/Campaign.js";
 import { loadMission, saveCampaign, saveMission, loadCampaign } from "../datastore/datastore.js";
 import { setupAsActive } from "../helpers/MissionHelpers.js";

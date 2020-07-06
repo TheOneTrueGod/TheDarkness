@@ -1,5 +1,4 @@
 import BattleMap from "./BattleMap.js";
-import BattleUnit from "./BattleUnit.js";
 
 const ObjectVersion = 1;
 
@@ -24,7 +23,7 @@ class Battle {
         const battle = new Battle(jsonData.id, jsonData.campaignId, jsonData.missionId, false);
         battle.battleMap = BattleMap.fromJSONObject(jsonData.battleMap);
         battle.unitList = jsonData.unitList.map(unitJSONData =>
-            BattleUnit.fromJSONObject(unitJSONData)
+            null
         );
         battle.initiativeNumber = jsonData.initiativeNumber;
         battle.caravanPosition = jsonData.caravanPosition;

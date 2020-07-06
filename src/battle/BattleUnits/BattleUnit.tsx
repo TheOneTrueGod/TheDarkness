@@ -2,6 +2,7 @@ import MissionUnit from "../../../object_defs/Campaign/Mission/MissionUnit.js";
 import { SpriteList } from "../SpriteUtils";
 import { TileCoord, UnitOwner } from "../BattleTypes";
 import { getTileSize } from "../BattleConstants";
+import { tileCoordToPosition } from "../BattleHelpers";
 
 interface SpriteDecorations {
     readyForAction: PIXI.Sprite | null,
@@ -10,14 +11,14 @@ interface SpriteDecorations {
 
 export default class BattleUnit {
     sprite: PIXI.Sprite | null = null;
-    position: TileCoord;
+    tileCoord: TileCoord;
     id: number;
     initiativeNumber: number;
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
 
-    constructor(id: number, owner: UnitOwner, position: TileCoord) {
-        this.position = { x: position.x, y: position.y };
+    constructor(id: number, owner: UnitOwner, tileCoord: TileCoord) {
+        this.tileCoord = { x: tileCoord.x, y: tileCoord.y };
         this.id = id;
         this.initiativeNumber = 0;
         this.owner = owner;
@@ -27,8 +28,15 @@ export default class BattleUnit {
         };
     }
 
-    static fromMissionUnit(id: number, missionUnit: MissionUnit, position: TileCoord) {
-        return new BattleUnit(id, missionUnit.ownerId, position);
+    setTileCoord(tileCoord: TileCoord) {
+        const position = tileCoordToPosition(tileCoord);
+        this.tileCoord = tileCoord;
+        this.sprite.position.x = position.x;
+        this.sprite.position.y = position.y;
+    }
+
+    static fromMissionUnit(id: number, missionUnit: MissionUnit, tileCoord: TileCoord) {
+        return new BattleUnit(id, missionUnit.ownerId, tileCoord);
     }
 
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
@@ -47,8 +55,8 @@ export default class BattleUnit {
         this.sprite = new PIXI.Sprite(spriteTexture);
         const tileSize = getTileSize();
         
-        this.sprite.position.x = this.position.x * tileSize.x;
-        this.sprite.position.y = this.position.y * tileSize.y;
+        this.sprite.position.x = this.tileCoord.x * tileSize.x;
+        this.sprite.position.y = this.tileCoord.y * tileSize.y;
 
         const unitSize = this.getUnitSize();
         
@@ -71,8 +79,9 @@ export default class BattleUnit {
     createReadyForActionSprite(width: number, height: number): PIXI.Sprite {
         const RFASprite = new PIXI.Sprite();
         var graphics = new PIXI.Graphics();
-        graphics.lineStyle(2, 0x00FF00);
-        graphics.drawRect(0, 0, width, height);
+        const lineSize = 2;
+        graphics.lineStyle(lineSize, 0x00FF00);
+        graphics.drawRect(0, 0, width - lineSize, height - lineSize);
         RFASprite.addChild(graphics);
         RFASprite.visible = false;
         return RFASprite;
@@ -81,8 +90,9 @@ export default class BattleUnit {
     createSelectedSprite(width: number, height: number): PIXI.Sprite {
         const RFASprite = new PIXI.Sprite();
         var graphics = new PIXI.Graphics();
-        graphics.lineStyle(4, 0xFFFFFF);
-        graphics.drawRect(0, 0, width, height);
+        const lineSize = 4;
+        graphics.lineStyle(lineSize, 0xFFFFFF);
+        graphics.drawRect(0, 0, width - lineSize, height - lineSize);
         RFASprite.addChild(graphics);
         RFASprite.visible = false;
         return RFASprite;

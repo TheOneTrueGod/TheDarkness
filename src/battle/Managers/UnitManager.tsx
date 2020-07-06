@@ -1,6 +1,6 @@
 import BattleUnit from "../BattleUnits/BattleUnit";
 import { UnitOwner, TileCoord } from "../BattleTypes";
-import { tileCoordToInteger } from "../BattleHelpers";
+import { tileCoordToInteger, positionToTileCoord } from "../BattleHelpers";
 
 export default class UnitManager {
     unitList: Array<BattleUnit>;
@@ -20,18 +20,43 @@ export default class UnitManager {
         const unitSize = battleUnit.getUnitSize();
         for (let xOffset = 0; xOffset < unitSize.x; xOffset++) {
             for (let yOffset = 0; yOffset < unitSize.y; yOffset++) {
+                const tileCoord = battleUnit.tileCoord;
                 const positionNumber = tileCoordToInteger({
-                    x: battleUnit.position.x + xOffset,
-                    y: battleUnit.position.y + yOffset
+                    x: tileCoord.x + xOffset,
+                    y: tileCoord.y + yOffset
                 });
 
                 this.unitsByPosition[positionNumber] = battleUnit;
             }
         }
     }
+
+    removeUnitBattlePosition(battleUnit: BattleUnit) {
+        const unitSize = battleUnit.getUnitSize();
+        for (let xOffset = 0; xOffset < unitSize.x; xOffset++) {
+            for (let yOffset = 0; yOffset < unitSize.y; yOffset++) {
+                const tileCoord = battleUnit.tileCoord;
+                const positionNumber = tileCoordToInteger({
+                    x: tileCoord.x + xOffset,
+                    y: tileCoord.y + yOffset
+                });
+
+                delete this.unitsByPosition[positionNumber];
+            }
+        }
+    }
+
+    moveUnit(unit: BattleUnit, targetTile: TileCoord) {
+        this.removeUnitBattlePosition(unit);
+        unit.setTileCoord(targetTile);
+        this.setBattleUnitPosition(unit);
+    }
     
     getUnitAtTileCoord(tileCoord: TileCoord): BattleUnit | null {
-        const unit = this.unitsByPosition[tileCoordToInteger(tileCoord)];
+        const tileNumber = tileCoordToInteger(tileCoord);
+        console.log(tileNumber);
+        console.log(this.unitsByPosition);
+        const unit = this.unitsByPosition[tileNumber];
         return unit || null;
     }
 

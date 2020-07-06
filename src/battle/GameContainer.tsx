@@ -2,13 +2,14 @@ import React from 'react';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import { renderBattleMap } from '../battle/BattleMap/Terrain';
 import BattleUnit from './BattleUnits/BattleUnit';
-import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
+import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
-import { OWNER_PLAYERS, UnitOwner } from './BattleTypes';
+import { UnitOwner } from './BattleTypes';
 import { getCurrentTurn, createInitialBattleUnits } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
+import UnitOrder from './BattleUnits/UnitOrder';
 
 export type GameContainerProps = {
     battle: Battle,
@@ -28,6 +29,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     };
     unitManager: UnitManager;
     interactionHandler: InteractionHandler;
+    orderManager: OrderManager;
     currentTurn: UnitOwner;
     selectedUnit: BattleUnit;
 
@@ -43,6 +45,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             units: new PIXI.Container(),
         };
         this.unitManager = new UnitManager();
+        this.orderManager = new OrderManager();
         this.interactionHandler = new InteractionHandler(this.unitManager);
         this.currentTurn = null;
     }
@@ -66,8 +69,17 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
-        this.interactionHandler.addEventListeners(this.pixiApp.stage, this.updateSelectedUnit);
+        this.interactionHandler.addEventListeners(
+            this.pixiContainer,
+            this.updateSelectedUnit,
+            this.issueUnitOrder,
+        );
         this.updateCurrentTurn();
+    }
+
+    issueUnitOrder = (unitOrder: UnitOrder) => {
+        this.orderManager.addUnitOrder(unitOrder);
+        this.orderManager.playNextOrder(this.unitManager);
     }
 
     updateCurrentTurn() {

@@ -1,5 +1,5 @@
 import BattleUnit from './BattleUnits/BattleUnit';
-import { UnitOwner, TileCoord, OWNER_PLAYERS } from './BattleTypes';
+import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition } from './BattleTypes';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
@@ -12,7 +12,7 @@ export function getCurrentTurn(
     return unitList[1].owner;
 }
 
-export function positionToTileCoord(position: PIXI.Point): TileCoord {
+export function positionToTileCoord(position: GamePosition): TileCoord {
     const { x: tileSizeX, y: tileSizeY } = getTileSize();
     const tileCoord = { 
         x: Math.floor(position.x / tileSizeX),
@@ -20,6 +20,16 @@ export function positionToTileCoord(position: PIXI.Point): TileCoord {
     };
 
     return tileCoord;
+}
+
+export function tileCoordToPosition(tileCoord: TileCoord): GamePosition {
+    const { x: tileSizeX, y: tileSizeY } = getTileSize();
+    const gamePosition = { 
+        x: Math.floor(tileCoord.x * tileSizeX),
+        y: Math.floor(tileCoord.y * tileSizeY),
+    };
+
+    return gamePosition;
 }
 
 export function tileCoordToInteger(tileCoord: TileCoord): number {
