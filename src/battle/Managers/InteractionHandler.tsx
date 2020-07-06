@@ -1,6 +1,6 @@
 import { positionToTileCoord, getCardinalDirectionFromAngle } from "../BattleHelpers";
 import UnitManager from "./UnitManager";
-import BattleUnit from "../BattleUnits/BattleUnit";
+import BattleUnit, { AbilityPointType } from "../BattleUnits/BattleUnit";
 import { TileCoord, CardinalDirection } from "../BattleTypes";
 import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
@@ -46,7 +46,9 @@ export default class InteractionHandler {
                     this.clickOnTerrain(tileCoord);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
-                if (this.selectedUnit !== null && (
+                if (this.selectedUnit !== null && 
+                    this.selectedUnit.hasAbilityPoints(AbilityPointType.MOVEMENT, 1) &&
+                    (
                     tileCoord.x !== this.selectedUnit.tileCoord.x ||
                     tileCoord.y !== this.selectedUnit.tileCoord.y
                 )) {

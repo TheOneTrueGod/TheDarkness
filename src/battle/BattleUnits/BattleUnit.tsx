@@ -4,6 +4,11 @@ import { TileCoord, UnitOwner } from "../BattleTypes";
 import { getTileSize } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
 
+export enum AbilityPointType {
+    ACTION = 'action',
+    MOVEMENT = 'movement'
+};
+
 interface SpriteDecorations {
     readyForAction: PIXI.Sprite | null,
     selected: PIXI.Sprite | null,
@@ -13,19 +18,53 @@ export default class BattleUnit {
     sprite: PIXI.Sprite | null = null;
     tileCoord: TileCoord;
     id: number;
-    initiativeNumber: number;
+    initiativeNumber: number = 0;
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
+    abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
 
     constructor(id: number, owner: UnitOwner, tileCoord: TileCoord) {
         this.tileCoord = { x: tileCoord.x, y: tileCoord.y };
         this.id = id;
-        this.initiativeNumber = 0;
         this.owner = owner;
         this.spriteDecorations = {
             readyForAction: null,
             selected: null,
         };
+    }
+
+    getAbilityPoints() {
+        return {
+            action: {
+                used: this.abilityPointsUsed.action,
+                available: 4,
+            },
+            movement: {
+                used: this.abilityPointsUsed.movement,
+                available: 2,
+            }
+        }
+    }
+
+    useAbilityPoints(type: AbilityPointType, amount: number) {
+        if (type === AbilityPointType.MOVEMENT) {
+            this.abilityPointsUsed.movement += amount;
+        }
+        if (type === AbilityPointType.ACTION) {
+            this.abilityPointsUsed.action += amount;
+        }
+    }
+
+    hasAbilityPoints(type: AbilityPointType, amount: number): boolean {
+        if (type === AbilityPointType.MOVEMENT) {
+            const movementPoints = this.getAbilityPoints().movement;
+            return movementPoints.available - movementPoints.used >= amount;
+        }
+        if (type === AbilityPointType.ACTION) {
+            const actionPoints = this.getAbilityPoints().action;
+            return actionPoints.available - actionPoints.used >= amount;
+        }
+        return false;
     }
 
     setTileCoord(tileCoord: TileCoord) {

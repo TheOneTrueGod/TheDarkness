@@ -1,5 +1,5 @@
 import { TileCoord } from "../BattleTypes";
-import BattleUnit from "./BattleUnit";
+import BattleUnit, { AbilityPointType } from "./BattleUnit";
 import UnitManager from "../Managers/UnitManager";
 
 export enum OrderType {
@@ -21,6 +21,7 @@ export default class UnitOrder {
 
     playOutOrder(unitManager: UnitManager) {
         if (this.orderType === OrderType.MOVE) {
+            this.unit.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
             unitManager.moveUnit(this.unit, this.target);
         }
     }

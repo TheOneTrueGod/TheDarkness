@@ -86,6 +86,9 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     issueUnitOrder = (unitOrder: UnitOrder) => {
         this.orderManager.addUnitOrder(unitOrder);
         this.orderManager.playNextOrder(this.unitManager);
+        this.setState({
+            selectedUnit: this.state.selectedUnit
+        });
     }
 
     updateCurrentTurn() {
