@@ -5,6 +5,7 @@ import { getTileSize } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
 import BaseAbility from "../UnitAbilities/BaseAbility.js";
 import AbilityMap from "../UnitAbilities/AbilityMap";
+import { UnitDef, TempPlayerUnitDef } from "./UnitDef";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -20,13 +21,14 @@ export default class BattleUnit {
     sprite: PIXI.Sprite | null = null;
     tileCoord: TileCoord;
     id: number;
+    unitDef: UnitDef;
     initiativeNumber: number = 0;
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
-    readonly MOVEMENT_POINTS = 2;
 
-    constructor(id: number, owner: UnitOwner, tileCoord: TileCoord) {
+    constructor(unitDef: UnitDef, id: number, owner: UnitOwner, tileCoord: TileCoord) {
+        this.unitDef = unitDef;
         this.tileCoord = { x: tileCoord.x, y: tileCoord.y };
         this.id = id;
         this.owner = owner;
@@ -40,11 +42,11 @@ export default class BattleUnit {
         return {
             action: {
                 used: this.abilityPointsUsed.action,
-                available: 4,
+                available: this.unitDef.actionPoints,
             },
             movement: {
                 used: this.abilityPointsUsed.movement,
-                available: 2,
+                available: this.unitDef.movementPoints,
             }
         }
     }
@@ -86,15 +88,15 @@ export default class BattleUnit {
     }
 
     static fromMissionUnit(id: number, missionUnit: MissionUnit, tileCoord: TileCoord) {
-        return new BattleUnit(id, missionUnit.ownerId, tileCoord);
+        return new BattleUnit(TempPlayerUnitDef, id, missionUnit.ownerId, tileCoord);
     }
 
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
-        return pixiLoader.resources[SpriteList.BROADSWORD].texture;
+        return pixiLoader.resources[this.unitDef.image].texture;
     }
 
     getUnitSize(): TileCoord {
-        return { x: 1, y: 1 };
+        return { x: this.unitDef.size.x, y: this.unitDef.size.y };
     }
 
     getSprite(pixiLoader: PIXI.Loader) {

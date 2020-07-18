@@ -1,4 +1,3 @@
-import { TileCoord } from "../BattleTypes";
 import BattleUnit, { AbilityPointType } from "./BattleUnit";
 import UnitManager from "../Managers/UnitManager";
 import BaseAbility, { AbilityTarget } from "../UnitAbilities/BaseAbility";

@@ -4,6 +4,7 @@ import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import { getTileSize } from './BattleConstants';
+import { EnemyWolfUnitDef } from './BattleUnits/UnitDef';
 
 export function getNextTurn(
     initiativeNumber: number,
@@ -56,6 +57,19 @@ export function createInitialBattleUnits(
             }
         );
         addBattleUnit(battleUnit);
+    }
+
+    for (let i = 0; i < 5; i++) {
+        const enemyUnit = new BattleUnit(
+            EnemyWolfUnitDef,
+            battle.unitIndex ++,
+            'owner_minion',
+            { x: 8, y: 3 + i }
+        );
+
+        console.log(enemyUnit);
+
+        addBattleUnit(enemyUnit);
     }
 }
 
