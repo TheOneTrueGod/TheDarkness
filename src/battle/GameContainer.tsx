@@ -7,20 +7,24 @@ import UnitManager from './Managers/UnitManager';
 import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
 import { UnitOwner } from './BattleTypes';
-import { getCurrentTurn, createInitialBattleUnits } from "./BattleHelpers";
+import { getNextTurn, createInitialBattleUnits } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './UnitDetailsBanner';
+import BattleHeaderComponent from './BattleHeaderComponent';
+import User from '../../object_defs/User';
 
 const canvasSize = { width: 800, height: 600 };
 
 export type GameContainerProps = {
     battle: Battle,
     mission: Mission,
+    user: User,
 }
 
 export type GameContainerState = {
     selectedUnit: BattleUnit | null;
+    currentTurn: UnitOwner;
 }
 
 class GameContainer extends React.Component<GameContainerProps, GameContainerState> {
@@ -34,7 +38,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     unitManager: UnitManager;
     interactionHandler: InteractionHandler;
     orderManager: OrderManager;
-    currentTurn: UnitOwner;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -50,9 +53,8 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.unitManager = new UnitManager();
         this.orderManager = new OrderManager();
         this.interactionHandler = new InteractionHandler(this.unitManager);
-        this.currentTurn = null;
 
-        this.state = { selectedUnit: null };
+        this.state = { selectedUnit: null, currentTurn: null };
     }
 
     // Step 1 -- container mounted
@@ -91,13 +93,27 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         });
     }
 
+    onEndTurnClick() {
+        this.updateCurrentTurn();
+    }
+
     updateCurrentTurn() {
-        const previousTurn = this.currentTurn;
+        const { currentTurn } = this.state;
         const { battle } = this.props;
-        this.currentTurn = getCurrentTurn(battle.initiativeNumber, this.unitManager.unitList);
-        if (previousTurn !== this.currentTurn) {
-            this.unitManager.updateCurrentTurn(this.currentTurn);
+
+        const previousTurn = currentTurn;
+        const nextTurn = getNextTurn(
+            battle.initiativeNumber,
+            this.unitManager.unitList
+        );
+
+        if (previousTurn !== nextTurn) {
+            this.unitManager.updateCurrentTurn(nextTurn);
         }
+        
+        this.setState({
+            currentTurn: nextTurn
+        });
     }
 
     updateSelectedUnit = (selectedUnit: BattleUnit) => {
@@ -113,7 +129,8 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     render() {
-        const { selectedUnit } = this.state;
+        const { user } = this.props;
+        const { selectedUnit, currentTurn } = this.state;
         return (
             <div style={{
                 width: canvasSize.width,
@@ -121,10 +138,13 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                 position: 'absolute',
                 overflow: 'hidden',
             }}>
+                <BattleHeaderComponent
+                    user={user}
+                    currentTurn={currentTurn}
+                    onEndTurnClick={this.onEndTurnClick}
+                />
                 <div ref={this.updatePixiContainer} />
-                <UnitDetailsBanner selectedUnit={selectedUnit}>
-                    {selectedUnit ? selectedUnit.owner : 'no unit'}
-                </UnitDetailsBanner>
+                <UnitDetailsBanner selectedUnit={selectedUnit} />
             </div>
         )
     }

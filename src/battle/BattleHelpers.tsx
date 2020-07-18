@@ -5,7 +5,7 @@ import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import { getTileSize } from './BattleConstants';
 
-export function getCurrentTurn(
+export function getNextTurn(
     initiativeNumber: number,
     unitList: Array<BattleUnit>
 ): UnitOwner {
