@@ -5,6 +5,8 @@ Lightning
     If you go over the max, then you take a LOT of damage, but also deal damage around you.
 
     Design goals;  Make it difficult to get rid of charge so the user has to manage their skill use.
+    Possible strength;  Several 'staggering' effects that stop lock-on attacks.
+    Possible weakness;  Mostly single target
 
 Earth
 
@@ -22,3 +24,34 @@ Pain Transfer
     Reminder about healing goals;  whenever a unit takes damage, they lose max health as well as current health.
     It should be impossible to heal forever.
 
+Weapon Conjuror
+    Conjures weapons out of pure light.
+    Can either summon them onto the ground (where they do some effect, then lie there until picked up)
+    or summon them into someone's hands
+    They have a durability before they vanish
+    They have special effects that make them stronger than regular weapons
+
+Sorcerer
+    Most of its actions will be to prepare their spells.
+    Once their spells are prepared, they have huge effects.
+    Ideas to play around with;  Some charges need to be built up on certain terrain types (to force movement)
+    Maybe those charges need to be built in a certain order?
+    Also neutral charges that can be of any type
+
+<THEME UNKNOWN>
+    A character that builds charges on his opponents, and can detonate them for various effects.
+    Using different build paths, this could work for both a DPS character, and a bruiser-ey character.
+        (Bruisers can build charges when they take damage, or to all adjacent foes.)
+        (DPS can build them at range, and as a rider on other damaging abilities)
+    Possible detonate effects
+        Damage (boring, but effective)
+        Damage to all foes adjacent to the unit with charges, but not to that unit (less boring, but still kinda)
+        Banish / stun / pull / push (can do some interesting effects / combos with this)
+        Triggers on death (Spread charges to all nearby enemies?  Won't work if you kill them with a detonate effect, but can make for interesting teamwork)
+    Damage should be lower than average until detonate effects are taken into consideration.
+    Ability to build charges on self as well, in a sort of double-edged attack?
+
+Shadow Clones
+    Able to leave shadow clones.  Different abilities leave different weapons with the clones.
+    They basic attack things nearby every turn, and move 1 or 2 spaces to try and do so.
+    A few abilities interact with them.  Should enemies try to attack them?  Should that be an ability?

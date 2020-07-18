@@ -1,0 +1,23 @@
+Minions generally have 0 or 1 gimmicks, and are relatively easy to kill.
+They should be threatening in the early game (approximately as strong as one player), but fall off in the midgame
+Each should have a 'basic' and 'upgraded' version that they slowly shift to in the midgame
+
+Shadow beast
+no gimmick.  Just has health and melee attacks.
+Maybe give a single-use ranged attack for the upgraded version
+
+Wolf
+When it attacks someone, it locks on to them and prepares an attack for next turn.
+If it doesn't get interrupted, it will dash up to (4?) spaces to get to that target, and deal medium damage to them.
+
+Bat
+Deals low damage at melee range.
+Heals a bit of damage from ALL nearby shadow creatures
+
+Turtle
+Starts with a bit of armour.
+When it attacks someone, they lose 1 armour and it gains 1 armour.
+
+Light eater
+considers light sources its enemy also.  If a light source is closer to it than the players are,
+it will move towards that source, and reduce its radius each turn.  (Won't go for caravan)
