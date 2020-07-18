@@ -3,6 +3,8 @@ import { SpriteList } from "../SpriteUtils";
 import { TileCoord, UnitOwner } from "../BattleTypes";
 import { getTileSize } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
+import BaseAbility from "../UnitAbilities/BaseAbility.js";
+import AbilityMap from "../UnitAbilities/AbilityMap";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -22,6 +24,7 @@ export default class BattleUnit {
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
+    readonly MOVEMENT_POINTS = 2;
 
     constructor(id: number, owner: UnitOwner, tileCoord: TileCoord) {
         this.tileCoord = { x: tileCoord.x, y: tileCoord.y };
@@ -44,6 +47,14 @@ export default class BattleUnit {
                 available: 2,
             }
         }
+    }
+
+    getBasicMoveAbility(): BaseAbility {
+        return AbilityMap.BasicMove;
+    }
+
+    getBasicAttackAbility(): BaseAbility {
+        return AbilityMap.BasicMove;
     }
 
     useAbilityPoints(type: AbilityPointType, amount: number) {

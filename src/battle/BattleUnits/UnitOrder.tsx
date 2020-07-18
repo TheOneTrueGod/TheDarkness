@@ -1,28 +1,32 @@
 import { TileCoord } from "../BattleTypes";
 import BattleUnit, { AbilityPointType } from "./BattleUnit";
 import UnitManager from "../Managers/UnitManager";
+import BaseAbility, { AbilityTarget } from "../UnitAbilities/BaseAbility";
 
 export enum OrderType {
-    MOVE,
     USE_ABILITY,
     ENTER,
 }
 
 export default class UnitOrder {
     orderType: OrderType;
-    target: TileCoord;
+    ability?: BaseAbility;
+    targets: Array<AbilityTarget>;
     unit: BattleUnit;
 
-    constructor(unit: BattleUnit, orderType: OrderType, target: TileCoord) {
+    constructor(unit: BattleUnit, orderType: OrderType, targets: Array<AbilityTarget>, ability?: BaseAbility) {
         this.unit = unit;
         this.orderType = orderType;
-        this.target = target;
+        this.targets = targets;
+        this.ability = ability;
     }
 
     playOutOrder(unitManager: UnitManager) {
-        if (this.orderType === OrderType.MOVE) {
-            this.unit.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
-            unitManager.moveUnit(this.unit, this.target);
+        if (this.orderType === OrderType.USE_ABILITY) {
+            if (!this.ability) {
+                throw new Error("Can't play out an order with no ability");
+            }
+            this.ability.playOutAbility(unitManager, this.unit, this.targets);
         }
     }
 }

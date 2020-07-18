@@ -46,8 +46,8 @@ export default class InteractionHandler {
                     this.clickOnTerrain(tileCoord);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
+                const moveAbility = this.selectedUnit.getBasicMoveAbility();
                 if (this.selectedUnit !== null && 
-                    this.selectedUnit.hasAbilityPoints(AbilityPointType.MOVEMENT, 1) &&
                     (
                     tileCoord.x !== this.selectedUnit.tileCoord.x ||
                     tileCoord.y !== this.selectedUnit.tileCoord.y
@@ -66,7 +66,9 @@ export default class InteractionHandler {
                             + (direction === CardinalDirection.NORTH ? -1 : 0)
                             + (direction === CardinalDirection.SOUTH ? 1 : 0),
                     };
-                    issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.MOVE, targetCoord));
+                    if (moveAbility.canUnitUseAbility(this.selectedUnit, [targetCoord])) {
+                        issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetCoord], moveAbility));
+                    }
                 }
             }
 

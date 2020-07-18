@@ -7,6 +7,19 @@ export default class CaravanUnit extends BattleUnit {
         super(id, owner, position);
     }
 
+    getAbilityPoints() {
+        return {
+            action: {
+                used: 0,
+                available: 0,
+            },
+            movement: {
+                used: 0,
+                available: 0,
+            }
+        }
+    }
+
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
         return pixiLoader.resources[SpriteList.CARAVAN].texture;
     }
