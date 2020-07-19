@@ -7,7 +7,7 @@ import UnitManager from './Managers/UnitManager';
 import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
 import { CurrentTurn } from './BattleTypes';
-import { createInitialBattleUnits, getNextTurn } from "./BattleHelpers";
+import { createInitialBattleUnits, getNextTurn, isAITurn } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './UnitDetailsBanner';
@@ -103,7 +103,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     onEndTurnClick = () => {
-        const { battle, mission } = this.props;
+        const { battle } = this.props;
         const { currentTurn } = this.state;
 
         this.startTurn(
@@ -115,6 +115,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     startTurn(nextTurn: CurrentTurn) {
+        const { battle } = this.props;
         const { currentTurn } = this.state;
 
         if (currentTurn !== nextTurn) {
@@ -122,15 +123,23 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                 currentTurn: nextTurn
             });
 
-            this.updateCurrentTurn();
+            this.onStartTurn();
+            if (isAITurn(nextTurn)) {
+                this.startTurn(
+                    getNextTurn(
+                        nextTurn,
+                        battle.playerIDs
+                    )
+                );
+            }
         }
     }
 
-    updateCurrentTurn() {
+    onStartTurn() {
         const { currentTurn } = this.state;
 
-        this.unitManager.updateCurrentTurn(currentTurn);
-        this.interactionHandler.updateCurrentTurn(currentTurn);
+        this.unitManager.onStartTurn(currentTurn);
+        this.interactionHandler.onStartTurn(currentTurn);
     }
 
     updateSelectedUnit = (selectedUnit: BattleUnit) => {

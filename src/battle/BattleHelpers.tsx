@@ -1,5 +1,5 @@
 import BattleUnit from './BattleUnits/BattleUnit';
-import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition, CardinalDirection, CurrentTurn, EnemyOwner } from './BattleTypes';
+import { TileCoord, OWNER_PLAYERS, GamePosition, CardinalDirection, CurrentTurn, EnemyOwner } from './BattleTypes';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
@@ -23,13 +23,13 @@ export function getNextTurn(
     switch (currentTurn.team) {
         case 'players':
             const nextPlayerOwner = findNextInList(currentTurn.owner, playerIDs);
-            if (!nextPlayerOwner) {
-                return { team: 'allies', owner: 'owner_players' };
+            if (nextPlayerOwner) {
+                return {
+                    team: 'players',
+                    owner: nextPlayerOwner
+                };
             }
-            return {
-                team: 'players',
-                owner: nextPlayerOwner
-            };
+            return { team: 'allies', owner: 'owner_players' };
         case 'allies':
             return {
                 team: 'enemies',
@@ -37,15 +37,19 @@ export function getNextTurn(
             };
         case 'enemies':
             const nextEnemyOwner = findNextInList(currentTurn.owner, enemyOwners)
-            if (!nextEnemyOwner) {
-                return { team: 'players', owner: playerIDs[0] };
+            if (nextEnemyOwner) {
+                return {
+                    team: 'enemies',
+                    owner: nextEnemyOwner
+                }
             }
-            return {
-                team: 'enemies',
-                owner: nextEnemyOwner
-            }
+            return { team: 'players', owner: playerIDs[0] };
     }
     throw new Error("Shouldn't have been able to reach here");
+}
+
+export function isAITurn(currentTurn: CurrentTurn) {
+    return currentTurn.team === 'enemies' || currentTurn.team === 'allies';
 }
 
 export function positionToTileCoord(position: GamePosition): TileCoord {

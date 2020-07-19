@@ -174,4 +174,8 @@ export default class BattleUnit {
     dealDamage(amount: number) {
         this.health.current -= amount;
     }
+
+    onTurnStart() {
+        this.abilityPointsUsed = { action: 0, movement: 0 };
+    }
 };

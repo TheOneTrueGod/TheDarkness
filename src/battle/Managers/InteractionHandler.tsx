@@ -102,7 +102,7 @@ export default class InteractionHandler {
         });
     }
 
-    updateCurrentTurn(currentTurn: CurrentTurn) {
+    onStartTurn(currentTurn: CurrentTurn) {
         this.currentTurn = currentTurn;
     }
 }

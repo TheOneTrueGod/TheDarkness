@@ -58,10 +58,13 @@ export default class UnitManager {
         return unit || null;
     }
 
-    updateCurrentTurn(currentTurn: CurrentTurn) {
+    onStartTurn(currentTurn: CurrentTurn) {
         this.unitList.forEach((unit) => {
             // TODO: This needs to include things like 'does the unit have any actions left'
             unit.setShowReadyForAction(currentTurn.owner === unit.owner && currentTurn.team === unit.team);
+            if (unit.owner === currentTurn.owner) {
+                unit.onTurnStart();
+            }
         });
     }
 
