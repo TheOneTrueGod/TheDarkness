@@ -1,16 +1,19 @@
 import BattleUnit from './BattleUnits/BattleUnit';
-import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition, CardinalDirection } from './BattleTypes';
+import { UnitOwner, TileCoord, OWNER_PLAYERS, GamePosition, CardinalDirection, CurrentTurn } from './BattleTypes';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
 import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import { getTileSize } from './BattleConstants';
 import { EnemyWolfUnitDef } from './BattleUnits/UnitDef';
 
-export function getNextTurn(
+export function getTurnForInitiativeNumber(
     initiativeNumber: number,
     unitList: Array<BattleUnit>
-): UnitOwner {
-    return unitList[1].owner;
+): CurrentTurn {
+    return {
+        team: 'players',
+        owner: unitList[1].owner
+    };
 }
 
 export function positionToTileCoord(position: GamePosition): TileCoord {
@@ -64,6 +67,7 @@ export function createInitialBattleUnits(
             EnemyWolfUnitDef,
             battle.unitIndex ++,
             'owner_minion',
+            'enemies',
             { x: 8, y: 3 + i }
         );
 

@@ -1,5 +1,5 @@
 import BattleUnit from "../BattleUnits/BattleUnit";
-import { UnitOwner, TileCoord } from "../BattleTypes";
+import { UnitOwner, TileCoord, CurrentTurn } from "../BattleTypes";
 import { tileCoordToInteger, positionToTileCoord } from "../BattleHelpers";
 
 export default class UnitManager {
@@ -58,10 +58,10 @@ export default class UnitManager {
         return unit || null;
     }
 
-    updateCurrentTurn(currentTurn: UnitOwner) {
+    updateCurrentTurn(currentTurn: CurrentTurn) {
         this.unitList.forEach((unit) => {
             // TODO: This needs to include things like 'does the unit have any actions left'
-            unit.setShowReadyForAction(currentTurn === unit.owner);
+            unit.setShowReadyForAction(currentTurn.owner === unit.owner && currentTurn.team === unit.team);
         });
     }
 

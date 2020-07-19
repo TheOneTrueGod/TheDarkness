@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
-import { UnitOwner } from './BattleTypes';
+import { CurrentTurn } from './BattleTypes';
 import User from '../../object_defs/User';
 
 const Banner = styled.div`
@@ -19,6 +19,11 @@ const BannerSection = styled.div`
     padding: 4px;
 `;
 
+const CenterBannerSection = styled(BannerSection)`
+    flex-grow: 1;
+    background: lightgray;
+`;
+
 const RightBannerSection = styled(BannerSection)`
     flex-basis: '20%';
     background: lightgray;
@@ -26,7 +31,7 @@ const RightBannerSection = styled(BannerSection)`
 
 export type BattleHeaderComponentProps = {
     user: User;
-    currentTurn: UnitOwner;
+    currentTurn: CurrentTurn;
     onEndTurnClick: Function;
 }
 
@@ -36,12 +41,12 @@ export type BattleHeaderComponentState = {
 export default class BattleHeaderComponent extends React.Component<BattleHeaderComponentProps, BattleHeaderComponentState> {
     render() {
         const { onEndTurnClick, currentTurn, user } = this.props;
-        const endTurnEnabled = currentTurn === user.id;
-        
+        const endTurnEnabled = currentTurn.owner === user.id && currentTurn.team === 'players';
+
         return (
             <Banner>
                 <BannerSection style={{ flexBasis: '20%' }}></BannerSection>
-                <BannerSection style={{ flexGrow: 1 }}></BannerSection>
+                <CenterBannerSection>Current Turn: {currentTurn.team} {currentTurn.owner}</CenterBannerSection>
                 <RightBannerSection>
                     <Button 
                         variant={endTurnEnabled ? "success" : "secondary"}

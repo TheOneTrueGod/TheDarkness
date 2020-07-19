@@ -1,11 +1,12 @@
 import MissionUnit from "../../../object_defs/Campaign/Mission/MissionUnit.js";
 import { SpriteList } from "../SpriteUtils";
-import { TileCoord, UnitOwner } from "../BattleTypes";
+import { TileCoord, UnitOwner, Team, CurrentTurn } from "../BattleTypes";
 import { getTileSize } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
 import BaseAbility from "../UnitAbilities/BaseAbility.js";
 import AbilityMap from "../UnitAbilities/AbilityMap";
 import { UnitDef, TempPlayerUnitDef } from "./UnitDef";
+import User from "../../../object_defs/User.js";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -22,16 +23,18 @@ export default class BattleUnit {
     tileCoord: TileCoord;
     id: number;
     unitDef: UnitDef;
+    team: Team;
     initiativeNumber: number = 0;
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
 
-    constructor(unitDef: UnitDef, id: number, owner: UnitOwner, tileCoord: TileCoord) {
+    constructor(unitDef: UnitDef, id: number, owner: UnitOwner, team: Team, tileCoord: TileCoord) {
         this.unitDef = unitDef;
         this.tileCoord = { x: tileCoord.x, y: tileCoord.y };
         this.id = id;
         this.owner = owner;
+        this.team = team;
         this.spriteDecorations = {
             readyForAction: null,
             selected: null,
@@ -88,7 +91,7 @@ export default class BattleUnit {
     }
 
     static fromMissionUnit(id: number, missionUnit: MissionUnit, tileCoord: TileCoord) {
-        return new BattleUnit(TempPlayerUnitDef, id, missionUnit.ownerId, tileCoord);
+        return new BattleUnit(TempPlayerUnitDef, id, missionUnit.ownerId, 'players', tileCoord);
     }
 
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
@@ -156,5 +159,9 @@ export default class BattleUnit {
 
     setSelected(selected: boolean) {
         this.spriteDecorations.selected.visible = selected;
+    }
+
+    canReceiveOrders(user: User, currentTurn: CurrentTurn) {
+        return user.id === this.owner && currentTurn.owner === this.owner && currentTurn.team === this.team;
     }
 };

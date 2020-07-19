@@ -10,7 +10,7 @@ class BattleEndpoint {
 
     static createBattle(user, mission) {
         const newId = mission.battleIndex;
-        const newBattle = new Battle(newId, mission.campaignId, mission.id);
+        const newBattle = new Battle(newId, mission.campaignId, mission.id, false, user.id);
         mission.battleIndex += 1;
         saveMission(mission);
         saveBattle(newBattle);

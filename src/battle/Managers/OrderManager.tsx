@@ -1,5 +1,6 @@
 import UnitOrder from "../BattleUnits/UnitOrder";
 import UnitManager from "./UnitManager";
+import BattleMap from "../../../object_defs/Campaign/Mission/Battle/BattleMap";
 
 export default class OrderManager {
     orderList: Array<UnitOrder> = [];
@@ -11,9 +12,9 @@ export default class OrderManager {
         this.orderList.push(unitOrder);
     }
 
-    playNextOrder(unitManager: UnitManager) {
+    playNextOrder(battleMap: BattleMap, unitManager: UnitManager) {
         const order = this.orderList[this.orderOn];
-        order.playOutOrder(unitManager);
+        order.playOutOrder(battleMap, unitManager);
         this.orderOn += 1;
     }
 }

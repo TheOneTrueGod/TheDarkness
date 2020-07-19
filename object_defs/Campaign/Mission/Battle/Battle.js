@@ -3,7 +3,7 @@ import BattleMap from "./BattleMap.js";
 const ObjectVersion = 1;
 
 class Battle {
-    constructor(id, campaignId, missionId, initialize = true) {
+    constructor(id, campaignId, missionId, initialize = true, creatorId = null) {
         this.id = id;
         this.campaignId = campaignId;
         this.missionId = missionId;
@@ -12,6 +12,7 @@ class Battle {
         this.unitIndex = 1;
         this.unitList = [];
         this.initiativeNumber = 0;
+        this.currentTurn = { owner: creatorId, team: 'players'}
 
         this.caravanPosition = { x: 5, y: 5 };
     }
@@ -28,6 +29,7 @@ class Battle {
         battle.initiativeNumber = jsonData.initiativeNumber;
         battle.caravanPosition = jsonData.caravanPosition;
         battle.unitIndex = jsonData.unitIndex;
+        battle.currentTurn = jsonData.currentTurn;
         return battle;
     }
 
@@ -43,6 +45,8 @@ class Battle {
             caravanPosition: this.caravanPosition,
             initiativeNumber: this.initiativeNumber,
             unitIndex: this.unitIndex,
+
+            currentTurn: this.currentTurn,
         };
     }
 };

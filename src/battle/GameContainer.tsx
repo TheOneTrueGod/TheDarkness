@@ -6,8 +6,8 @@ import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
 import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
-import { UnitOwner } from './BattleTypes';
-import { getNextTurn, createInitialBattleUnits } from "./BattleHelpers";
+import { UnitOwner, CurrentTurn } from './BattleTypes';
+import { getTurnForInitiativeNumber, createInitialBattleUnits } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './UnitDetailsBanner';
@@ -24,7 +24,7 @@ export type GameContainerProps = {
 
 export type GameContainerState = {
     selectedUnit: BattleUnit | null;
-    currentTurn: UnitOwner;
+    currentTurn: CurrentTurn;
 }
 
 class GameContainer extends React.Component<GameContainerProps, GameContainerState> {
@@ -54,7 +54,13 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.orderManager = new OrderManager();
         this.interactionHandler = new InteractionHandler(this.unitManager);
 
-        this.state = { selectedUnit: null, currentTurn: null };
+        this.state = {
+            selectedUnit: null,
+            currentTurn: {
+                team: props.battle.currentTurn.team,
+                owner: props.battle.currentTurn.owner,
+            }
+        };
     }
 
     // Step 1 -- container mounted
@@ -69,7 +75,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
      // Step 2 -- initialize the stage
     initialize = () => {
-        const { battle, mission } = this.props;
+        const { battle, mission, user } = this.props;
 
         this.pixiApp.stage.addChild(this.renderContainers.terrain);
         this.pixiApp.stage.addChild(this.renderContainers.units);
@@ -78,42 +84,49 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
         this.interactionHandler.addEventListeners(
+            user,
             this.pixiContainer,
             this.updateSelectedUnit,
             this.issueUnitOrder,
+            battle.battleMap,
         );
-        this.updateCurrentTurn();
+        this.startNextTurn();
     }
 
     issueUnitOrder = (unitOrder: UnitOrder) => {
+        const { battle } = this.props;
         this.orderManager.addUnitOrder(unitOrder);
-        this.orderManager.playNextOrder(this.unitManager);
+        this.orderManager.playNextOrder(battle.battleMap, this.unitManager);
         this.setState({
             selectedUnit: this.state.selectedUnit
         });
     }
 
     onEndTurnClick() {
+        this.startNextTurn()
+    }
+
+    startNextTurn() {
+        const { currentTurn } = this.state;
+        const { battle } = this.props;
+
+        const nextTurn = getTurnForInitiativeNumber(
+            battle.initiativeNumber,
+            this.unitManager.unitList
+        );
+
+        this.setState({
+            currentTurn: nextTurn
+        });
+
         this.updateCurrentTurn();
     }
 
     updateCurrentTurn() {
         const { currentTurn } = this.state;
-        const { battle } = this.props;
 
-        const previousTurn = currentTurn;
-        const nextTurn = getNextTurn(
-            battle.initiativeNumber,
-            this.unitManager.unitList
-        );
-
-        if (previousTurn !== nextTurn) {
-            this.unitManager.updateCurrentTurn(nextTurn);
-        }
-        
-        this.setState({
-            currentTurn: nextTurn
-        });
+        this.unitManager.updateCurrentTurn(currentTurn);
+        this.interactionHandler.updateCurrentTurn(currentTurn);
     }
 
     updateSelectedUnit = (selectedUnit: BattleUnit) => {
