@@ -6,8 +6,8 @@ import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
 import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
-import { UnitOwner, CurrentTurn } from './BattleTypes';
-import { getTurnForInitiativeNumber, createInitialBattleUnits } from "./BattleHelpers";
+import { CurrentTurn } from './BattleTypes';
+import { createInitialBattleUnits, getNextTurn } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './UnitDetailsBanner';
@@ -90,7 +90,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.issueUnitOrder,
             battle.battleMap,
         );
-        this.startNextTurn();
+        this.startTurn(battle.currentTurn);
     }
 
     issueUnitOrder = (unitOrder: UnitOrder) => {
@@ -102,24 +102,28 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         });
     }
 
-    onEndTurnClick() {
-        this.startNextTurn()
+    onEndTurnClick = () => {
+        const { battle, mission } = this.props;
+        const { currentTurn } = this.state;
+
+        this.startTurn(
+            getNextTurn(
+                currentTurn,
+                battle.playerIDs
+            )
+        )
     }
 
-    startNextTurn() {
+    startTurn(nextTurn: CurrentTurn) {
         const { currentTurn } = this.state;
-        const { battle } = this.props;
 
-        const nextTurn = getTurnForInitiativeNumber(
-            battle.initiativeNumber,
-            this.unitManager.unitList
-        );
+        if (currentTurn !== nextTurn) {
+            this.setState({
+                currentTurn: nextTurn
+            });
 
-        this.setState({
-            currentTurn: nextTurn
-        });
-
-        this.updateCurrentTurn();
+            this.updateCurrentTurn();
+        }
     }
 
     updateCurrentTurn() {

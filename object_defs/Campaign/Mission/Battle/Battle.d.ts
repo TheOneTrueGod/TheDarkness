@@ -10,6 +10,7 @@ declare class BattleInterface {
     unitIndex: number;
     initiativeNumber: number;
     currentTurn: CurrentTurn;
+    playerIDs: Array<number>;
 }
 
 export interface BattleJSONObject extends BattleInterface, NetworkableJSONObject {

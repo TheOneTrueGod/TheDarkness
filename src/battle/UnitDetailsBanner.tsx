@@ -80,7 +80,9 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
 
         return (
             <BottomBanner style={{ top }}>
-                <BottomSection style={{ flexBasis: '20%' }}>Left</BottomSection>
+                <BottomSection style={{ flexBasis: '20%' }}>
+                    { selectedUnit && `Health: ${selectedUnit.health.current} / ${selectedUnit.health.max}` }
+                </BottomSection>
                 <BottomSection style={{ flexGrow: 1 }}>{selectedUnit && selectedUnit.owner}</BottomSection>
                 <BottomSection style={{ flexBasis: '20%' }}>
                     <ActionPointContainer>{actionPoints}</ActionPointContainer>

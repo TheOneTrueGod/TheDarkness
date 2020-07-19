@@ -24,6 +24,7 @@ export default class BattleUnit {
     id: number;
     unitDef: UnitDef;
     team: Team;
+    health: { current: number, max: number };
     initiativeNumber: number = 0;
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
@@ -38,6 +39,11 @@ export default class BattleUnit {
         this.spriteDecorations = {
             readyForAction: null,
             selected: null,
+        };
+
+        this.health = {
+            current: unitDef.health,
+            max: unitDef.health,
         };
     }
 
@@ -59,7 +65,7 @@ export default class BattleUnit {
     }
 
     getBasicAttackAbility(): BaseAbility {
-        return AbilityMap.BasicMove;
+        return AbilityMap.BasicAttack;
     }
 
     useAbilityPoints(type: AbilityPointType, amount: number) {
@@ -163,5 +169,9 @@ export default class BattleUnit {
 
     canReceiveOrders(user: User, currentTurn: CurrentTurn) {
         return user.id === this.owner && currentTurn.owner === this.owner && currentTurn.team === this.team;
+    }
+
+    dealDamage(amount: number) {
+        this.health.current -= amount;
     }
 };

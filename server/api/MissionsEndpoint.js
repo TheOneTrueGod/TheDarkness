@@ -22,7 +22,7 @@ class MissionsEndpoint {
         }
 
         if (uri.startsWith('/api/missions/start')) {
-            return this.startMission(body.campaignId, body.missionId)
+            return this.startMission(user, body.campaignId, body.missionId)
         }
 
         if (request.method === 'POST' && body && body.missionId !== undefined) {
@@ -43,7 +43,7 @@ class MissionsEndpoint {
         return newMission;
     }
 
-    static startMission(campaignId, missionId) {
+    static startMission(user, campaignId, missionId) {
         const missionJSON = loadMission(campaignId, missionId);
         const mission = Mission.fromJSONObject(missionJSON);
 
@@ -55,7 +55,7 @@ class MissionsEndpoint {
             throw new Error("Too many units in caravan");
         }
         
-        setupAsActive(mission); // Auto saves
+        setupAsActive(user, mission); // Auto saves
 
         return mission.toJSONObject();
     }
