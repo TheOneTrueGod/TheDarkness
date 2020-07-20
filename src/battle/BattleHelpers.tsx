@@ -5,6 +5,10 @@ import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import { getTileSize } from './BattleConstants';
 import { EnemyWolfUnitDef } from './BattleUnits/UnitDef';
+import BattleMap from '../../object_defs/Campaign/Mission/Battle/BattleMap';
+import UnitManager from './Managers/UnitManager';
+// @ts-ignore
+import { astar, Graph } from './lib/astar';
 
 function findNextInList(currentElement: any, list: Array<any>): any {
     const index = list.indexOf(currentElement);
@@ -98,13 +102,13 @@ export function createInitialBattleUnits(
         addBattleUnit(battleUnit);
     }
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
         const enemyUnit = new BattleUnit(
             EnemyWolfUnitDef,
             battle.unitIndex ++,
             'owner_minion',
             'enemies',
-            { x: 8, y: 3 + i }
+            { x: 8, y: 6 + i }
         );
 
         addBattleUnit(enemyUnit);
@@ -125,4 +129,23 @@ export function getCardinalDirectionFromAngle(angle: number): CardinalDirection 
     }
 
     return CardinalDirection.WEST;
+}
+
+export function getManhattenDistance(pos1: TileCoord, pos2: TileCoord): number {
+    return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
+}
+
+export function getShortestPath(
+    pos1: TileCoord,
+    pos2: TileCoord,
+    battleMap: BattleMap,
+    unitManager: UnitManager,
+): Array<TileCoord> {
+    const searchGraph = new Graph((coord: TileCoord) => {
+        if (unitManager.getUnitAtTileCoord(coord) !== null) { return 0; }
+        return 1;
+    }, battleMap.mapSize);
+
+    const path = astar.search(searchGraph, pos1, pos2, { adjacent: true });
+    return path;
 }

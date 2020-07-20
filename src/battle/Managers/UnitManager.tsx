@@ -1,5 +1,5 @@
 import BattleUnit from "../BattleUnits/BattleUnit";
-import { UnitOwner, TileCoord, CurrentTurn } from "../BattleTypes";
+import { TileCoord, CurrentTurn, Team } from "../BattleTypes";
 import { tileCoordToInteger, positionToTileCoord } from "../BattleHelpers";
 
 export default class UnitManager {
@@ -68,4 +68,25 @@ export default class UnitManager {
         });
     }
 
+    getUnitsControlledByTeams(teams: Array<Team>, filter: Function = null) {
+        return this.unitList.filter((unit: BattleUnit) => 
+            teams.includes(unit.team) && (filter === null || filter(unit)) && unit.canAct()
+        );
+    }
+
+    getUnitsOnOppositeTeam(team: Team) {
+        switch (team) {
+            case 'allies':
+            case 'players':
+                return this.getUnitsControlledByTeams(
+                    ['enemies'],
+                    (unit: BattleUnit) => unit.isTargetable() && unit.isOnOppositeTeam(team)
+                );
+            case 'enemies':
+                return this.getUnitsControlledByTeams(
+                    ['allies', 'players'],
+                    (unit: BattleUnit) => unit.isTargetable() && unit.isOnOppositeTeam(team)
+                );
+        }
+    }
 }

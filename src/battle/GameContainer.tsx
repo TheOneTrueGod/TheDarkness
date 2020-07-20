@@ -13,6 +13,7 @@ import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './UnitDetailsBanner';
 import BattleHeaderComponent from './BattleHeaderComponent';
 import User from '../../object_defs/User';
+import AIManager from './Managers/AIManager';
 
 const canvasSize = { width: 800, height: 600 };
 
@@ -103,6 +104,10 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     onEndTurnClick = () => {
+        this.endTurn();
+    }
+
+    endTurn = () => {
         const { battle } = this.props;
         const { currentTurn } = this.state;
 
@@ -111,7 +116,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                 currentTurn,
                 battle.playerIDs
             )
-        )
+        );
     }
 
     startTurn(nextTurn: CurrentTurn) {
@@ -125,6 +130,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
             this.onStartTurn();
             if (isAITurn(nextTurn)) {
+                AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, battle.battleMap, this.issueUnitOrder);
                 this.startTurn(
                     getNextTurn(
                         nextTurn,

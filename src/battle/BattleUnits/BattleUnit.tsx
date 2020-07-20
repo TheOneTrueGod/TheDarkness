@@ -178,4 +178,21 @@ export default class BattleUnit {
     onTurnStart() {
         this.abilityPointsUsed = { action: 0, movement: 0 };
     }
+
+    isTargetable() {
+        return true;
+    }
+
+    canAct() {
+        return true;
+    }
+    
+    isOnOppositeTeam(team: Team) {
+        if (this.team === 'allies' || this.team === 'players') {
+            return team === 'enemies';
+        }
+        if (this.team === 'enemies') {
+            return team === 'allies' || team === 'players';
+        }
+    }
 };
