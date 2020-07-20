@@ -102,13 +102,13 @@ export function createInitialBattleUnits(
         addBattleUnit(battleUnit);
     }
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
         const enemyUnit = new BattleUnit(
             EnemyWolfUnitDef,
             battle.unitIndex ++,
             'owner_minion',
             'enemies',
-            { x: 8, y: 6 + i }
+            { x: 10, y: 6 + i }
         );
 
         addBattleUnit(enemyUnit);
