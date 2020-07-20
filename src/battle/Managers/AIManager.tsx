@@ -7,7 +7,10 @@ import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 
 export default {
     doAIActionsAtTurnStart(unitManager: UnitManager, currentTurn: CurrentTurn, battleMap: BattleMap, issueUnitOrder: Function) {
-        const controlledUnits = unitManager.getUnitsControlledByTeams([currentTurn.team]);
+        const controlledUnits = unitManager.getUnitsControlledByTeams(
+            [currentTurn.team],
+            (unit: BattleUnit) => unit.owner === currentTurn.owner,
+        );
         if (!controlledUnits) { return; }
         //const controlledUnits = unitManager.getUnitsControlledByTeams([currentTurn.team]);
         const enemyUnits = unitManager.getUnitsOnOppositeTeam(currentTurn.team);

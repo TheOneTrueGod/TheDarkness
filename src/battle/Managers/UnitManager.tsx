@@ -62,7 +62,15 @@ export default class UnitManager {
         this.unitList.forEach((unit) => {
             // TODO: This needs to include things like 'does the unit have any actions left'
             unit.setShowReadyForAction(currentTurn.owner === unit.owner && currentTurn.team === unit.team);
-            if (unit.owner === currentTurn.owner) {
+        });
+    }
+
+    onEndTurn(currentTurn: CurrentTurn) {
+        console.log("Ending Turn ", currentTurn);
+        this.unitList.forEach((unit) => {
+            // TODO: This needs to include things like 'does the unit have any actions left'
+            unit.setShowReadyForAction(currentTurn.owner === unit.owner && currentTurn.team === unit.team);
+            if (unit.owner === currentTurn.owner && unit.team === currentTurn.team) {
                 unit.onTurnStart();
             }
         });

@@ -66,7 +66,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
     // Step 1 -- container mounted
     updatePixiContainer = (element: HTMLDivElement) => {
-        console.log("Updating reference");
         this.pixiContainer = element;
         if(this.pixiContainer && this.pixiContainer.children.length<=0) {
             this.pixiContainer.appendChild(this.pixiApp.view);
@@ -104,13 +103,15 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     onEndTurnClick = () => {
-        this.endTurn();
+        const { currentTurn } = this.state;
+        this.endTurn(currentTurn);
     }
 
-    endTurn = () => {
+    endTurn = (currentTurn: CurrentTurn) => {
         const { battle } = this.props;
-        const { currentTurn } = this.state;
 
+        this.onEndTurn(currentTurn);
+        
         this.startTurn(
             getNextTurn(
                 currentTurn,
@@ -128,24 +129,21 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                 currentTurn: nextTurn
             });
 
-            this.onStartTurn();
+            this.onStartTurn(nextTurn);
             if (isAITurn(nextTurn)) {
                 AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, battle.battleMap, this.issueUnitOrder);
-                this.startTurn(
-                    getNextTurn(
-                        nextTurn,
-                        battle.playerIDs
-                    )
-                );
+                this.endTurn(nextTurn);
             }
         }
     }
 
-    onStartTurn() {
-        const { currentTurn } = this.state;
+    onStartTurn(nextTurn: CurrentTurn) {
+        this.unitManager.onStartTurn(nextTurn);
+        this.interactionHandler.onStartTurn(nextTurn);
+    }
 
-        this.unitManager.onStartTurn(currentTurn);
-        this.interactionHandler.onStartTurn(currentTurn);
+    onEndTurn(currentTurn: CurrentTurn) {
+        this.unitManager.onEndTurn(currentTurn);
     }
 
     updateSelectedUnit = (selectedUnit: BattleUnit) => {
