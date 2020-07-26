@@ -3,6 +3,7 @@ import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
 import BattleMap from '../../../object_defs/Campaign/Mission/Battle/BattleMap';
+import { getManhattenDistance } from '../BattleHelpers';
 
 export default class AbilityBasicAttack extends BaseAbility {
     playOutAbility(battleMap: BattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
@@ -23,6 +24,8 @@ export default class AbilityBasicAttack extends BaseAbility {
         if (!unitManager.getUnitAtTileCoord(targets[0] as TileCoord)) {
             return false;
         }
+
+        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > 1) { return false; }
         
         return user.hasAbilityPoints(AbilityPointType.ACTION, 1);
     }

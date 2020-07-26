@@ -14,6 +14,7 @@ import UnitDetailsBanner from './UnitDetailsBanner';
 import BattleHeaderComponent from './BattleHeaderComponent';
 import User from '../../object_defs/User';
 import AIManager from './Managers/AIManager';
+import { DEBUG_MODE } from './BattleConstants';
 
 const canvasSize = { width: 800, height: 600 };
 
@@ -35,6 +36,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     renderContainers: {
         terrain: PIXI.Sprite,
         units: PIXI.Container,
+        debug: PIXI.Sprite,
     };
     unitManager: UnitManager;
     interactionHandler: InteractionHandler;
@@ -50,6 +52,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.renderContainers = {
             terrain: new PIXI.Sprite(),
             units: new PIXI.Container(),
+            debug: new PIXI.Sprite(),
         };
         this.unitManager = new UnitManager();
         this.orderManager = new OrderManager();
@@ -79,6 +82,9 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         this.pixiApp.stage.addChild(this.renderContainers.terrain);
         this.pixiApp.stage.addChild(this.renderContainers.units);
+        if (DEBUG_MODE) {
+            this.pixiApp.stage.addChild(this.renderContainers.debug);
+        }
 
         renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
@@ -140,6 +146,9 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     onStartTurn(nextTurn: CurrentTurn) {
         this.unitManager.onStartTurn(nextTurn);
         this.interactionHandler.onStartTurn(nextTurn);
+        if (DEBUG_MODE) {
+            this.unitManager.updateUnitDebugSprites(this.pixiLoader, this.renderContainers.debug);
+        }
     }
 
     onEndTurn(currentTurn: CurrentTurn) {

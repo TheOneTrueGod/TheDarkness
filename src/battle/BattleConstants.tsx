@@ -1,5 +1,7 @@
 import { TileCoord } from './BattleTypes';
 
+export const DEBUG_MODE = false;
+
 export function getTileSize(): TileCoord {
     return { x: 40, y: 40 };
 };

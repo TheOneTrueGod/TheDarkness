@@ -51,6 +51,12 @@ export default class UnitManager {
         unit.setTileCoord(targetTile);
         this.setBattleUnitPosition(unit);
     }
+
+    updateUnitDebugSprites(pixiLoader: PIXI.Loader, debugContainer: PIXI.Sprite) {
+        this.unitList.forEach((unit) => {
+            unit.updateDebugSprites(pixiLoader, debugContainer);
+        });
+    }
     
     getUnitAtTileCoord(tileCoord: TileCoord): BattleUnit | null {
         const tileNumber = tileCoordToInteger(tileCoord);

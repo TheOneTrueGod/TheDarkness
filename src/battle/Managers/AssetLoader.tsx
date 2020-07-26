@@ -3,6 +3,11 @@ import { SpriteList } from "../SpriteUtils";
 export default class AssetLoader {
     static preLoad(pixiLoader: PIXI.Loader, loadComplete: Function) {
         pixiLoader
+            // icons
+            .add(SpriteList.CROSSHAIR, '/assets/crosshair.png')
+            .add(SpriteList.CIRCLE, '/assets/plain-circle.png')
+            .add(SpriteList.POSITION_MARKER, '/assets/position-marker.png')
+            // players
             .add(SpriteList.BROADSWORD, '/assets/broadsword.png')
             .add(SpriteList.CARAVAN, '/assets/old-wagon.png')
             // enemies

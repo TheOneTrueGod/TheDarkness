@@ -142,10 +142,24 @@ export function getShortestPath(
     unitManager: UnitManager,
 ): Array<TileCoord> {
     const searchGraph = new Graph((coord: TileCoord) => {
-        if (unitManager.getUnitAtTileCoord(coord) !== null) { return 0; }
+        if (!isTileWalkable(coord, unitManager)) { return 0; }
         return 1;
     }, battleMap.mapSize);
 
     const path = astar.search(searchGraph, pos1, pos2, { adjacent: true });
     return path;
+}
+
+export function isTileWalkable(tile: TileCoord, unitManager: UnitManager) {
+    if (unitManager.getUnitAtTileCoord(tile) !== null) { return false; }
+
+    return true;
+}
+
+export function arePositionsEqual(pos1: TileCoord, pos2: TileCoord) {
+    return pos1.x === pos2.x && pos1.y === pos2.y;
+}
+
+export function cloneCoord(coord: TileCoord) {
+    return { x: coord.x, y: coord.y };
 }

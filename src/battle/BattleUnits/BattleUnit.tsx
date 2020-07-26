@@ -1,7 +1,7 @@
 import MissionUnit from "../../../object_defs/Campaign/Mission/MissionUnit.js";
 import { SpriteList } from "../SpriteUtils";
-import { TileCoord, UnitOwner, Team, CurrentTurn } from "../BattleTypes";
-import { getTileSize } from "../BattleConstants";
+import { TileCoord, UnitOwner, Team, CurrentTurn, GamePosition } from "../BattleTypes";
+import { getTileSize, DEBUG_MODE } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
 import BaseAbility from "../UnitAbilities/BaseAbility.js";
 import AbilityMap from "../UnitAbilities/AbilityMap";
@@ -29,6 +29,21 @@ export default class BattleUnit {
     owner: UnitOwner;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
+    debugPathing: {
+        target: TileCoord,
+        path: Array<TileCoord>,
+        previousPosition: TileCoord,
+        debugSprites: Array<PIXI.Sprite>,
+        spriteOffset: { x: number, y: number },
+        debugColor: number,
+    } = {
+        target: { x: 0, y: 0 },
+        path: [],
+        previousPosition: { x: 0, y: 0 },
+        debugSprites: [],
+        spriteOffset: { x: Math.random(), y: Math.random()},
+        debugColor: Math.floor(Math.random()*16777215)
+    };
 
     constructor(unitDef: UnitDef, id: number, owner: UnitOwner, team: Team, tileCoord: TileCoord) {
         this.unitDef = unitDef;
@@ -96,6 +111,56 @@ export default class BattleUnit {
         this.sprite.position.y = position.y;
     }
 
+    addDebugSprite(coord: TileCoord, texture: PIXI.Texture) {
+        const tileSize = getTileSize();
+
+        const debugSprite = new PIXI.Sprite(texture);
+        debugSprite.addChild(this.createDebugBorder({ x: debugSprite.width, y: debugSprite.height }, 8));
+
+        debugSprite.width = tileSize.x / 4;
+        debugSprite.height = tileSize.y / 4;
+        debugSprite.position.x = coord.x * tileSize.x + this.debugPathing.spriteOffset.x * tileSize.x * 3 / 4;
+        debugSprite.position.y = coord.y * tileSize.y + this.debugPathing.spriteOffset.y * tileSize.y * 3 / 4;
+
+        this.debugPathing.debugSprites.push(debugSprite);
+
+        return debugSprite;
+    }
+
+    updateDebugSprites(pixiLoader: PIXI.Loader, debugContainer: PIXI.Sprite) {
+        if (this.team !== 'enemies') {
+            return;
+        }
+        this.debugPathing.debugSprites.forEach(sprite => {
+            sprite.parent.removeChild(sprite);
+        });
+        this.debugPathing.debugSprites = [];
+
+        debugContainer.addChild(
+            this.addDebugSprite(
+                this.debugPathing.target,
+                pixiLoader.resources[SpriteList.CROSSHAIR].texture
+            )
+        );
+
+        debugContainer.addChild(
+            this.addDebugSprite(
+                this.debugPathing.previousPosition,
+                pixiLoader.resources[SpriteList.POSITION_MARKER].texture
+            )
+        );
+
+        this.debugPathing.path.forEach((coord) => {
+            debugContainer.addChild(
+                this.addDebugSprite(
+                    coord,
+                    pixiLoader.resources[SpriteList.CIRCLE].texture
+                )
+            );
+        })
+
+    }
+
     static fromMissionUnit(id: number, missionUnit: MissionUnit, tileCoord: TileCoord) {
         return new BattleUnit(TempPlayerUnitDef, id, missionUnit.ownerId, 'players', tileCoord);
     }
@@ -108,12 +173,24 @@ export default class BattleUnit {
         return { x: this.unitDef.size.x, y: this.unitDef.size.y };
     }
 
+    createDebugBorder(size: GamePosition, borderWidth: number = 3) {
+        const gt = new PIXI.Graphics();
+        gt.lineStyle(borderWidth, this.debugPathing.debugColor);
+        gt.drawRect(0,0,size.x - 3,size.y - 3);
+        gt.endFill();
+    
+        return gt;
+    }
+
     getSprite(pixiLoader: PIXI.Loader) {
         if (this.sprite) { return this.sprite; }
 
         const spriteTexture = this.getSpriteTexture(pixiLoader);
 
         this.sprite = new PIXI.Sprite(spriteTexture);
+        if (DEBUG_MODE) {
+            this.sprite.addChild(this.createDebugBorder({ x: this.sprite.width, y: this.sprite.height }));
+        }
         const tileSize = getTileSize();
         
         this.sprite.position.x = this.tileCoord.x * tileSize.x;

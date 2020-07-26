@@ -13,7 +13,11 @@ const port = process.argv[2] || 8888;
 
 const app = express();
 
-app.use(session({secret: 'basdfxzcvqwer98712345xzcvdsfgqwer'}));
+app.use(session({
+  secret: 'basdfxzcvqwer98712345xzcvdsfgqwer',
+  resave: true,
+  saveUninitialized: true,
+}));
 app.use(bodyParser.json());
 
 app.get(
