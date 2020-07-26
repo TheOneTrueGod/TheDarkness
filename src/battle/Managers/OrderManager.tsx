@@ -16,5 +16,6 @@ export default class OrderManager {
         const order = this.orderList[this.orderOn];
         order.playOutOrder(battleMap, unitManager);
         this.orderOn += 1;
+        unitManager.cleanupStep();
     }
 }

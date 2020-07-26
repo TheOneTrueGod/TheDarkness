@@ -102,4 +102,17 @@ export default class UnitManager {
                 );
         }
     }
+
+    cleanupStep() {
+        let i = 0;
+        while (i < this.unitList.length) {
+            if (this.unitList[i].health.current <= 0) {
+                this.unitList[i].prepareForDeletion();
+                this.removeUnitBattlePosition(this.unitList[i]);
+                this.unitList.splice(i, 1);
+            } else {
+                i += 1;
+            }
+        }
+    }
 }

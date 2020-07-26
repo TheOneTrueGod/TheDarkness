@@ -61,7 +61,6 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
 function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, battleMap: BattleMap, unitManager: UnitManager, issueUnitOrder: Function) {
     const attackAbility = unit.getBasicAttackAbility();
     while (attackAbility.canUnitUseAbility(battleMap, unitManager, unit, [targetUnit.tileCoord])) {
-        console.log("Attacking!");
         issueUnitOrder(new UnitOrder(
             unit,
             OrderType.USE_ABILITY,

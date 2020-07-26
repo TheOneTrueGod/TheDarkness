@@ -127,14 +127,18 @@ export default class BattleUnit {
         return debugSprite;
     }
 
+    removeAllDebugSprites() {
+        this.debugPathing.debugSprites.forEach(sprite => {
+            sprite.parent && sprite.parent.removeChild(sprite);
+        });
+        this.debugPathing.debugSprites = [];
+    }
+
     updateDebugSprites(pixiLoader: PIXI.Loader, debugContainer: PIXI.Sprite) {
         if (this.team !== 'enemies') {
             return;
         }
-        this.debugPathing.debugSprites.forEach(sprite => {
-            sprite.parent.removeChild(sprite);
-        });
-        this.debugPathing.debugSprites = [];
+        this.removeAllDebugSprites();
 
         debugContainer.addChild(
             this.addDebugSprite(
@@ -271,5 +275,10 @@ export default class BattleUnit {
         if (this.team === 'enemies') {
             return team === 'allies' || team === 'players';
         }
+    }
+
+    prepareForDeletion() {
+        this.sprite.parent && this.sprite.parent.removeChild(this.sprite);
+        this.removeAllDebugSprites();
     }
 };
