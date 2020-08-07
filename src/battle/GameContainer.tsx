@@ -1,6 +1,7 @@
 import React from 'react';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
-import { renderBattleMap } from '../battle/BattleMap/Terrain';
+import { renderBattleMap } from './BattleMap/Terrain';
+import ClientBattleMap from './BattleMap/ClientBattleMap';
 import BattleUnit from './BattleUnits/BattleUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
@@ -41,6 +42,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     unitManager: UnitManager;
     interactionHandler: InteractionHandler;
     orderManager: OrderManager;
+    clientBattleMap: ClientBattleMap;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -57,6 +59,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.unitManager = new UnitManager();
         this.orderManager = new OrderManager();
         this.interactionHandler = new InteractionHandler(this.unitManager);
+        this.clientBattleMap = new ClientBattleMap(props.battle.battleMap);
 
         this.state = {
             selectedUnit: null,
@@ -86,7 +89,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.pixiApp.stage.addChild(this.renderContainers.debug);
         }
 
-        renderBattleMap(battle.battleMap, this.renderContainers.terrain, this.pixiLoader);
+        renderBattleMap(this.clientBattleMap, this.renderContainers.terrain, this.pixiLoader);
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
         this.interactionHandler.addEventListeners(
@@ -94,7 +97,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.pixiContainer,
             this.updateSelectedUnit,
             this.issueUnitOrder,
-            battle.battleMap,
+            this.clientBattleMap,
         );
         this.startTurn(battle.currentTurn);
     }
@@ -102,7 +105,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     issueUnitOrder = (unitOrder: UnitOrder) => {
         const { battle } = this.props;
         this.orderManager.addUnitOrder(unitOrder);
-        this.orderManager.playNextOrder(battle.battleMap, this.unitManager);
+        this.orderManager.playNextOrder(this.clientBattleMap, this.unitManager);
         this.setState({
             selectedUnit: this.state.selectedUnit
         });
@@ -137,7 +140,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
             this.onStartTurn(nextTurn);
             if (isAITurn(nextTurn)) {
-                AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, battle.battleMap, this.issueUnitOrder);
+                AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, this.clientBattleMap, this.issueUnitOrder);
                 this.endTurn(nextTurn);
             }
         }

@@ -1,7 +1,7 @@
 import { TileCoord } from "../BattleTypes";
 import BattleUnit from "../BattleUnits/BattleUnit";
 import UnitManager from "../Managers/UnitManager";
-import BattleMap from "../../../object_defs/Campaign/Mission/Battle/BattleMap";
+import ClientBattleMap from "../BattleMap/ClientBattleMap";
 
 interface AbilityInterface {
     playOutAbility: Function;
@@ -12,7 +12,7 @@ interface AbilityInterface {
 export type AbilityTarget = TileCoord | BattleUnit;
 
 export default abstract class BaseAbility implements AbilityInterface {
-    playOutAbility(battleMap: BattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
+    playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
     getTargets() {}
-    canUnitUseAbility(battleMap: BattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) { return false; }
+    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) { return false; }
 }

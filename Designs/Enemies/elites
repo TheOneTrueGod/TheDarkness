@@ -3,3 +3,8 @@ Difficult enemies that slightly warp the encounter when they show up.
 Wolf man
 Gives all nearby minions +1 damage per attack
 At the end of his turn he'll howl, causing all nearby minions to move once
+
+Mimic
+If a player has left line of sight of all the others for too long, then a mimic may spawn.
+They look like that player until they get in melee range, then they transform.
+Strong melee attack.

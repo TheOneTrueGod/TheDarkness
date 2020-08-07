@@ -5,7 +5,7 @@ import { TileCoord, CardinalDirection, UnitOwner, CurrentTurn } from "../BattleT
 import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
 import User from "../../../object_defs/User";
-import BattleMap from "../../../object_defs/Campaign/Mission/Battle/BattleMap";
+import ClientBattleMap from "../BattleMap/ClientBattleMap";
 
 export default class InteractionHandler {
     currentTurn: CurrentTurn;
@@ -34,7 +34,7 @@ export default class InteractionHandler {
         container: HTMLDivElement,
         unitSelectedCallback: Function,
         issueUnitOrder: Function,
-        battleMap: BattleMap,
+        clientBattleMap: ClientBattleMap,
     ) {
         container.addEventListener("mousedown", (event: MouseEvent) => {
             const tileCoord = positionToTileCoord({
@@ -62,7 +62,7 @@ export default class InteractionHandler {
                 )) {
                     const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord);
 
-                    if (targetUnit && attackAbility.canUnitUseAbility(battleMap, this.unitManager, this.selectedUnit, [tileCoord])) {
+                    if (targetUnit && attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord])) {
                         issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [tileCoord], attackAbility));
                     } else {
 
@@ -80,7 +80,7 @@ export default class InteractionHandler {
                                 + (direction === CardinalDirection.NORTH ? -1 : 0)
                                 + (direction === CardinalDirection.SOUTH ? 1 : 0),
                         };
-                        if (moveAbility.canUnitUseAbility(battleMap, this.unitManager, this.selectedUnit, [targetCoord])) {
+                        if (moveAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetCoord])) {
                             issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetCoord], moveAbility));
                         }
                     }

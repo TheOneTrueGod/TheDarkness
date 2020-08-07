@@ -5,10 +5,10 @@ import CaravanUnit from './BattleUnits/CaravanUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
 import { getTileSize } from './BattleConstants';
 import { EnemyWolfUnitDef } from './BattleUnits/UnitDef';
-import BattleMap from '../../object_defs/Campaign/Mission/Battle/BattleMap';
 import UnitManager from './Managers/UnitManager';
 // @ts-ignore
 import { astar, Graph } from './lib/astar';
+import ClientBattleMap from './BattleMap/ClientBattleMap';
 
 function findNextInList(currentElement: any, list: Array<any>): any {
     const index = list.indexOf(currentElement);
@@ -138,13 +138,13 @@ export function getManhattenDistance(pos1: TileCoord, pos2: TileCoord): number {
 export function getShortestPath(
     pos1: TileCoord,
     pos2: TileCoord,
-    battleMap: BattleMap,
+    clientBattleMap: ClientBattleMap,
     unitManager: UnitManager,
 ): Array<TileCoord> {
     const searchGraph = new Graph((coord: TileCoord) => {
         if (!isTileWalkable(coord, unitManager)) { return 0; }
         return 1;
-    }, battleMap.mapSize);
+    }, clientBattleMap.size);
 
     const path = astar.search(searchGraph, pos1, pos2, { adjacent: true });
     return path;
