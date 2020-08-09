@@ -17,6 +17,7 @@ function getAllTilesVisibleAtDistance(mapSize: TileCoord, tileCoord: TileCoord, 
                 nextTile.x >= 0 && nextTile.y >= 0 &&
                 nextTile.x < mapSize.x && nextTile.y < mapSize.y &&
                 !tilesVisited[positionNumber] &&
+                // TODO: Don't do it this way.  Store the distance instead and count it down in the heap.
                 getManhattenDistance(
                     tileCoord,
                     nextTile
