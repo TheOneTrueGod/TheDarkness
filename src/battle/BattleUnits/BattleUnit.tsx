@@ -7,6 +7,7 @@ import BaseAbility from "../UnitAbilities/BaseAbility.js";
 import AbilityMap from "../UnitAbilities/AbilityMap";
 import { UnitDef, TempPlayerUnitDef } from "./UnitDef";
 import User from "../../../object_defs/User.js";
+import ClientBattleMap from "../BattleMap/ClientBattleMap.js";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -174,7 +175,7 @@ export default class BattleUnit {
     }
 
     getUnitSize(): TileCoord {
-        return { x: this.unitDef.size.x, y: this.unitDef.size.y };
+        return { ...this.unitDef.size };
     }
 
     createDebugBorder(size: GamePosition, borderWidth: number = 3) {
@@ -280,5 +281,20 @@ export default class BattleUnit {
     prepareForDeletion() {
         this.sprite.parent && this.sprite.parent.removeChild(this.sprite);
         this.removeAllDebugSprites();
+    }
+
+    // Lightness Related Stats
+    getLightLevel() {
+        return 3;
+    }
+
+    // phases
+    onCleanupStep(clientBattleMap: ClientBattleMap) {
+        console.log(clientBattleMap.isTileVisible({ ...this.tileCoord }));
+        if (clientBattleMap.isTileVisible({ ...this.tileCoord })) {
+            this.sprite.visible = true;
+        } else {
+            this.sprite.visible = false;
+        }
     }
 };

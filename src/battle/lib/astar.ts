@@ -174,7 +174,7 @@ class Graph {
     if (coord.x < 0 || coord.x >= this.gridSize.x || coord.y < 0 || coord.y >= this.gridSize.y) {
       return null;
     }
-    const tileNum = tileCoordToInteger(coord);
+    const tileNum = tileCoordToInteger(coord, this.gridSize);
     if (!this.grid[tileNum]) {
       this.grid[tileNum] = new GridNode(coord.x, coord.y, this.weightFunction(coord));
     }

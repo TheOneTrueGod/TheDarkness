@@ -1,12 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { getTileSize } from "../BattleConstants";
 import { SpriteList } from "../SpriteUtils";
-import { TileCoord } from '../BattleTypes.js';
 import ClientBattleMap from './ClientBattleMap.js';
-
-function getMapSize(clientBattleMap: ClientBattleMap): TileCoord {
-    return { x: clientBattleMap.size.x, y: clientBattleMap.size.y };
-}
 
 function getTerrainSprite(terrainTexture: PIXI.Texture, terrainType: number): PIXI.Sprite {
     const imageSize = { x: 32, y: 32 };
@@ -30,7 +25,7 @@ export function renderBattleMap(
     pixiLoader: PIXI.Loader,
 ) {
     const { x: tileSizeX, y: tileSizeY } = getTileSize();
-    const { x: mapSizeX, y: mapSizeY } = getMapSize(clientBattleMap);
+    const { x: mapSizeX, y: mapSizeY } = clientBattleMap.getMapSize();
 
     for (let x = 0; x < mapSizeX; x++) {
         for (let y = 0; y < mapSizeY; y++) {

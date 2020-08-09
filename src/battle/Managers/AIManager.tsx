@@ -5,11 +5,14 @@ import { getManhattenDistance, getShortestPath, arePositionsEqual, cloneCoord, i
 import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
 
-function isAbleToAttack(actingUnit: BattleUnit, targetUnit: BattleUnit, unitManager: UnitManager) {
+function isAbleToAttack(actingUnit: BattleUnit, targetUnit: BattleUnit, unitManager: UnitManager, clientBattleMap: ClientBattleMap) {
     if (getManhattenDistance(actingUnit.tileCoord, targetUnit.tileCoord) <= 1) { return true; }
 
     const canMoveBeside = [[-1, 0], [1, 0], [0, -1], [0, 1]].some(([offsetX, offsetY]) => {
-        if (isTileWalkable({ x: targetUnit.tileCoord.x + offsetX, y: targetUnit.tileCoord.y + offsetY }, unitManager)) {
+        if (isTileWalkable(
+            { x: targetUnit.tileCoord.x + offsetX, y: targetUnit.tileCoord.y + offsetY },
+            unitManager, 
+            clientBattleMap)) {
             return true;
         }
         return false;
@@ -18,10 +21,10 @@ function isAbleToAttack(actingUnit: BattleUnit, targetUnit: BattleUnit, unitMana
     return canMoveBeside;
 }
 
-function findTargetForUnit(actingUnit: BattleUnit, enemyUnits: Array<BattleUnit>, unitManager: UnitManager): BattleUnit | null {
+function findTargetForUnit(actingUnit: BattleUnit, enemyUnits: Array<BattleUnit>, unitManager: UnitManager, clientBattleMap: ClientBattleMap): BattleUnit | null {
     return enemyUnits.reduce((targetUnit: BattleUnit, nextUnit: BattleUnit) => {
         if (!targetUnit) { return nextUnit; }
-        if (!isAbleToAttack(actingUnit, nextUnit, unitManager)) { return targetUnit; }
+        if (!isAbleToAttack(actingUnit, nextUnit, unitManager, clientBattleMap)) { return targetUnit; }
         
         const currentDist = getManhattenDistance(actingUnit.tileCoord, targetUnit.tileCoord);
         const nextDist = getManhattenDistance(actingUnit.tileCoord, nextUnit.tileCoord);
@@ -80,7 +83,7 @@ export default {
         const enemyUnits = unitManager.getUnitsOnOppositeTeam(currentTurn.team);
 
         controlledUnits.forEach((unit: BattleUnit) => {
-            const targetUnit = findTargetForUnit(unit, enemyUnits, unitManager);
+            const targetUnit = findTargetForUnit(unit, enemyUnits, unitManager, clientBattleMap);
             if (!targetUnit) { return }
             moveUnitToDesiredRange(unit, targetUnit.tileCoord, 1, clientBattleMap, unitManager, issueUnitOrder);
             useAttackAbilities(unit, targetUnit, clientBattleMap, unitManager, issueUnitOrder);

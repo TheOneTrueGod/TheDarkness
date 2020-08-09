@@ -42,7 +42,7 @@ export default class InteractionHandler {
                 y: event.offsetY
             });
             
-            const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord);
+            const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
 
             if (event.button === MOUSE_BUTTON_LEFT) {
                 if (targetUnit) {
@@ -60,7 +60,7 @@ export default class InteractionHandler {
                     tileCoord.x !== this.selectedUnit.tileCoord.x ||
                     tileCoord.y !== this.selectedUnit.tileCoord.y
                 )) {
-                    const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord);
+                    const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
 
                     if (targetUnit && attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord])) {
                         issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [tileCoord], attackAbility));

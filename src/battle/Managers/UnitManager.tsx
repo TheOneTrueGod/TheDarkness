@@ -1,22 +1,28 @@
 import BattleUnit from "../BattleUnits/BattleUnit";
 import { TileCoord, CurrentTurn, Team } from "../BattleTypes";
-import { tileCoordToInteger, positionToTileCoord } from "../BattleHelpers";
+import { tileCoordToInteger } from "../BattleHelpers";
+import ClientBattleMap from "../BattleMap/ClientBattleMap";
 
 export default class UnitManager {
     unitList: Array<BattleUnit>;
+    playerUnitList: Array<BattleUnit>;
     unitsByPosition: Record<number, BattleUnit>
 
     constructor() {
         this.unitList = [];
+        this.playerUnitList = [];
         this.unitsByPosition = {};
     }
 
-    addBattleUnit(battleUnit: BattleUnit) {
+    addBattleUnit(battleUnit: BattleUnit, clientBattleMap: ClientBattleMap) {
         this.unitList.push(battleUnit);
-        this.setBattleUnitPosition(battleUnit);
+        if (battleUnit.team === 'players' || battleUnit.team === 'allies') {
+            this.playerUnitList.push(battleUnit);
+        }
+        this.setBattleUnitPosition(battleUnit, clientBattleMap);
     }
 
-    setBattleUnitPosition(battleUnit: BattleUnit) {
+    setBattleUnitPosition(battleUnit: BattleUnit, clientBattleMap: ClientBattleMap) {
         const unitSize = battleUnit.getUnitSize();
         for (let xOffset = 0; xOffset < unitSize.x; xOffset++) {
             for (let yOffset = 0; yOffset < unitSize.y; yOffset++) {
@@ -24,14 +30,14 @@ export default class UnitManager {
                 const positionNumber = tileCoordToInteger({
                     x: tileCoord.x + xOffset,
                     y: tileCoord.y + yOffset
-                });
+                }, clientBattleMap.getMapSize());
 
                 this.unitsByPosition[positionNumber] = battleUnit;
             }
         }
     }
 
-    removeUnitBattlePosition(battleUnit: BattleUnit) {
+    removeUnitBattlePosition(battleUnit: BattleUnit, clientBattleMap: ClientBattleMap) {
         const unitSize = battleUnit.getUnitSize();
         for (let xOffset = 0; xOffset < unitSize.x; xOffset++) {
             for (let yOffset = 0; yOffset < unitSize.y; yOffset++) {
@@ -39,17 +45,17 @@ export default class UnitManager {
                 const positionNumber = tileCoordToInteger({
                     x: tileCoord.x + xOffset,
                     y: tileCoord.y + yOffset
-                });
+                }, clientBattleMap.getMapSize());
 
                 delete this.unitsByPosition[positionNumber];
             }
         }
     }
 
-    moveUnit(unit: BattleUnit, targetTile: TileCoord) {
-        this.removeUnitBattlePosition(unit);
+    moveUnit(unit: BattleUnit, targetTile: TileCoord, clientBattleMap: ClientBattleMap) {
+        this.removeUnitBattlePosition(unit, clientBattleMap);
         unit.setTileCoord(targetTile);
-        this.setBattleUnitPosition(unit);
+        this.setBattleUnitPosition(unit, clientBattleMap);
     }
 
     updateUnitDebugSprites(pixiLoader: PIXI.Loader, debugContainer: PIXI.Sprite) {
@@ -58,8 +64,8 @@ export default class UnitManager {
         });
     }
     
-    getUnitAtTileCoord(tileCoord: TileCoord): BattleUnit | null {
-        const tileNumber = tileCoordToInteger(tileCoord);
+    getUnitAtTileCoord(tileCoord: TileCoord, clientBattleMap: ClientBattleMap): BattleUnit | null {
+        const tileNumber = tileCoordToInteger(tileCoord, clientBattleMap.getMapSize());
         const unit = this.unitsByPosition[tileNumber];
         return unit || null;
     }
@@ -103,14 +109,22 @@ export default class UnitManager {
         }
     }
 
-    cleanupStep() {
+    getPlayerUnits() {
+        return this.playerUnitList;
+    }
+
+    cleanupStep(clientBattleMap: ClientBattleMap) {
         let i = 0;
         while (i < this.unitList.length) {
             if (this.unitList[i].health.current <= 0) {
+                if (this.unitList[i].team === 'players') {
+                    this.playerUnitList.splice(this.playerUnitList.indexOf(this.unitList[i]));
+                }
                 this.unitList[i].prepareForDeletion();
-                this.removeUnitBattlePosition(this.unitList[i]);
+                this.removeUnitBattlePosition(this.unitList[i], clientBattleMap);
                 this.unitList.splice(i, 1);
             } else {
+                this.unitList[i].onCleanupStep(clientBattleMap);
                 i += 1;
             }
         }

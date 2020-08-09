@@ -14,4 +14,9 @@ export default class CaravanUnit extends BattleUnit {
     canAct() {
         return false;
     }
+
+    // Lightness Related Stats
+    getLightLevel() {
+        return 7;
+    }
 }

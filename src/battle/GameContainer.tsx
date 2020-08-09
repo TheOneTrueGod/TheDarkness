@@ -38,6 +38,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         terrain: PIXI.Sprite,
         units: PIXI.Container,
         debug: PIXI.Sprite,
+        darkness: PIXI.Sprite,
     };
     unitManager: UnitManager;
     interactionHandler: InteractionHandler;
@@ -55,6 +56,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             terrain: new PIXI.Sprite(),
             units: new PIXI.Container(),
             debug: new PIXI.Sprite(),
+            darkness: new PIXI.Sprite(),
         };
         this.unitManager = new UnitManager();
         this.orderManager = new OrderManager();
@@ -85,6 +87,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         this.pixiApp.stage.addChild(this.renderContainers.terrain);
         this.pixiApp.stage.addChild(this.renderContainers.units);
+        this.pixiApp.stage.addChild(this.renderContainers.darkness);
         if (DEBUG_MODE) {
             this.pixiApp.stage.addChild(this.renderContainers.debug);
         }
@@ -99,13 +102,14 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.issueUnitOrder,
             this.clientBattleMap,
         );
+        this.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.unitManager, user);
         this.startTurn(battle.currentTurn);
     }
 
     issueUnitOrder = (unitOrder: UnitOrder) => {
-        const { battle } = this.props;
+        const { user } = this.props;
         this.orderManager.addUnitOrder(unitOrder);
-        this.orderManager.playNextOrder(this.clientBattleMap, this.unitManager);
+        this.orderManager.playNextOrder(this.clientBattleMap, this.unitManager, user, this.renderContainers.darkness);
         this.setState({
             selectedUnit: this.state.selectedUnit
         });
@@ -130,7 +134,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     startTurn(nextTurn: CurrentTurn) {
-        const { battle } = this.props;
         const { currentTurn } = this.state;
 
         if (currentTurn !== nextTurn) {
@@ -139,6 +142,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             });
 
             this.onStartTurn(nextTurn);
+            this.unitManager.cleanupStep(this.clientBattleMap);
             if (isAITurn(nextTurn)) {
                 AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, this.clientBattleMap, this.issueUnitOrder);
                 this.endTurn(nextTurn);
@@ -166,7 +170,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {
-        this.unitManager.addBattleUnit(battleUnit);
+        this.unitManager.addBattleUnit(battleUnit, this.clientBattleMap);
         this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
     }
 

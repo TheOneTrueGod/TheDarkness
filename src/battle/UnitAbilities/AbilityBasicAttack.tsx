@@ -11,7 +11,7 @@ export default class AbilityBasicAttack extends BaseAbility {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         user.useAbilityPoints(AbilityPointType.ACTION, 1);
-        const targetUnit = unitManager.getUnitAtTileCoord(targets[0] as TileCoord);
+        const targetUnit = unitManager.getUnitAtTileCoord(targets[0] as TileCoord, clientBattleMap);
         targetUnit.dealDamage(1);
         //unitManager.moveUnit(user, targets[0] as TileCoord);
     }
@@ -21,7 +21,7 @@ export default class AbilityBasicAttack extends BaseAbility {
             return false;
         }
 
-        if (!unitManager.getUnitAtTileCoord(targets[0] as TileCoord)) {
+        if (!unitManager.getUnitAtTileCoord(targets[0] as TileCoord, clientBattleMap)) {
             return false;
         }
 

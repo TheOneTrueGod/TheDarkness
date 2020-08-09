@@ -76,9 +76,15 @@ export function tileCoordToPosition(tileCoord: TileCoord): GamePosition {
     return gamePosition;
 }
 
-export function tileCoordToInteger(tileCoord: TileCoord): number {
-    const { y: tileSizeY } = getTileSize();
-    return tileCoord.y * tileSizeY + tileCoord.x;
+export function tileCoordToInteger(tileCoord: TileCoord, mapSize: TileCoord): number {
+    const { x: tileSizeX } = mapSize;
+    return tileCoord.y * tileSizeX + tileCoord.x;
+}
+
+export function integerToTileCoord(positionNumber: number, mapSize: TileCoord): TileCoord {
+    const y = Math.floor(positionNumber / mapSize.x);
+    const x = positionNumber % mapSize.x;
+    return { x, y };
 }
 
 export function createInitialBattleUnits(
@@ -142,16 +148,16 @@ export function getShortestPath(
     unitManager: UnitManager,
 ): Array<TileCoord> {
     const searchGraph = new Graph((coord: TileCoord) => {
-        if (!isTileWalkable(coord, unitManager)) { return 0; }
+        if (!isTileWalkable(coord, unitManager, clientBattleMap)) { return 0; }
         return 1;
-    }, clientBattleMap.size);
+    }, clientBattleMap.mapSize);
 
     const path = astar.search(searchGraph, pos1, pos2, { adjacent: true });
     return path;
 }
 
-export function isTileWalkable(tile: TileCoord, unitManager: UnitManager) {
-    if (unitManager.getUnitAtTileCoord(tile) !== null) { return false; }
+export function isTileWalkable(tile: TileCoord, unitManager: UnitManager, clientBattleMap: ClientBattleMap) {
+    if (unitManager.getUnitAtTileCoord(tile, clientBattleMap) !== null) { return false; }
 
     return true;
 }
