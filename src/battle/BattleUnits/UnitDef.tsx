@@ -1,4 +1,6 @@
 import { SpriteList } from "../SpriteUtils"
+import BaseAbility from "../UnitAbilities/BaseAbility"
+import AbilityMap from "../UnitAbilities/AbilityMap"
 
 export type UnitDef = {
     image: SpriteList;
@@ -6,6 +8,7 @@ export type UnitDef = {
     movementPoints: number;
     actionPoints: number;
     size: { x: number, y: number };
+    abilities: Array<BaseAbility>;
 }
 
 export const TempPlayerUnitDef: UnitDef = {
@@ -14,6 +17,7 @@ export const TempPlayerUnitDef: UnitDef = {
     movementPoints: 2,
     actionPoints: 2,
     size: { x: 1, y: 1 },
+    abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack, AbilityMap.BlinkMove],
 }
 
 export const CaravanUnitDef: UnitDef = {
@@ -22,6 +26,7 @@ export const CaravanUnitDef: UnitDef = {
     movementPoints: 0,
     actionPoints: 0,
     size: { x: 2, y: 2 },
+    abilities: [],
 }
 
 export const EnemyWolfUnitDef: UnitDef = {
@@ -30,4 +35,5 @@ export const EnemyWolfUnitDef: UnitDef = {
     movementPoints: 2,
     actionPoints: 1,
     size: { x: 1, y: 1 },
+    abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack],
 }

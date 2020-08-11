@@ -22,6 +22,11 @@ export default class UnitResource {
         this.current -= amount;
     }
 
+    spendResource(amount: number) {
+        if (this.current < amount) { throw new Error(`Unit doesn't have enough of ${this.type} resource!`)}
+        this.current -= amount;
+    }
+
     getDisplayDef(): UnitResourceDisplayDefType {
         return UnitResourceDisplayDefs[this.type];
     }

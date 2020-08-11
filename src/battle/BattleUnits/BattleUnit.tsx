@@ -33,6 +33,7 @@ export default class BattleUnit {
     isVisible: boolean;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
+    abilities: Array<BaseAbility> = [];
     debugPathing: {
         target: TileCoord,
         path: Array<TileCoord>,
@@ -62,6 +63,10 @@ export default class BattleUnit {
 
         this.health = new UnitResource(UnitResourceTypes.HEALTH, unitDef.health);
         this.energyResources = [new UnitResource(UnitResourceTypes.BLINK_ENERGY, 12, 9)];
+
+        this.unitDef.abilities.forEach((ability) => {
+            this.abilities.push(ability);
+        })
     }
 
     getAbilityPoints() {
@@ -302,5 +307,15 @@ export default class BattleUnit {
 
     isDead() {
         return this.health.current <= 0;
+    }
+
+    hasResource(resourceType: UnitResourceTypes, amount: number): boolean {
+        return this.energyResources.find((resource) => 
+            resource.type === resourceType && resource.current >= amount
+        ) !== undefined;
+    }
+
+    useResource(resourceType: UnitResourceTypes, amount: number) {
+        this.energyResources.find((resource) => resource.type === resourceType).spendResource(amount);
     }
 };
