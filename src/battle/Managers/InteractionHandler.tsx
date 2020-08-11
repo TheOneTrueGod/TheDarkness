@@ -6,6 +6,7 @@ import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
 import User from "../../../object_defs/User";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
+import BaseAbility from "../UnitAbilities/BaseAbility";
 
 export default class InteractionHandler {
     currentTurn: CurrentTurn;
@@ -104,6 +105,10 @@ export default class InteractionHandler {
             event.preventDefault();
             return false;
         });
+    }
+
+    handleAbilityClick(ability: BaseAbility, selectAbilityCallback: Function): void {
+        selectAbilityCallback(ability);
     }
 
     onStartTurn(currentTurn: CurrentTurn) {

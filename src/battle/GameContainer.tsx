@@ -16,6 +16,7 @@ import BattleHeaderComponent from './BattleHeaderComponent';
 import User from '../../object_defs/User';
 import AIManager from './Managers/AIManager';
 import { DEBUG_MODE } from './BattleConstants';
+import BaseAbility from './UnitAbilities/BaseAbility';
 
 const canvasSize = { width: 800, height: 600 };
 
@@ -27,6 +28,7 @@ export type GameContainerProps = {
 
 export type GameContainerState = {
     selectedUnit: BattleUnit | null;
+    selectedAbility: BaseAbility;
     currentTurn: CurrentTurn;
 }
 
@@ -65,6 +67,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         this.state = {
             selectedUnit: null,
+            selectedAbility: null,
             currentTurn: {
                 team: props.battle.currentTurn.team,
                 owner: props.battle.currentTurn.owner,
@@ -166,7 +169,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         const { selectedUnit: previousUnit } = this.state;
         previousUnit && previousUnit.setSelected(false);
         selectedUnit.setSelected(true);
-        this.setState({ selectedUnit });
+        this.setState({ selectedUnit, selectedAbility: null });
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {
@@ -176,7 +179,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
     render() {
         const { user } = this.props;
-        const { selectedUnit, currentTurn } = this.state;
+        const { selectedUnit, selectedAbility, currentTurn } = this.state;
         return (
             <div style={{
                 width: canvasSize.width,
@@ -190,7 +193,16 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                     onEndTurnClick={this.onEndTurnClick}
                 />
                 <div ref={this.updatePixiContainer} />
-                <UnitDetailsBanner selectedUnit={selectedUnit} user={user} />
+                <UnitDetailsBanner 
+                    selectedUnit={selectedUnit}
+                    selectedAbility={selectedAbility}
+                    user={user}
+                    onAbilityClick={(unit: BattleUnit, ability: BaseAbility) => {
+                        this.interactionHandler.handleAbilityClick(ability, (ability: BaseAbility) => {
+                            this.setState({ selectedAbility: ability });
+                        });
+                    }}
+                />
             </div>
         )
     }

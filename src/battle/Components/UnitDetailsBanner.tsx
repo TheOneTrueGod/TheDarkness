@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import UnitResourceBar from './UnitResourceBar';
 import UnitAbilityBar from './UnitAbilityBar';
 import User from '../../../object_defs/User';
+import BaseAbility from '../UnitAbilities/BaseAbility';
 
 const bannerHeight = '80px';
 const BottomBanner = styled.div`
@@ -50,6 +51,8 @@ const ActionPointContainer = styled.div`
 
 export type UnitDetailsBannerProps = {
     selectedUnit: BattleUnit | null;
+    selectedAbility: BaseAbility | null;
+    onAbilityClick: Function;
     user: User;
 }
 
@@ -59,7 +62,7 @@ export type UnitDetailsBannerState = {
 
 export default class UnitDetailsBanner extends React.Component<UnitDetailsBannerProps, UnitDetailsBannerState> {
     render() {
-        const { selectedUnit, user } = this.props;
+        const { selectedUnit, selectedAbility, user, onAbilityClick } = this.props;
         const top = selectedUnit ? `calc(100% - ${bannerHeight})` : `100%`
         const actionPoints = [];
         const movementPoints = [];
@@ -106,7 +109,7 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
                     )}
                 </BottomSection>
                 <BottomSection style={{ flexGrow: 1 }}>
-                    {selectedUnit && isOwner && (<UnitAbilityBar unit={selectedUnit} />)}
+                    {selectedUnit && isOwner && (<UnitAbilityBar unit={selectedUnit} selectedAbility={selectedAbility} onAbilityClick={onAbilityClick} />)}
                 </BottomSection>
                 <BottomSection style={{ flexBasis: '20%' }}>
                     <ActionPointContainer>{actionPoints}</ActionPointContainer>
