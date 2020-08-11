@@ -1,6 +1,7 @@
 import React from 'react';
 import BattleUnit from '../BattleUnits/BattleUnit';
 import styled from 'styled-components';
+import UnitResource from '../BattleUnits/UnitResources';
 
 const RoundedDiv = styled.div`
     border-radius: 4px;
@@ -27,10 +28,7 @@ const InnerRoundedDiv = styled(RoundedDiv)`
 `;
 
 export type UnitResourceBarProps = {
-    color: string;
-    currValue: number;
-    maxValue: number;
-    pointsPerPip?: number;
+    resource: UnitResource;
 }
 
 export type UnitResourceBarState = {
@@ -39,7 +37,14 @@ export type UnitResourceBarState = {
 
 export default class UnitResourceBar extends React.Component<UnitResourceBarProps, UnitResourceBarState> {
     render() {
-        const { currValue, maxValue, color, pointsPerPip = 1 } = this.props;
+        const { resource } = this.props;
+        const currValue = resource.current;
+        const maxValue = resource.max;
+        const displayDef = resource.getDisplayDef();
+
+        const pointsPerPip = displayDef.pointsPerPip;
+        const color = displayDef.color;
+
         const barPercentages = [];
         for (let i = 0; i < maxValue; i += pointsPerPip) {
             if (i + pointsPerPip < currValue) { barPercentages.push(1); }

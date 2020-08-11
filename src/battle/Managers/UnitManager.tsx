@@ -116,7 +116,7 @@ export default class UnitManager {
     cleanupStep(clientBattleMap: ClientBattleMap) {
         let i = 0;
         while (i < this.unitList.length) {
-            if (this.unitList[i].health.current <= 0) {
+            if (this.unitList[i].isDead()) {
                 if (this.unitList[i].team === 'players') {
                     this.playerUnitList.splice(this.playerUnitList.indexOf(this.unitList[i]));
                 }

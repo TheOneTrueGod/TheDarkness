@@ -8,6 +8,7 @@ import AbilityMap from "../UnitAbilities/AbilityMap";
 import { UnitDef, TempPlayerUnitDef } from "./UnitDef";
 import User from "../../../object_defs/User.js";
 import ClientBattleMap from "../BattleMap/ClientBattleMap.js";
+import UnitResource, { UnitResourceTypes } from './UnitResources';
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -25,7 +26,8 @@ export default class BattleUnit {
     id: number;
     unitDef: UnitDef;
     team: Team;
-    health: { current: number, max: number };
+    health: UnitResource;
+    energyResources: Array<UnitResource>;
     initiativeNumber: number = 0;
     owner: UnitOwner;
     isVisible: boolean;
@@ -58,10 +60,8 @@ export default class BattleUnit {
             selected: null,
         };
 
-        this.health = {
-            current: unitDef.health,
-            max: unitDef.health,
-        };
+        this.health = new UnitResource(UnitResourceTypes.HEALTH, unitDef.health);
+        this.energyResources = [new UnitResource(UnitResourceTypes.BLINK_ENERGY, 12, 9)];
     }
 
     getAbilityPoints() {
@@ -254,10 +254,6 @@ export default class BattleUnit {
         return user.id === this.owner && currentTurn.owner === this.owner && currentTurn.team === this.team;
     }
 
-    dealDamage(amount: number) {
-        this.health.current -= amount;
-    }
-
     onTurnStart() {
         this.abilityPointsUsed = { action: 0, movement: 0 };
     }
@@ -297,5 +293,14 @@ export default class BattleUnit {
     // phases
     onCleanupStep(clientBattleMap: ClientBattleMap) {
         this.setVisible(clientBattleMap.isTileVisible({ ...this.tileCoord }));
+    }
+
+    // Resources
+    dealDamage(amount: number) {
+        this.health.loseResource(amount);
+    }
+
+    isDead() {
+        return this.health.current <= 0;
     }
 };

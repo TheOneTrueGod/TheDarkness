@@ -85,16 +85,18 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
                     {selectedUnit && (
                         <>
                             <UnitResourceBar 
-                                color={'#FF0000'}
-                                currValue={selectedUnit.health.current} 
-                                maxValue={selectedUnit.health.max}
+                                resource={selectedUnit.health}
                             />
-                            <div style={{height: '4px'}}></div>
-                            <UnitResourceBar 
-                                color={'#FF00FF'}
-                                currValue={8} 
-                                maxValue={12}
-                            />
+                            {selectedUnit.energyResources.map((resource) => {
+                                return (
+                                    <>
+                                        <div style={{height: '4px'}}></div>
+                                        <UnitResourceBar 
+                                            resource={resource}
+                                        />
+                                    </>
+                                );
+                            })}
                         </>
                     )}
                 </BottomSection>
