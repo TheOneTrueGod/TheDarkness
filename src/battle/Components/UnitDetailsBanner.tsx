@@ -81,7 +81,7 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
 
         return (
             <BottomBanner style={{ top }}>
-                <BottomSection style={{ flexBasis: '20%' }}>
+                <BottomSection style={{ flexBasis: '30%' }}>
                     {selectedUnit && (
                         <>
                             <UnitResourceBar 

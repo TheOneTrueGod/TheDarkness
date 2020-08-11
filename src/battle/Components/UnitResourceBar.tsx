@@ -20,7 +20,7 @@ const ContainerDiv = styled(RoundedDiv)`
 `;
 
 const InnerRoundedDiv = styled(RoundedDiv)`
-    height: 80%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
@@ -55,6 +55,14 @@ export default class UnitResourceBar extends React.Component<UnitResourceBarProp
 
         return (
             <ContainerDiv>
+                <div style={{
+                    width: '40px',
+                    display: 'flex', justifyContent: 'center',
+                }}>
+                    <div style={{ fontSize: '10px', background: 'black', color: 'white', borderRadius: '4px', padding: '1px 4px'}}>
+                        {currValue} / {maxValue}
+                    </div>
+                </div>
                 {barPercentages.map((percent, index, arr) => {
                     let flexGrow = 1;
                     if (index === barPercentages.length - 1) {
@@ -72,14 +80,6 @@ export default class UnitResourceBar extends React.Component<UnitResourceBarProp
                         </React.Fragment>
                     );
                 })}
-                <div style={{
-                    width: '100%', position: 'absolute', bottom: 0,
-                    display: 'flex', justifyContent: 'center',
-                }}>
-                    <div style={{ fontSize: '10px', background: 'black', color: 'white', borderRadius: '4px', padding: '1px 4px'}}>
-                        {currValue} / {maxValue}
-                    </div>
-                </div>
             </ContainerDiv>
         );
     }
