@@ -5,28 +5,40 @@ import User from "../../../object_defs/User";
 import { getManhattenDistance, tileCoordToInteger, integerToTileCoord, tileCoordToPosition } from "../BattleHelpers";
 import { getTileSize } from "../BattleConstants";
 
-function getAllTilesVisibleAtDistance(mapSize: TileCoord, tileCoord: TileCoord, distance: number): Array<TileCoord> {
-    const tilesVisited = {[tileCoordToInteger(tileCoord, mapSize)]: tileCoord};
-    const tilesToSearch = [tileCoord];
+type CoordWithLightLevel = {
+    tileCoord: TileCoord;
+    lightLevel: number;
+}
+export function getAllTilesVisibleAtLightLevel(mapSize: TileCoord, tileCoord: TileCoord, unitSize: TileCoord, lightLevel: number): Array<CoordWithLightLevel> {
+    if (lightLevel === 0) {
+        return [];
+    }
+    const tilesVisited: Record<number, CoordWithLightLevel> = {};
+    const tilesToSearch: Array<CoordWithLightLevel> = [];
+    for (let xOff = 0; xOff < unitSize.x; xOff++) {
+        for (let yOff = 0; yOff < unitSize.y; yOff++) {
+            const coord = { x: tileCoord.x + xOff, y: tileCoord.y + yOff };
+            tilesVisited[tileCoordToInteger(coord, mapSize)] = { tileCoord: coord, lightLevel: lightLevel };
+            tilesToSearch.push({ tileCoord: coord, lightLevel: lightLevel });
+        }
+    }
+
     while (tilesToSearch.length) {
         const currTile = tilesToSearch.shift();
-        [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([xOff, yOff]) => {
-            const nextTile = { x: currTile.x + xOff, y: currTile.y + yOff };
-            const positionNumber = tileCoordToInteger(nextTile, mapSize);
-            if (
-                nextTile.x >= 0 && nextTile.y >= 0 &&
-                nextTile.x < mapSize.x && nextTile.y < mapSize.y &&
-                !tilesVisited[positionNumber] &&
-                // TODO: Don't do it this way.  Store the distance instead and count it down in the heap.
-                getManhattenDistance(
-                    tileCoord,
-                    nextTile
-                ) < distance
-            ) {
-                tilesToSearch.push(nextTile)
-                tilesVisited[positionNumber] = nextTile;
-            }
-        });
+        if (currTile.lightLevel > 1) {
+            [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([xOff, yOff]) => {
+                const nextTile = { x: currTile.tileCoord.x + xOff, y: currTile.tileCoord.y + yOff };
+                const positionNumber = tileCoordToInteger(nextTile, mapSize);
+                if (
+                    nextTile.x >= 0 && nextTile.y >= 0 &&
+                    nextTile.x < mapSize.x && nextTile.y < mapSize.y &&
+                    !tilesVisited[positionNumber]
+                ) {
+                    tilesToSearch.push({ tileCoord: nextTile, lightLevel: currTile.lightLevel - 1 });
+                    tilesVisited[positionNumber] = { tileCoord: nextTile, lightLevel: currTile.lightLevel - 1 };
+                }
+            });
+        }
     }
     return Object.values(tilesVisited);
 }
@@ -36,10 +48,12 @@ export default class LightnessMap {
     // Maps a tile-number to the lightness level there.
     lightLevels: Record<number, number>;
     lightSprites: Array<PIXI.Sprite>;
+    visibility: Record<number, boolean>;
     constructor(mapSize: TileCoord) {
         this.mapSize = { ...mapSize };
         this.lightLevels = {}; //
         this.lightSprites = [];
+        this.visibility = [];
     }
 
     update(
@@ -52,15 +66,33 @@ export default class LightnessMap {
         const userOwnsAnyUnits = playerUnits.find(unit => unit.owner === user.id) !== undefined;
         playerUnits.forEach(unit => {
             if (!userOwnsAnyUnits || unit.owner === user.id || unit.team === 'allies') {
+                if (unit.team === 'players' && (!userOwnsAnyUnits || unit.owner === user.id)) {
+                    const unitSize = unit.getUnitSize();
+                    for (let x = unit.tileCoord.x; x < unit.tileCoord.x + unitSize.x; x++) {
+                        this.visibility[tileCoordToInteger({ x, y: unit.tileCoord.y - 1 }, this.mapSize)] = true;
+                        this.visibility[tileCoordToInteger({ x, y: unit.tileCoord.y + unitSize.y}, this.mapSize)] = true;
+                    }
+
+                    for (let y = unit.tileCoord.y; y < unit.tileCoord.y + unitSize.y; y++) {
+                        this.visibility[tileCoordToInteger({ x: unit.tileCoord.x - 1, y }, this.mapSize)] = true;
+                        this.visibility[tileCoordToInteger({ x: unit.tileCoord.x + unitSize.x, y }, this.mapSize)] = true;
+                    }
+                    for (let x = unit.tileCoord.x; x < unit.tileCoord.x + unitSize.x; x++) {
+                        for (let y = unit.tileCoord.y; y < unit.tileCoord.y + unitSize.y; y++) {
+                            this.visibility[tileCoordToInteger({ x, y }, this.mapSize)] = true;
+                        }
+                    }
+                }
                 const unitLightLevel = unit.getLightLevel();
-                const visibleTiles = getAllTilesVisibleAtDistance(this.mapSize, unit.tileCoord, unitLightLevel);
-                visibleTiles.forEach((tile: TileCoord) => {
-                    const positionNumber = tileCoordToInteger(tile, this.mapSize);
-                    const lightLevelAtTile = unitLightLevel - getManhattenDistance(unit.tileCoord, tile)
+                const visibleTiles = getAllTilesVisibleAtLightLevel(this.mapSize, unit.tileCoord, unit.getUnitSize(), unitLightLevel);
+                visibleTiles.forEach((coordWithLightLevel: CoordWithLightLevel) => {
+                    const positionNumber = tileCoordToInteger(coordWithLightLevel.tileCoord, this.mapSize);
+                    const lightLevelAtTile = coordWithLightLevel.lightLevel;
                     if (lightLevelAtTile <= 0) {
                         debugger; // This shouldn't happen -- investigate.
                         throw new Error("This shouldn't happen");
                     }
+                    this.visibility[positionNumber] = true;
                     if (this.lightLevels[positionNumber]) {
                         this.lightLevels[positionNumber] = Math.max(
                             this.lightLevels[positionNumber],
@@ -79,6 +111,13 @@ export default class LightnessMap {
 
         if (!this.lightLevels[positionNumber]) { return 0; }
         return this.lightLevels[positionNumber];
+    }
+
+    getVisible(tile: TileCoord): boolean {
+        const positionNumber = tileCoordToInteger(tile, this.mapSize);
+
+        if (!this.visibility[positionNumber]) { return false; }
+        return this.visibility[positionNumber];
     }
 
     updateDarknessContainer(darknessContainer: PIXI.Sprite, clientBattleMap: ClientBattleMap) {
@@ -111,17 +150,22 @@ export default class LightnessMap {
 
         for (let x = 0; x < mapSize.x; x++) {
             for (let y = 0; y < mapSize.y; y++) {
+                const visible = this.getVisible({ x, y });
                 const lightLevel = this.getLightLevel({ x, y });
                 const positionNumber = tileCoordToInteger({ x, y }, clientBattleMap.getMapSize());
-                if (lightLevel > 2) {
-                    this.lightSprites[positionNumber].alpha = 0;
-                } else if (lightLevel > 1) {
-                    this.lightSprites[positionNumber].alpha = 0.1;
-                } else if (lightLevel > 0) {
-                    this.lightSprites[positionNumber].alpha = 0.5;
-                } else {
-                    this.lightSprites[positionNumber].alpha = 0.75;
+                let alphaLevel = 0.75;
+                if (visible) {
+                    if (lightLevel > 2) {
+                        alphaLevel = 0;
+                    } else if (lightLevel > 1) {
+                        alphaLevel = 0.1;
+                    } else if (lightLevel > 0) {
+                        alphaLevel = 0.3
+                    } else {
+                        alphaLevel = 0.5;
+                    }
                 }
+                this.lightSprites[positionNumber].alpha = alphaLevel;
             }
         }
     }

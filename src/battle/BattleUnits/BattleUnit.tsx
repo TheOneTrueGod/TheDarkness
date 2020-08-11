@@ -285,12 +285,11 @@ export default class BattleUnit {
 
     // Lightness Related Stats
     getLightLevel() {
-        return 3;
+        return 0;
     }
 
     // phases
     onCleanupStep(clientBattleMap: ClientBattleMap) {
-        console.log(clientBattleMap.isTileVisible({ ...this.tileCoord }));
         if (clientBattleMap.isTileVisible({ ...this.tileCoord })) {
             this.sprite.visible = true;
         } else {

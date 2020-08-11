@@ -8,7 +8,7 @@
     "url": "https://github.com/TheOneTrueGod/TheDarkness"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npx webpack",
     "start": "node server.mjs",
     "watch": "npm run build && npm-watch build"
@@ -28,6 +28,7 @@
     "@types/node": "^13.11.1",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
+    "jest": "^26.2.2",
     "redux-devtools": "^3.5.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^7.0.4",

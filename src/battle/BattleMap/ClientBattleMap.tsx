@@ -28,7 +28,7 @@ export default class ClientBattleMap {
     }
 
     isTileVisible(tile: TileCoord): boolean {
-        return this.lightnessMap.getLightLevel(tile) > 0;
+        return this.lightnessMap.getVisible(tile);
     }
 
     getMapSize(): TileCoord {
