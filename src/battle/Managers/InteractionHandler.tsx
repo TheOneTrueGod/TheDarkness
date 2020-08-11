@@ -17,6 +17,10 @@ export default class InteractionHandler {
         this.selectedUnit = null;
     }
 
+    canClickOnUnit(targetUnit: BattleUnit) {
+        return targetUnit.isVisible;
+    }
+
     clickOnUnit(
         selectedUnit: BattleUnit,
         unitSelectedCallback: Function
@@ -45,7 +49,7 @@ export default class InteractionHandler {
             const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
 
             if (event.button === MOUSE_BUTTON_LEFT) {
-                if (targetUnit) {
+                if (targetUnit && this.canClickOnUnit(targetUnit)) {
                     this.clickOnUnit(targetUnit, unitSelectedCallback);
                 } else {
                     this.clickOnTerrain(tileCoord);

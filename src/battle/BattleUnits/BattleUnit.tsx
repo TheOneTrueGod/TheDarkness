@@ -28,6 +28,7 @@ export default class BattleUnit {
     health: { current: number, max: number };
     initiativeNumber: number = 0;
     owner: UnitOwner;
+    isVisible: boolean;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
     debugPathing: {
@@ -288,12 +289,13 @@ export default class BattleUnit {
         return 0;
     }
 
+    setVisible(visible: boolean) {
+        this.isVisible = visible;
+        this.sprite.visible = visible;
+    }
+
     // phases
     onCleanupStep(clientBattleMap: ClientBattleMap) {
-        if (clientBattleMap.isTileVisible({ ...this.tileCoord })) {
-            this.sprite.visible = true;
-        } else {
-            this.sprite.visible = false;
-        }
+        this.setVisible(clientBattleMap.isTileVisible({ ...this.tileCoord }));
     }
 };
