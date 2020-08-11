@@ -1,6 +1,7 @@
 import React from 'react';
-import BattleUnit from "./BattleUnits/BattleUnit"
+import BattleUnit from "../BattleUnits/BattleUnit"
 import styled from 'styled-components';
+import UnitHealthBar from './UnitHealthBar';
 
 const bannerHeight = '80px';
 const BottomBanner = styled.div`
@@ -81,9 +82,13 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
         return (
             <BottomBanner style={{ top }}>
                 <BottomSection style={{ flexBasis: '20%' }}>
-                    { selectedUnit && `Health: ${selectedUnit.health.current} / ${selectedUnit.health.max}` }
+                    {selectedUnit && selectedUnit.owner}
                 </BottomSection>
-                <BottomSection style={{ flexGrow: 1 }}>{selectedUnit && selectedUnit.owner}</BottomSection>
+                <BottomSection style={{ flexGrow: 1 }}>
+                    {selectedUnit && (
+                        <UnitHealthBar selectedUnit={selectedUnit} />
+                    )}
+                </BottomSection>
                 <BottomSection style={{ flexBasis: '20%' }}>
                     <ActionPointContainer>{actionPoints}</ActionPointContainer>
                     <ActionPointContainer>{movementPoints}</ActionPointContainer>

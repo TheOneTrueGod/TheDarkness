@@ -11,7 +11,7 @@ import { CurrentTurn } from './BattleTypes';
 import { createInitialBattleUnits, getNextTurn, isAITurn } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
-import UnitDetailsBanner from './UnitDetailsBanner';
+import UnitDetailsBanner from './Components/UnitDetailsBanner';
 import BattleHeaderComponent from './BattleHeaderComponent';
 import User from '../../object_defs/User';
 import AIManager from './Managers/AIManager';
