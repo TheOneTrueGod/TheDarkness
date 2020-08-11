@@ -1,7 +1,7 @@
 import React from 'react';
 import BattleUnit from "../BattleUnits/BattleUnit"
 import styled from 'styled-components';
-import UnitHealthBar from './UnitHealthBar';
+import UnitResourceBar from './UnitResourceBar';
 
 const bannerHeight = '80px';
 const BottomBanner = styled.div`
@@ -82,12 +82,24 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
         return (
             <BottomBanner style={{ top }}>
                 <BottomSection style={{ flexBasis: '20%' }}>
-                    {selectedUnit && selectedUnit.owner}
+                    {selectedUnit && (
+                        <>
+                            <UnitResourceBar 
+                                color={'#FF0000'}
+                                currValue={selectedUnit.health.current} 
+                                maxValue={selectedUnit.health.max}
+                            />
+                            <div style={{height: '4px'}}></div>
+                            <UnitResourceBar 
+                                color={'#FF00FF'}
+                                currValue={8} 
+                                maxValue={12}
+                            />
+                        </>
+                    )}
                 </BottomSection>
                 <BottomSection style={{ flexGrow: 1 }}>
-                    {selectedUnit && (
-                        <UnitHealthBar selectedUnit={selectedUnit} />
-                    )}
+                    {selectedUnit && selectedUnit.owner}
                 </BottomSection>
                 <BottomSection style={{ flexBasis: '20%' }}>
                     <ActionPointContainer>{actionPoints}</ActionPointContainer>
