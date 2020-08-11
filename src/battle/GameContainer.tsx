@@ -190,7 +190,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                     onEndTurnClick={this.onEndTurnClick}
                 />
                 <div ref={this.updatePixiContainer} />
-                <UnitDetailsBanner selectedUnit={selectedUnit} />
+                <UnitDetailsBanner selectedUnit={selectedUnit} user={user} />
             </div>
         )
     }

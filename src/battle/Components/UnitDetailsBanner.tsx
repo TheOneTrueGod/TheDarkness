@@ -2,6 +2,7 @@ import React from 'react';
 import BattleUnit from "../BattleUnits/BattleUnit"
 import styled from 'styled-components';
 import UnitResourceBar from './UnitResourceBar';
+import User from '../../../object_defs/User';
 
 const bannerHeight = '80px';
 const BottomBanner = styled.div`
@@ -48,6 +49,7 @@ const ActionPointContainer = styled.div`
 
 export type UnitDetailsBannerProps = {
     selectedUnit: BattleUnit | null;
+    user: User;
 }
 
 export type UnitDetailsBannerState = {
@@ -56,7 +58,7 @@ export type UnitDetailsBannerState = {
 
 export default class UnitDetailsBanner extends React.Component<UnitDetailsBannerProps, UnitDetailsBannerState> {
     render() {
-        const { selectedUnit } = this.props;
+        const { selectedUnit, user } = this.props;
         const top = selectedUnit ? `calc(100% - ${bannerHeight})` : `100%`
         const actionPoints = [];
         const movementPoints = [];
@@ -87,14 +89,14 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
                             <UnitResourceBar 
                                 resource={selectedUnit.health}
                             />
-                            {selectedUnit.energyResources.map((resource) => {
+                            {selectedUnit.owner == user.id && selectedUnit.energyResources.map((resource, index) => {
                                 return (
-                                    <>
+                                    <React.Fragment key={resource.type}>
                                         <div style={{height: '4px'}}></div>
                                         <UnitResourceBar 
                                             resource={resource}
                                         />
-                                    </>
+                                    </React.Fragment>
                                 );
                             })}
                         </>
