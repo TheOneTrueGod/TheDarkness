@@ -53,7 +53,7 @@ export default class LightnessMap {
         this.mapSize = { ...mapSize };
         this.lightLevels = {}; //
         this.lightSprites = [];
-        this.visibility = [];
+        this.visibility = {};
     }
 
     update(
@@ -62,6 +62,7 @@ export default class LightnessMap {
         user: User,
     ) {
         this.lightLevels = {};
+        this.visibility = {};
         const playerUnits = unitManager.getPlayerUnits();
         const userOwnsAnyUnits = playerUnits.find(unit => unit.owner === user.id) !== undefined;
         playerUnits.forEach(unit => {
