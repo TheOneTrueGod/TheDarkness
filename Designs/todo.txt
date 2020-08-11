@@ -1,0 +1,34 @@
+Abilities
+[] Player units should start boarded inside the caravan.  They should be able to unboard it.
+[] Create the concept of unit abilities
+[] Show player unit abilities at the bottom when they're selected
+[] Animations
+
+Items
+[] Players should have an inventory
+[] Players inventory should have two flares in it.
+[] Players should be able to use items in their inventory (start with flares)
+[] Enemies can drop things -- players should be able to pick them up.
+
+Flares
+[] Create a 'token' on the field
+[] Tokens can potentially give off light (probably need a list of "things that can produce light")
+[] The flare should die down over time
+
+Darkness
+[] Players should take damage (or gain some negative effect) when they're in the Darkness
+
+AI
+[] Units need to spawn a little bit away from the light over time.
+[] Explore mechanisms for this (Timer based?  "Rage" based, that reacts to player actions / units that already exist?)
+
+Terrain
+[] Need some variety in tiles
+[] Need different tiles, and to blend between them
+[] Need interactables (Food, materials, etc)
+
+Multiplayer / networking stuff
+[] Save the player's commands to the server when they hit end turn
+[] Save the board state after the turn has finished playing out, and it's another player's turn
+[] Record what turn a player last saw
+[] When the board state loads, show the game play out from that turn until the end (then record that they've seen it all)
