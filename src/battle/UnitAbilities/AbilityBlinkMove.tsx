@@ -1,10 +1,11 @@
-import BaseAbility, { AbilityTarget } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { UnitResourceTypes } from '../BattleUnits/UnitResources';
 import { getManhattenDistance } from '../BattleHelpers';
+import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
@@ -37,5 +38,12 @@ export default class AbilityBlinkMove extends BaseAbility {
         
         return user.hasAbilityPoints(AbilityPointType.MOVEMENT, this.movementPointCost) && 
             user.hasResource(UnitResourceTypes.BLINK_ENERGY, this.energyCost);
+    }
+
+    getDisplayDetails(): AbilityDisplayDetails {
+        return {
+            tempDisplayLetter: 'Bl',
+            icon: SpriteList.POSITION_MARKER,
+        }
     }
 }

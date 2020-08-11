@@ -1,7 +1,7 @@
 import AbilityBasicMove from './AbilityBasicMove';
 import AbilityBasicAttack from './AbilityBasicAttack';
 
-import AbilityBlinkMove from './AbilityBasicMove';
+import AbilityBlinkMove from './AbilityBlinkMove';
 
 const AbilityMap = {
     'BasicMove': new AbilityBasicMove,

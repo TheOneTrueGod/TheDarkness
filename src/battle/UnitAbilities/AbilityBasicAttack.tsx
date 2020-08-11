@@ -1,9 +1,10 @@
-import BaseAbility, { AbilityTarget } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
 import { getManhattenDistance } from '../BattleHelpers';
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
+import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicAttack extends BaseAbility {
     playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
@@ -28,5 +29,12 @@ export default class AbilityBasicAttack extends BaseAbility {
         if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > 1) { return false; }
         
         return user.hasAbilityPoints(AbilityPointType.ACTION, 1);
+    }
+
+    getDisplayDetails(): AbilityDisplayDetails {
+        return {
+            tempDisplayLetter: 'A',
+            icon: SpriteList.BROADSWORD,
+        }
     }
 }

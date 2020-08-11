@@ -1,5 +1,4 @@
 import React from 'react';
-import BattleUnit from '../BattleUnits/BattleUnit';
 import styled from 'styled-components';
 import UnitResource from '../BattleUnits/UnitResources';
 

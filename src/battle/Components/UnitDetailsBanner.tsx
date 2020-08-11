@@ -2,6 +2,7 @@ import React from 'react';
 import BattleUnit from "../BattleUnits/BattleUnit"
 import styled from 'styled-components';
 import UnitResourceBar from './UnitResourceBar';
+import UnitAbilityBar from './UnitAbilityBar';
 import User from '../../../object_defs/User';
 
 const bannerHeight = '80px';
@@ -81,6 +82,8 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
             }
         }
 
+        const isOwner = selectedUnit && selectedUnit.owner == user.id;
+
         return (
             <BottomBanner style={{ top }}>
                 <BottomSection style={{ flexBasis: '30%' }}>
@@ -89,7 +92,7 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
                             <UnitResourceBar 
                                 resource={selectedUnit.health}
                             />
-                            {selectedUnit.owner == user.id && selectedUnit.energyResources.map((resource, index) => {
+                            {isOwner && selectedUnit.energyResources.map((resource, index) => {
                                 return (
                                     <React.Fragment key={resource.type}>
                                         <div style={{height: '4px'}}></div>
@@ -103,7 +106,7 @@ export default class UnitDetailsBanner extends React.Component<UnitDetailsBanner
                     )}
                 </BottomSection>
                 <BottomSection style={{ flexGrow: 1 }}>
-                    {selectedUnit && selectedUnit.owner}
+                    {selectedUnit && isOwner && (<UnitAbilityBar unit={selectedUnit} />)}
                 </BottomSection>
                 <BottomSection style={{ flexBasis: '20%' }}>
                     <ActionPointContainer>{actionPoints}</ActionPointContainer>

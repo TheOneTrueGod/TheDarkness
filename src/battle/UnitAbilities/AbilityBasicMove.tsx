@@ -1,9 +1,10 @@
-import BaseAbility, { AbilityTarget } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { getManhattenDistance } from '../BattleHelpers';
+import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicMove extends BaseAbility {
     playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
@@ -32,5 +33,12 @@ export default class AbilityBasicMove extends BaseAbility {
         }
         
         return user.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
+    }
+
+    getDisplayDetails(): AbilityDisplayDetails {
+        return {
+            tempDisplayLetter: 'M',
+            icon: SpriteList.CROSSHAIR,
+        }
     }
 }
