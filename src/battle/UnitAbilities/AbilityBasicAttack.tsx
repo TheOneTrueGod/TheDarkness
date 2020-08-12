@@ -1,4 +1,4 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
@@ -7,6 +7,11 @@ import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicAttack extends BaseAbility {
+    maxRange = 1;
+    getTargetRestrictions(): Array<AbilityTargetRestrictions> {
+        return [{ enemyUnit: true, maxRange: this.maxRange }];
+    }
+
     playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
         if (!this.canUnitUseAbility(clientBattleMap, unitManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
@@ -15,6 +20,10 @@ export default class AbilityBasicAttack extends BaseAbility {
         const targetUnit = unitManager.getUnitAtTileCoord(targets[0] as TileCoord, clientBattleMap);
         targetUnit.dealDamage(1);
         //unitManager.moveUnit(user, targets[0] as TileCoord);
+    }
+
+    doesUnitHaveResourcesForAbility(user: BattleUnit) {
+        return user.hasAbilityPoints(AbilityPointType.ACTION, 1);
     }
 
     canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
@@ -26,9 +35,9 @@ export default class AbilityBasicAttack extends BaseAbility {
             return false;
         }
 
-        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > 1) { return false; }
+        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > this.maxRange) { return false; }
         
-        return user.hasAbilityPoints(AbilityPointType.ACTION, 1);
+        return this.doesUnitHaveResourcesForAbility(user);
     }
 
     getDisplayDetails(): AbilityDisplayDetails {

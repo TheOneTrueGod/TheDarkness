@@ -101,7 +101,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.interactionHandler.addEventListeners(
             user,
             this.pixiContainer,
-            this.updateSelectedUnit,
+            this.setSelectedUnit,
             this.issueUnitOrder,
             this.clientBattleMap,
         );
@@ -165,11 +165,18 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.unitManager.onEndTurn(currentTurn);
     }
 
-    updateSelectedUnit = (selectedUnit: BattleUnit) => {
+    setSelectedUnit = (selectedUnit: BattleUnit) => {
         const { selectedUnit: previousUnit } = this.state;
         previousUnit && previousUnit.setSelected(false);
         selectedUnit.setSelected(true);
         this.setState({ selectedUnit, selectedAbility: null });
+        this.interactionHandler.setSelectedAbility(null);
+        this.interactionHandler.selectedUnit = selectedUnit;
+    }
+
+    setSelectedAbility = (ability: BaseAbility) => {
+        this.setState({ selectedAbility: ability });
+        this.interactionHandler.setSelectedAbility(ability);
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {
@@ -198,9 +205,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                     selectedAbility={selectedAbility}
                     user={user}
                     onAbilityClick={(unit: BattleUnit, ability: BaseAbility) => {
-                        this.interactionHandler.handleAbilityClick(ability, (ability: BaseAbility) => {
-                            this.setState({ selectedAbility: ability });
-                        });
+                        this.interactionHandler.handleAbilityClick(ability, this.setSelectedAbility);
                     }}
                 />
             </div>

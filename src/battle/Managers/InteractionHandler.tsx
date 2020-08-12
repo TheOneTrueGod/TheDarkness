@@ -6,16 +6,22 @@ import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
 import User from "../../../object_defs/User";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
-import BaseAbility from "../UnitAbilities/BaseAbility";
+import BaseAbility, { AbilityTarget } from "../UnitAbilities/BaseAbility";
 
 export default class InteractionHandler {
     currentTurn: CurrentTurn;
     unitManager: UnitManager;
     selectedUnit: BattleUnit | null;
+    selectedAbility: BaseAbility | null;
+    abilityTargets: Array<AbilityTarget>;
 
     constructor(unitManager: UnitManager) {
         this.unitManager = unitManager;
+        // THESE SHOULD NEVER BE SET HERE.
+        // GameContainer sets these when they change
         this.selectedUnit = null;
+        this.selectedAbility = null;
+        this.abilityTargets = [];
     }
 
     canClickOnUnit(targetUnit: BattleUnit) {
@@ -24,14 +30,42 @@ export default class InteractionHandler {
 
     clickOnUnit(
         selectedUnit: BattleUnit,
-        unitSelectedCallback: Function
+        unitSelectedCallback: Function,
+        clientBattleMap: ClientBattleMap,
+        issueUnitOrder: Function,
     ) {
-        this.selectedUnit = selectedUnit;
-        unitSelectedCallback(selectedUnit);
+        if (this.selectedAbility && this.selectedAbility.isValidTarget(
+            this.abilityTargets.length,
+            selectedUnit,
+            this.selectedUnit,
+            clientBattleMap,
+        )) {
+            this.addAbilityTarget(selectedUnit, issueUnitOrder, clientBattleMap);
+        } else {
+            unitSelectedCallback(selectedUnit);
+        }
     }
 
-    clickOnTerrain(tileCoord: TileCoord) {
+    setSelectedAbility(ability: BaseAbility | null) {
+        this.selectedAbility = ability;
+        this.abilityTargets = [];
+    }
 
+    clickOnTerrain(tileCoord: TileCoord, clientBattleMap: ClientBattleMap, issueUnitOrder: Function) {
+        if (this.selectedAbility) {
+            if (this.selectedAbility.isValidTarget(this.abilityTargets.length, tileCoord, this.selectedUnit, clientBattleMap)) {
+                this.addAbilityTarget(tileCoord, issueUnitOrder, clientBattleMap);
+            }
+        }
+    }
+
+    addAbilityTarget(target: AbilityTarget, issueUnitOrder: Function, clientBattleMap: ClientBattleMap) {
+        if (!this.selectedAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)) { return; }
+        this.abilityTargets.push(target);
+        if (this.abilityTargets.length === this.selectedAbility.getTargetRestrictions().length) {
+            issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, this.abilityTargets, this.selectedAbility));
+            this.abilityTargets = [];
+        }
     }
 
     addEventListeners (
@@ -51,9 +85,9 @@ export default class InteractionHandler {
 
             if (event.button === MOUSE_BUTTON_LEFT) {
                 if (targetUnit && this.canClickOnUnit(targetUnit)) {
-                    this.clickOnUnit(targetUnit, unitSelectedCallback);
+                    this.clickOnUnit(targetUnit, unitSelectedCallback, clientBattleMap, issueUnitOrder);
                 } else {
-                    this.clickOnTerrain(tileCoord);
+                    this.clickOnTerrain(tileCoord, clientBattleMap, issueUnitOrder);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
                 const moveAbility = this.selectedUnit.getBasicMoveAbility();

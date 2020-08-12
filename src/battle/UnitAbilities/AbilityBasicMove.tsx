@@ -1,4 +1,4 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
@@ -7,12 +7,21 @@ import { getManhattenDistance } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicMove extends BaseAbility {
+    maxRange = 1;
+    getTargetRestrictions(): Array<AbilityTargetRestrictions> {
+        return [{ emptyTile: true, maxRange: this.maxRange }];
+    }
+
     playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
         if (!this.canUnitUseAbility(clientBattleMap, unitManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         user.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
         unitManager.moveUnit(user, targets[0] as TileCoord, clientBattleMap);
+    }
+
+    doesUnitHaveResourcesForAbility(user: BattleUnit) {
+        return user.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
     }
 
     canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
@@ -28,11 +37,11 @@ export default class AbilityBasicMove extends BaseAbility {
             return false;
         }
 
-        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > 1) {
+        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > this.maxRange) {
             return false;
         }
         
-        return user.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
+        return this.doesUnitHaveResourcesForAbility(user);
     }
 
     getDisplayDetails(): AbilityDisplayDetails {
