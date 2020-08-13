@@ -11,6 +11,7 @@ export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
     movementPointCost = 1;
     maxRange = 3;
+    minRange = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ emptyTile: true, maxRange: this.maxRange }];
     }

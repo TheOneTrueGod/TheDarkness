@@ -2,8 +2,8 @@ Abilities
 [] Player units should start boarded inside the caravan.  They should be able to unboard it.
 [X] Create the concept of unit abilities
 [X] Show player unit abilities at the bottom when they're selected
-[] Able to select abilities at the bottom
-[] Able to use abilities by clicking on the screen
+[X] Able to select abilities at the bottom
+[X] Able to use abilities by clicking on the screen
 [] Animations
 [] Previews of areas when hovering over an ability
 [] Previews of effects when hovering over the map

@@ -7,6 +7,7 @@ import { getManhattenDistance } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicMove extends BaseAbility {
+    minRange = 1;
     maxRange = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ emptyTile: true, maxRange: this.maxRange }];

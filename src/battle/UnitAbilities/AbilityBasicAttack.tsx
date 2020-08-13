@@ -7,6 +7,7 @@ import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { SpriteList } from '../SpriteUtils';
 
 export default class AbilityBasicAttack extends BaseAbility {
+    minRange = 1;
     maxRange = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ enemyUnit: true, maxRange: this.maxRange }];

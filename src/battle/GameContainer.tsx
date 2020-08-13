@@ -1,6 +1,5 @@
 import React from 'react';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
-import { renderBattleMap } from './BattleMap/Terrain';
 import ClientBattleMap from './BattleMap/ClientBattleMap';
 import BattleUnit from './BattleUnits/BattleUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
@@ -95,7 +94,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.pixiApp.stage.addChild(this.renderContainers.debug);
         }
 
-        renderBattleMap(this.clientBattleMap, this.renderContainers.terrain, this.pixiLoader);
+        this.clientBattleMap.createTerrain(this.renderContainers.terrain, this.pixiLoader);
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
         this.interactionHandler.addEventListeners(
@@ -177,6 +176,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     setSelectedAbility = (ability: BaseAbility) => {
         this.setState({ selectedAbility: ability });
         this.interactionHandler.setSelectedAbility(ability);
+        this.clientBattleMap.showAbilitySelectedState(ability, this.state.selectedUnit);
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {

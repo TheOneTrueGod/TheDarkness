@@ -30,6 +30,8 @@ export type AbilityDisplayDetails = {
 }
 
 export default abstract class BaseAbility implements AbilityInterface {
+    minRange: number = 1;
+    maxRange: number = 1;
     playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
     canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) { return false; }
@@ -38,12 +40,45 @@ export default abstract class BaseAbility implements AbilityInterface {
         return false;
     }
 
+    getMinMaxRange(): [number, number] {
+        return [0, this.maxRange];
+    }
+
     isValidTarget(targetIndex: number, target: AbilityTarget, user: BattleUnit, clientBattleMap: ClientBattleMap): boolean {
         const targetRestrictions = this.getTargetRestrictions();
         if (targetIndex < 0 || targetIndex >= targetRestrictions.length) { return false; }
         const restrictions = targetRestrictions[targetIndex];
         if (targetMeetsRestrictions(user, target, restrictions, clientBattleMap)) { return true; }
         return false;
+    }
+
+    getTilesInRange(user: BattleUnit): Array<TileCoord> {
+        const [minRange, maxRange] = this.getMinMaxRange();
+        const userPos = user.tileCoord;
+
+        const tilesInRange = []; 
+        if (minRange === 0) {
+            tilesInRange.push({ ...userPos });
+        }
+        for (let range = Math.max(minRange, 1); range <= maxRange; range++) {
+            /*
+            range = 3;
+            i = 0; x = 0, y = 3;
+            i = 1; x = 1, y = 2;
+            i = 2; x = 2, y = 1;
+            */
+            for (let i = 0; i < range; i++) {
+                // Up to Right
+                tilesInRange.push({ x: userPos.x + i, y: userPos.y + range - i });
+                // Right to Down
+                tilesInRange.push({ x: userPos.x + range - i, y: userPos.y -i });
+                // Down to Left
+                tilesInRange.push({ x: userPos.x - i, y: userPos.y - (range - i) });
+                // Left to Up
+                tilesInRange.push({ x: userPos.x - (range - i), y: userPos.y + i });
+            }
+        }
+        return tilesInRange;
     }
 }
 
