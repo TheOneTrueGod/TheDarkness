@@ -6,6 +6,7 @@ import Mission from '../../object_defs/Campaign/Mission/Mission';
 import UnitManager from './Managers/UnitManager';
 import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
+import GameDataManager from './Managers/GameDataManager';
 import { CurrentTurn } from './BattleTypes';
 import { createInitialBattleUnits, getNextTurn, isAITurn } from "./BattleHelpers";
 import InteractionHandler from "./Managers/InteractionHandler";
@@ -41,10 +42,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         debug: PIXI.Sprite,
         darkness: PIXI.Sprite,
     };
-    unitManager: UnitManager;
-    interactionHandler: InteractionHandler;
-    orderManager: OrderManager;
-    clientBattleMap: ClientBattleMap;
+    gameDataManager: GameDataManager;
 
     constructor(props: GameContainerProps) {
         super(props);
@@ -59,10 +57,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             debug: new PIXI.Sprite(),
             darkness: new PIXI.Sprite(),
         };
-        this.unitManager = new UnitManager();
-        this.orderManager = new OrderManager();
-        this.interactionHandler = new InteractionHandler(this.unitManager);
-        this.clientBattleMap = new ClientBattleMap(props.battle.battleMap);
+        this.gameDataManager = new GameDataManager(props.battle);
 
         this.state = {
             selectedUnit: null,
@@ -94,24 +89,24 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.pixiApp.stage.addChild(this.renderContainers.debug);
         }
 
-        this.clientBattleMap.createTerrain(this.renderContainers.terrain, this.pixiLoader);
+        this.gameDataManager.clientBattleMap.createTerrain(this.renderContainers.terrain, this.pixiLoader);
         createInitialBattleUnits(battle, mission, this.addBattleUnit);
 
-        this.interactionHandler.addEventListeners(
+        this.gameDataManager.interactionHandler.addEventListeners(
             user,
             this.pixiContainer,
             this.setSelectedUnit,
             this.issueUnitOrder,
-            this.clientBattleMap,
+            this.gameDataManager.clientBattleMap,
         );
-        this.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.unitManager, user);
+        this.gameDataManager.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.gameDataManager.unitManager, user);
         this.startTurn(battle.currentTurn);
     }
 
     issueUnitOrder = (unitOrder: UnitOrder) => {
         const { user } = this.props;
-        this.orderManager.addUnitOrder(unitOrder);
-        this.orderManager.playNextOrder(this.clientBattleMap, this.unitManager, user, this.renderContainers.darkness);
+        this.gameDataManager.orderManager.addUnitOrder(unitOrder);
+        this.gameDataManager.orderManager.playNextOrder(this.gameDataManager.clientBattleMap, this.gameDataManager.unitManager, user, this.renderContainers.darkness);
         this.setState({
             selectedUnit: this.state.selectedUnit
         });
@@ -144,24 +139,24 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             });
 
             this.onStartTurn(nextTurn);
-            this.unitManager.cleanupStep(this.clientBattleMap);
+            this.gameDataManager.unitManager.cleanupStep(this.gameDataManager.clientBattleMap);
             if (isAITurn(nextTurn)) {
-                AIManager.doAIActionsAtTurnStart(this.unitManager, nextTurn, this.clientBattleMap, this.issueUnitOrder);
+                AIManager.doAIActionsAtTurnStart(this.gameDataManager.unitManager, nextTurn, this.gameDataManager.clientBattleMap, this.issueUnitOrder);
                 this.endTurn(nextTurn);
             }
         }
     }
 
     onStartTurn(nextTurn: CurrentTurn) {
-        this.unitManager.onStartTurn(nextTurn);
-        this.interactionHandler.onStartTurn(nextTurn);
+        this.gameDataManager.unitManager.onStartTurn(nextTurn);
+        this.gameDataManager.interactionHandler.onStartTurn(nextTurn);
         if (DEBUG_MODE) {
-            this.unitManager.updateUnitDebugSprites(this.pixiLoader, this.renderContainers.debug);
+            this.gameDataManager.unitManager.updateUnitDebugSprites(this.pixiLoader, this.renderContainers.debug);
         }
     }
 
     onEndTurn(currentTurn: CurrentTurn) {
-        this.unitManager.onEndTurn(currentTurn);
+        this.gameDataManager.unitManager.onEndTurn(currentTurn);
     }
 
     setSelectedUnit = (selectedUnit: BattleUnit) => {
@@ -169,18 +164,18 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         previousUnit && previousUnit.setSelected(false);
         selectedUnit.setSelected(true);
         this.setState({ selectedUnit, selectedAbility: null });
-        this.interactionHandler.setSelectedAbility(null);
-        this.interactionHandler.selectedUnit = selectedUnit;
+        this.gameDataManager.interactionHandler.setSelectedAbility(null);
+        this.gameDataManager.interactionHandler.selectedUnit = selectedUnit;
     }
 
     setSelectedAbility = (ability: BaseAbility) => {
         this.setState({ selectedAbility: ability });
-        this.interactionHandler.setSelectedAbility(ability);
-        this.clientBattleMap.showAbilitySelectedState(ability, this.state.selectedUnit);
+        this.gameDataManager.interactionHandler.setSelectedAbility(ability);
+        this.gameDataManager.clientBattleMap.showAbilitySelectedState(ability, this.state.selectedUnit);
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {
-        this.unitManager.addBattleUnit(battleUnit, this.clientBattleMap);
+        this.gameDataManager.unitManager.addBattleUnit(battleUnit, this.gameDataManager.clientBattleMap);
         this.renderContainers.units.addChild(battleUnit.getSprite(this.pixiLoader));
     }
 
@@ -205,7 +200,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                     selectedAbility={selectedAbility}
                     user={user}
                     onAbilityClick={(unit: BattleUnit, ability: BaseAbility) => {
-                        this.interactionHandler.handleAbilityClick(ability, this.setSelectedAbility);
+                        this.gameDataManager.interactionHandler.handleAbilityClick(ability, this.setSelectedAbility);
                     }}
                 />
             </div>

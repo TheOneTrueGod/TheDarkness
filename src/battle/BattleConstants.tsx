@@ -8,3 +8,5 @@ export function getTileSize(): TileCoord {
 
 export const MOUSE_BUTTON_LEFT = 0;
 export const MOUSE_BUTTON_RIGHT = 2;
+
+export const ANIMATION_SPEED = 1;
