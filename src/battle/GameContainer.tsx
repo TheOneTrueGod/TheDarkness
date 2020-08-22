@@ -27,8 +27,6 @@ export type GameContainerProps = {
 }
 
 export type GameContainerState = {
-    selectedUnit: BattleUnit | null;
-    selectedAbility: BaseAbility;
     currentTurn: CurrentTurn;
 }
 
@@ -60,8 +58,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.gameDataManager = new GameDataManager(props.battle);
 
         this.state = {
-            selectedUnit: null,
-            selectedAbility: null,
             currentTurn: {
                 team: props.battle.currentTurn.team,
                 owner: props.battle.currentTurn.owner,
@@ -106,10 +102,12 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     issueUnitOrder = (unitOrder: UnitOrder) => {
         const { user } = this.props;
         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
-        this.gameDataManager.orderManager.playNextOrder(this.gameDataManager.clientBattleMap, this.gameDataManager.unitManager, user, this.renderContainers.darkness);
-        this.setState({
-            selectedUnit: this.state.selectedUnit
-        });
+        this.gameDataManager.orderManager.playNextOrder(
+            this.gameDataManager,
+            user,
+            this.renderContainers.darkness
+        );
+        this.setState({});
     }
 
     onEndTurnClick = () => {
@@ -160,18 +158,13 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
     }
 
     setSelectedUnit = (selectedUnit: BattleUnit) => {
-        const { selectedUnit: previousUnit } = this.state;
-        previousUnit && previousUnit.setSelected(false);
-        selectedUnit.setSelected(true);
-        this.setState({ selectedUnit, selectedAbility: null });
-        this.gameDataManager.interactionHandler.setSelectedAbility(null);
-        this.gameDataManager.interactionHandler.selectedUnit = selectedUnit;
+        this.gameDataManager.setSelectedUnit(selectedUnit);
+        this.setState({});
     }
 
     setSelectedAbility = (ability: BaseAbility) => {
-        this.setState({ selectedAbility: ability });
-        this.gameDataManager.interactionHandler.setSelectedAbility(ability);
-        this.gameDataManager.clientBattleMap.showAbilitySelectedState(ability, this.state.selectedUnit);
+        this.gameDataManager.setSelectedAbility(ability);
+        this.setState({});
     }
 
     addBattleUnit = (battleUnit: BattleUnit) => {
@@ -181,7 +174,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
     render() {
         const { user } = this.props;
-        const { selectedUnit, selectedAbility, currentTurn } = this.state;
+        const { currentTurn } = this.state;
         return (
             <div style={{
                 width: canvasSize.width,
@@ -196,8 +189,8 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                 />
                 <div ref={this.updatePixiContainer} />
                 <UnitDetailsBanner 
-                    selectedUnit={selectedUnit}
-                    selectedAbility={selectedAbility}
+                    selectedUnit={this.gameDataManager.selectedUnit}
+                    selectedAbility={this.gameDataManager.selectedAbility}
                     user={user}
                     onAbilityClick={(unit: BattleUnit, ability: BaseAbility) => {
                         this.gameDataManager.interactionHandler.handleAbilityClick(ability, this.setSelectedAbility);

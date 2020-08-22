@@ -2,6 +2,7 @@ import BattleUnit, { AbilityPointType } from "./BattleUnit";
 import UnitManager from "../Managers/UnitManager";
 import BaseAbility, { AbilityTarget } from "../UnitAbilities/BaseAbility";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
+import GameDataManager from "../Managers/GameDataManager";
 
 export enum OrderType {
     USE_ABILITY,
@@ -21,12 +22,12 @@ export default class UnitOrder {
         this.ability = ability;
     }
 
-    playOutOrder(clientBattleMap: ClientBattleMap, unitManager: UnitManager) {
+    playOutOrder(gameDataManager: GameDataManager) {
         if (this.orderType === OrderType.USE_ABILITY) {
             if (!this.ability) {
                 throw new Error("Can't play out an order with no ability");
             }
-            this.ability.playOutAbility(clientBattleMap, unitManager, this.unit, this.targets);
+            this.ability.playOutAbility(gameDataManager, this.unit, this.targets);
         }
     }
 }

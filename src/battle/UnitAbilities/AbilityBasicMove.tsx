@@ -5,6 +5,7 @@ import { TileCoord } from '../BattleTypes';
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { getManhattenDistance } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
+import GameDataManager from '../Managers/GameDataManager';
 
 export default class AbilityBasicMove extends BaseAbility {
     minRange = 1;
@@ -13,12 +14,12 @@ export default class AbilityBasicMove extends BaseAbility {
         return [{ emptyTile: true, maxRange: this.maxRange }];
     }
 
-    playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
-        if (!this.canUnitUseAbility(clientBattleMap, unitManager, user, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {
+        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         user.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
-        unitManager.moveUnit(user, targets[0] as TileCoord, clientBattleMap);
+        gameDataManager.unitManager.moveUnit(user, targets[0] as TileCoord, gameDataManager.clientBattleMap);
     }
 
     doesUnitHaveResourcesForAbility(user: BattleUnit) {

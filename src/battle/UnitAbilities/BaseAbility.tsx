@@ -4,6 +4,7 @@ import UnitManager from "../Managers/UnitManager";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
 import { SpriteList } from "../SpriteUtils";
 import { getManhattenDistance } from "../BattleHelpers";
+import GameDataManager from "../Managers/GameDataManager";
 
 interface AbilityInterface {
     playOutAbility: Function;
@@ -32,7 +33,7 @@ export type AbilityDisplayDetails = {
 export default abstract class BaseAbility implements AbilityInterface {
     minRange: number = 1;
     maxRange: number = 1;
-    playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
+    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
     canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) { return false; }
     getDisplayDetails(): AbilityDisplayDetails { return { icon: SpriteList.CIRCLE, tempDisplayLetter: '?' } }

@@ -6,6 +6,7 @@ import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { UnitResourceTypes } from '../BattleUnits/UnitResources';
 import { getManhattenDistance } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
+import GameDataManager from '../Managers/GameDataManager';
 
 export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
@@ -16,13 +17,13 @@ export default class AbilityBlinkMove extends BaseAbility {
         return [{ emptyTile: true, maxRange: this.maxRange }];
     }
 
-    playOutAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
-        if (!this.canUnitUseAbility(clientBattleMap, unitManager, user, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {
+        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         user.useAbilityPoints(AbilityPointType.MOVEMENT, this.movementPointCost);
         user.useResource(UnitResourceTypes.BLINK_ENERGY, this.energyCost);
-        unitManager.moveUnit(user, targets[0] as TileCoord, clientBattleMap);
+        gameDataManager.unitManager.moveUnit(user, targets[0] as TileCoord, gameDataManager.clientBattleMap);
     }
 
     doesUnitHaveResourcesForAbility(user: BattleUnit) {
