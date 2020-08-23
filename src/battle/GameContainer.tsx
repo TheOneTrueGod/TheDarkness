@@ -153,7 +153,6 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
                     nextTurn,
                     this.gameDataManager.clientBattleMap,
                     (unitOrder: UnitOrder) => {
-                        console.log("Issuing order");
                         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
                         this.gameDataManager.orderManager.playNextOrder();
                     },
