@@ -85,14 +85,14 @@ export default abstract class BaseAbility implements AbilityInterface {
     }
 }
 
-function determineIfTargetIsTileCoord(toBeDetermined: AbilityTarget): toBeDetermined is TileCoord {
+export function determineIfTargetIsTileCoord(toBeDetermined: AbilityTarget): toBeDetermined is TileCoord {
     if ((toBeDetermined as TileCoord).x && (toBeDetermined as TileCoord).y) {
         return true;
     }
     return false;
 }
 
-function determineIfTargetIsBattleUnit(toBeDetermined: AbilityTarget): toBeDetermined is BattleUnit {
+export function determineIfTargetIsBattleUnit(toBeDetermined: AbilityTarget): toBeDetermined is BattleUnit {
     if (toBeDetermined instanceof BattleUnit) {
         return true;
     }

@@ -126,7 +126,7 @@ export default class BattleUnit {
     private updateSpritePosition() {
         const position = tileCoordToPosition(this.tileCoord);
         this.sprite.position.x = position.x + this.spriteOffset.x;
-        this.sprite.position.x = position.x + this.spriteOffset.x;
+        this.sprite.position.y = position.y + this.spriteOffset.y;
     }
 
     addDebugSprite(coord: TileCoord, texture: PIXI.Texture) {

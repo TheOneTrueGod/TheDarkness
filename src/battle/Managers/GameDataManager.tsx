@@ -40,7 +40,7 @@ export default class GameDataManager {
     setSelectedAbility = (ability: BaseAbility) => {
         this.selectedAbility = ability;
         this.interactionHandler.setSelectedAbility(ability);
-        this.clientBattleMap.showAbilitySelectedState(ability, this.selectedUnit);
+        this.clientBattleMap.showAbilitySelectedState(ability, this.selectedUnit, this.interactionHandler.abilityTargets.length, this.clientBattleMap);
     }
 
     tickerTick(delta: number): void {

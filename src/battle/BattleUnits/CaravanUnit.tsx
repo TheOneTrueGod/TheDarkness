@@ -15,6 +15,14 @@ export default class CaravanUnit extends BattleUnit {
         return false;
     }
 
+    isDead() {
+        return false;
+    }
+
+    dealDamage(amount: number) {
+        return;
+    }
+
     // Lightness Related Stats
     getLightLevel() {
         return 7;

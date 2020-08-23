@@ -1,4 +1,4 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetRestrictions, determineIfTargetIsBattleUnit } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
@@ -18,10 +18,7 @@ export default class AbilityBasicAttack extends BaseAbility {
         if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, unit, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
-        const targetUnit = gameDataManager.unitManager.getUnitAtTileCoord(
-            targets[0] as TileCoord,
-            gameDataManager.clientBattleMap
-        );
+        const targetUnit = targets[0] as BattleUnit;
         targetUnit.dealDamage(1);
         doneCallback();
     }
@@ -38,12 +35,6 @@ export default class AbilityBasicAttack extends BaseAbility {
         if (targets.length !== 1) {
             return false;
         }
-
-        if (!unitManager.getUnitAtTileCoord(targets[0] as TileCoord, clientBattleMap)) {
-            return false;
-        }
-
-        if (getManhattenDistance(unit.tileCoord, targets[0] as TileCoord) > this.maxRange) { return false; }
         
         return true;
     }

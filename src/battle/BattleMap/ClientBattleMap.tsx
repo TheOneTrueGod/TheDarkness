@@ -55,13 +55,16 @@ export default class ClientBattleMap {
     }
 
     // Previews of abilities
-    showAbilitySelectedState(ability: BaseAbility, user: BattleUnit) {
+    showAbilitySelectedState(ability: BaseAbility, unit: BattleUnit, targetIndex: number, clientBattleMap: ClientBattleMap) {
         const displayDetails = ability.getDisplayDetails();
         const mapSize = this.getMapSize();
 
-        const tilesInRange = ability.getTilesInRange(user);
+        const tilesInRange = ability.getTilesInRange(unit);
         tilesInRange.forEach((tile) => {
-            if (tile.x >= 0 && tile.x < mapSize.x && tile.y >= 0 && tile.y < mapSize.y) {
+            if (
+                tile.x >= 0 && tile.x < mapSize.x && tile.y >= 0 && tile.y < mapSize.y &&
+                ability.isValidTarget(0, tile, unit, clientBattleMap)
+            ) {
                 this.terrainSprites[tileCoordToInteger(tile, mapSize)].showTerrainEffect(TerrainEffects.TARGETTER_MOVE);
             }
         });

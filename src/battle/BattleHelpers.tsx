@@ -101,8 +101,8 @@ export function createInitialBattleUnits(
             battle.unitIndex ++,
             missionUnit,
             {
-                x: battle.caravanPosition.x - 1 + i,
-                y: battle.caravanPosition.y + 2,
+                x: battle.caravanPosition.x + i,
+                y: battle.caravanPosition.y + 3,
             }
         );
         addBattleUnit(battleUnit);

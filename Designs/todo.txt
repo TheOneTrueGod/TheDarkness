@@ -1,6 +1,7 @@
 BUGS
 Using an ability with targetting indicators leaves them behind afterwards
 You can attack your friends
+Enemy units will walk into the caravan spots
 
 Abilities
 [] Player units should start boarded inside the caravan.  They should be able to unboard it.

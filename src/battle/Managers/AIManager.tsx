@@ -48,6 +48,7 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
     const moveAbility = unit.getBasicMoveAbility();
     while (
         i < shortestPath.length &&
+        moveAbility.isValidTarget(0, shortestPath[i], unit, clientBattleMap) &&
         moveAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [shortestPath[i]]) &&
         moveAbility.doesUnitHaveResourcesForAbility(unit)
     ) {
@@ -65,7 +66,8 @@ function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBatt
     const attackAbility = unit.getBasicAttackAbility();
     let iterCount = 0;
     while (
-        attackAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [targetUnit.tileCoord]) &&
+        attackAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [targetUnit]) &&
+        attackAbility.isValidTarget(0, targetUnit, unit, clientBattleMap) &&
         attackAbility.doesUnitHaveResourcesForAbility(unit)
     ) {
         iterCount += 1;
@@ -73,7 +75,7 @@ function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBatt
         issueUnitOrder(new UnitOrder(
             unit,
             OrderType.USE_ABILITY,
-            [targetUnit.tileCoord],
+            [targetUnit],
             attackAbility
         ));
     }

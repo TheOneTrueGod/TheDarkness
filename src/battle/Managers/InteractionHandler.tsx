@@ -103,6 +103,7 @@ export default class InteractionHandler {
 
                     if (
                         targetUnit &&
+                        attackAbility.isValidTarget(0, tileCoord, this.selectedUnit, clientBattleMap) &&
                         attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord]) &&
                         attackAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
                     ) {
