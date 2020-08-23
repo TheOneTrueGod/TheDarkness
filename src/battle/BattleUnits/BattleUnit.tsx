@@ -32,6 +32,7 @@ export default class BattleUnit {
     initiativeNumber: number = 0;
     owner: UnitOwner;
     isVisible: boolean;
+    doneDeathEffect: boolean = false;
     spriteDecorations: SpriteDecorations;
     abilityPointsUsed: { action: number, movement: number } = { action: 0, movement: 0 };
     abilities: Array<BaseAbility> = [];
@@ -292,7 +293,6 @@ export default class BattleUnit {
     }
 
     prepareForDeletion() {
-        this.sprite.parent && this.sprite.parent.removeChild(this.sprite);
         this.removeAllDebugSprites();
     }
 
@@ -312,12 +312,29 @@ export default class BattleUnit {
     }
 
     // Resources
-    dealDamage(amount: number) {
-        this.health.loseResource(amount);
+    dealDamage(amount: number, updateDisplayDamage: boolean = false) {
+        this.health.loseResource(amount, updateDisplayDamage);
+    }
+
+    dealDisplayDamage(amount: number) {
+        this.health.loseDisplayResource(amount);
+        if (this.isDisplayDead()) {
+            this.doDeathEffect()
+        }
+    }
+
+    doDeathEffect() {
+        if (!this.doneDeathEffect) {
+            this.sprite.parent && this.sprite.parent.removeChild(this.sprite);
+        }
     }
 
     isDead() {
         return this.health.current <= 0;
+    }
+
+    isDisplayDead() {
+        return this.health.displayCurrent <= 0;
     }
 
     hasResource(resourceType: UnitResourceTypes, amount: number): boolean {

@@ -10,6 +10,7 @@ import UnitStepForwardBackAnimation from '../Managers/Animations/UnitStepForward
 export default class AbilityBasicAttack extends BaseAbility {
     minRange = 1;
     maxRange = 1;
+    damage = 2;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ enemyUnit: true, maxRange: this.maxRange }];
     }
@@ -19,10 +20,11 @@ export default class AbilityBasicAttack extends BaseAbility {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         const targetUnit = targets[0] as BattleUnit;
-        targetUnit.dealDamage(1);
+        targetUnit.dealDamage(this.damage);
         gameDataManager.animationManager.addAnimation(
             new UnitStepForwardBackAnimation(unit, targetUnit.tileCoord)
         ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
+            targetUnit.dealDisplayDamage(this.damage);
             console.log("Bam");
         })
         .whenDone(() => {

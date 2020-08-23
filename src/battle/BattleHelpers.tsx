@@ -114,7 +114,7 @@ export function createInitialBattleUnits(
             battle.unitIndex ++,
             'owner_minion',
             'enemies',
-            { x: 10, y: 6 + i }
+            { x: 7, y: 7 + i }
         );
 
         addBattleUnit(enemyUnit);
