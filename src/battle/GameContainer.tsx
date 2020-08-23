@@ -110,6 +110,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         const { user } = this.props;
         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
         this.gameDataManager.orderManager.playNextOrder();
+        this.gameDataManager.refreshAbilitySelectedState();
         this.setState({});
     }
 

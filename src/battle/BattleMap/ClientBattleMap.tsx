@@ -12,6 +12,7 @@ export default class ClientBattleMap {
     mapSize: { x: number, y: number };
     lightnessMap: LightnessMap;
     terrainSprites: Record<number, TerrainSprite>;
+    previouslyTargettedTiles: Array<TileCoord> = [];
     constructor(battleMap: BattleMap) {
         this.mapSize = { x: battleMap.mapSize.x, y: battleMap.mapSize.y };
         this.lightnessMap = new LightnessMap({ ...this.mapSize });
@@ -55,18 +56,31 @@ export default class ClientBattleMap {
     }
 
     // Previews of abilities
-    showAbilitySelectedState(ability: BaseAbility, unit: BattleUnit, targetIndex: number, clientBattleMap: ClientBattleMap) {
+    showAbilitySelectedState(ability: BaseAbility | null, unit: BattleUnit, targetIndex: number, clientBattleMap: ClientBattleMap) {
+        this.hidePreviousAbilitySelectedState();
+        if (ability === null) { return; }
         const displayDetails = ability.getDisplayDetails();
         const mapSize = this.getMapSize();
 
         const tilesInRange = ability.getTilesInRange(unit);
+
         tilesInRange.forEach((tile) => {
             if (
                 tile.x >= 0 && tile.x < mapSize.x && tile.y >= 0 && tile.y < mapSize.y &&
                 ability.isValidTarget(0, tile, unit, clientBattleMap)
             ) {
+                this.previouslyTargettedTiles.push(tile);
                 this.terrainSprites[tileCoordToInteger(tile, mapSize)].showTerrainEffect(TerrainEffects.TARGETTER_MOVE);
             }
         });
+    }
+
+    hidePreviousAbilitySelectedState() {
+        const mapSize = this.getMapSize();
+
+        this.previouslyTargettedTiles.forEach((tile) => {
+            this.terrainSprites[tileCoordToInteger(tile, mapSize)].hideTerrainEffect(TerrainEffects.TARGETTER_MOVE);
+        });
+        this.previouslyTargettedTiles = [];
     }
 }

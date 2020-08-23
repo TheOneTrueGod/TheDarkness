@@ -61,6 +61,12 @@ export default class TerrainSprite {
         this.terrainEffects[terrainEffect].visible = true;
     }
 
+    hideTerrainEffect(terrainEffect: TerrainEffects) {
+        if (this.terrainEffects[terrainEffect]) {
+            this.terrainEffects[terrainEffect].visible = false;
+        }
+    }
+
     getTerrainEffectSprite(terrainEffect: TerrainEffects): PIXI.Sprite {
         const { x: tileSizeX, y: tileSizeY } = getTileSize();
 
