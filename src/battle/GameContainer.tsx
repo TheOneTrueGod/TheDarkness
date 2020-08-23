@@ -36,6 +36,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         units: PIXI.Container,
         debug: PIXI.Sprite,
         darkness: PIXI.Sprite,
+        effects: PIXI.Sprite,
     };
     gameDataManager: GameDataManager;
 
@@ -51,11 +52,14 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             units: new PIXI.Container(),
             debug: new PIXI.Sprite(),
             darkness: new PIXI.Sprite(),
+            effects: new PIXI.Sprite(),
         };
         this.gameDataManager = new GameDataManager(
             props.battle,
             props.user,
+            this.pixiLoader,
             this.renderContainers.darkness,
+            this.renderContainers.effects,
         );
 
         this.state = {
@@ -82,6 +86,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
         this.pixiApp.stage.addChild(this.renderContainers.terrain);
         this.pixiApp.stage.addChild(this.renderContainers.units);
+        this.pixiApp.stage.addChild(this.renderContainers.effects);
         this.pixiApp.stage.addChild(this.renderContainers.darkness);
         if (DEBUG_MODE) {
             this.pixiApp.stage.addChild(this.renderContainers.debug);

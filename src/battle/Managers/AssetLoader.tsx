@@ -13,7 +13,11 @@ export default class AssetLoader {
             // enemies
             .add(SpriteList.ENEMY_WOLF, '/assets/wolf-head.png')
             // terrain
-            .add(SpriteList.TERRAIN, '/assets/terrain.png');
+            .add(SpriteList.TERRAIN, '/assets/terrain.png')
+            // abilities
+            .add(SpriteList.ABILITY_BLUE_EXPLOSION, '/assets/blue-explosion.png')
+            
+            ;
 
         pixiLoader.onComplete.add(() => { 
             loadComplete()

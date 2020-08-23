@@ -42,4 +42,12 @@ export default class BaseAnimation {
     isDone() {
         return true;
     }
+
+    hasSprite() {
+        return false;
+    }
+
+    createSprite(pixiLoader: PIXI.Loader) {}
+    addSprites(effectContainer: PIXI.Sprite) {}
+    removeSprites() {}
 }

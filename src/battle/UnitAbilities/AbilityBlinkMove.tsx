@@ -4,9 +4,10 @@ import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { UnitResourceTypes } from '../BattleUnits/UnitResources';
-import { getManhattenDistance } from '../BattleHelpers';
+import { getManhattenDistance, tileCoordToPosition } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
 import GameDataManager from '../Managers/GameDataManager';
+import SpriteEffectAnimation, { SpriteEffects, SpriteEffectNames } from '../Managers/Animations/SpriteEffectAnimation';
 
 export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
@@ -31,8 +32,18 @@ export default class AbilityBlinkMove extends BaseAbility {
         if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, unit, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
-        gameDataManager.unitManager.moveUnit(unit, targets[0] as TileCoord, gameDataManager.clientBattleMap);
-        doneCallback();
+        const targetCoord = targets[0] as TileCoord;
+        const startCoord = unit.tileCoord;
+        gameDataManager.unitManager.moveUnit(unit, targetCoord, gameDataManager.clientBattleMap);
+
+        // animation
+        unit.setSpriteOffset(tileCoordToPosition({ x: startCoord.x - targetCoord.x, y: startCoord.y - targetCoord.y }));
+        gameDataManager.animationManager.addAnimation(
+            new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.BlueExplosion], startCoord, 200, 0)
+        ).whenDone(() => {
+            unit.setSpriteOffset({ x: 0, y: 0 });
+            doneCallback();
+        });
     }
 
     canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
