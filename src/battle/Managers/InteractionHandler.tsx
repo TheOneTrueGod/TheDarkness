@@ -101,7 +101,11 @@ export default class InteractionHandler {
                 )) {
                     const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
 
-                    if (targetUnit && attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord])) {
+                    if (
+                        targetUnit &&
+                        attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord]) &&
+                        attackAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
+                    ) {
                         issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [tileCoord], attackAbility));
                     } else {
 
@@ -119,7 +123,10 @@ export default class InteractionHandler {
                                 + (direction === CardinalDirection.NORTH ? -1 : 0)
                                 + (direction === CardinalDirection.SOUTH ? 1 : 0),
                         };
-                        if (moveAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetCoord])) {
+                        if (
+                            moveAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetCoord]) &&
+                            moveAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
+                        ) {
                             issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetCoord], moveAbility));
                         }
                     }

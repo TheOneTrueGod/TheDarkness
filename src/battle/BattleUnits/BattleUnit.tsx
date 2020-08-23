@@ -23,6 +23,7 @@ interface SpriteDecorations {
 export default class BattleUnit {
     sprite: PIXI.Sprite | null = null;
     tileCoord: TileCoord;
+    spriteOffset: GamePosition;
     id: number;
     unitDef: UnitDef;
     team: Team;
@@ -112,10 +113,20 @@ export default class BattleUnit {
     }
 
     setTileCoord(tileCoord: TileCoord) {
-        const position = tileCoordToPosition(tileCoord);
         this.tileCoord = tileCoord;
-        this.sprite.position.x = position.x;
-        this.sprite.position.y = position.y;
+        this.spriteOffset = { x: 0, y: 0 };
+        this.updateSpritePosition();
+    }
+
+    setSpriteOffset(spriteOffset: GamePosition) {
+        this.spriteOffset = spriteOffset;
+        this.updateSpritePosition();
+    }
+
+    private updateSpritePosition() {
+        const position = tileCoordToPosition(this.tileCoord);
+        this.sprite.position.x = position.x + this.spriteOffset.x;
+        this.sprite.position.x = position.x + this.spriteOffset.x;
     }
 
     addDebugSprite(coord: TileCoord, texture: PIXI.Texture) {

@@ -48,7 +48,8 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
     const moveAbility = unit.getBasicMoveAbility();
     while (
         i < shortestPath.length &&
-        moveAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [shortestPath[i]])
+        moveAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [shortestPath[i]]) &&
+        moveAbility.doesUnitHaveResourcesForAbility(unit)
     ) {
         issueUnitOrder(new UnitOrder(
             unit,
@@ -62,7 +63,13 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
 
 function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBattleMap: ClientBattleMap, unitManager: UnitManager, issueUnitOrder: Function) {
     const attackAbility = unit.getBasicAttackAbility();
-    while (attackAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [targetUnit.tileCoord])) {
+    let iterCount = 0;
+    while (
+        attackAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [targetUnit.tileCoord]) &&
+        attackAbility.doesUnitHaveResourcesForAbility(unit)
+    ) {
+        iterCount += 1;
+        if (iterCount > 10) { throw new Error("useAttackAbilities iterated too many times") }
         issueUnitOrder(new UnitOrder(
             unit,
             OrderType.USE_ABILITY,
@@ -73,7 +80,12 @@ function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBatt
 }
 
 export default {
-    doAIActionsAtTurnStart(unitManager: UnitManager, currentTurn: CurrentTurn, clientBattleMap: ClientBattleMap, issueUnitOrder: Function) {
+    doAIActionsAtTurnStart(
+        unitManager: UnitManager,
+        currentTurn: CurrentTurn,
+        clientBattleMap: ClientBattleMap,
+        issueUnitOrder: Function,
+    ) {
         const controlledUnits = unitManager.getUnitsControlledByTeams(
             [currentTurn.team],
             (unit: BattleUnit) => unit.owner === currentTurn.owner,

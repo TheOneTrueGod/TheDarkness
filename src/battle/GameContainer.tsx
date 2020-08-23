@@ -1,15 +1,11 @@
 import React from 'react';
 import Battle from '../../object_defs/Campaign/Mission/Battle/Battle';
-import ClientBattleMap from './BattleMap/ClientBattleMap';
 import BattleUnit from './BattleUnits/BattleUnit';
 import Mission from '../../object_defs/Campaign/Mission/Mission';
-import UnitManager from './Managers/UnitManager';
-import OrderManager from './Managers/OrderManager';
 import AssetLoader from './Managers/AssetLoader';
 import GameDataManager from './Managers/GameDataManager';
 import { CurrentTurn } from './BattleTypes';
 import { createInitialBattleUnits, getNextTurn, isAITurn } from "./BattleHelpers";
-import InteractionHandler from "./Managers/InteractionHandler";
 import UnitOrder from './BattleUnits/UnitOrder';
 import UnitDetailsBanner from './Components/UnitDetailsBanner';
 import BattleHeaderComponent from './BattleHeaderComponent';
@@ -28,6 +24,7 @@ export type GameContainerProps = {
 
 export type GameContainerState = {
     currentTurn: CurrentTurn;
+    turnEnding: boolean;
 }
 
 class GameContainer extends React.Component<GameContainerProps, GameContainerState> {
@@ -55,13 +52,18 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             debug: new PIXI.Sprite(),
             darkness: new PIXI.Sprite(),
         };
-        this.gameDataManager = new GameDataManager(props.battle);
+        this.gameDataManager = new GameDataManager(
+            props.battle,
+            props.user,
+            this.renderContainers.darkness,
+        );
 
         this.state = {
             currentTurn: {
                 team: props.battle.currentTurn.team,
                 owner: props.battle.currentTurn.owner,
-            }
+            },
+            turnEnding: false
         };
     }
 
@@ -97,28 +99,34 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         );
         this.gameDataManager.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.gameDataManager.unitManager, user);
         this.startTurn(battle.currentTurn);
+        this.pixiApp.ticker.add(delta => this.tickerTick(delta))
+    }
+
+    tickerTick(delta: number): void {
+        this.gameDataManager.tickerTick(delta);
     }
 
     issueUnitOrder = (unitOrder: UnitOrder) => {
         const { user } = this.props;
         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
-        this.gameDataManager.orderManager.playNextOrder(
-            this.gameDataManager,
-            user,
-            this.renderContainers.darkness
-        );
+        this.gameDataManager.orderManager.playNextOrder();
         this.setState({});
     }
 
     onEndTurnClick = () => {
         const { currentTurn } = this.state;
-        this.endTurn(currentTurn);
+        const { user } = this.props;
+        this.setState({ turnEnding: true });
+        this.gameDataManager.orderManager.playNextOrder(
+            () => { this.endTurn(currentTurn); }
+        );
     }
 
     endTurn = (currentTurn: CurrentTurn) => {
         const { battle } = this.props;
 
         this.onEndTurn(currentTurn);
+        this.setState({ turnEnding: false });
         
         this.startTurn(
             getNextTurn(
@@ -130,6 +138,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
 
     startTurn(nextTurn: CurrentTurn) {
         const { currentTurn } = this.state;
+        const { user } = this.props;
 
         if (currentTurn !== nextTurn) {
             this.setState({
@@ -139,8 +148,23 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.onStartTurn(nextTurn);
             this.gameDataManager.unitManager.cleanupStep(this.gameDataManager.clientBattleMap);
             if (isAITurn(nextTurn)) {
-                AIManager.doAIActionsAtTurnStart(this.gameDataManager.unitManager, nextTurn, this.gameDataManager.clientBattleMap, this.issueUnitOrder);
-                this.endTurn(nextTurn);
+                AIManager.doAIActionsAtTurnStart(
+                    this.gameDataManager.unitManager,
+                    nextTurn,
+                    this.gameDataManager.clientBattleMap,
+                    (unitOrder: UnitOrder) => {
+                        console.log("Issuing order");
+                        this.gameDataManager.orderManager.addUnitOrder(unitOrder);
+                        this.gameDataManager.orderManager.playNextOrder();
+                    },
+                );
+
+                this.gameDataManager.orderManager.playNextOrder(
+                    () => {
+                        this.endTurn(nextTurn);
+                    }
+                );
+                this.setState({});
             }
         }
     }

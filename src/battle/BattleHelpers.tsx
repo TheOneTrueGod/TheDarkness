@@ -108,7 +108,7 @@ export function createInitialBattleUnits(
         addBattleUnit(battleUnit);
     }
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
         const enemyUnit = new BattleUnit(
             EnemyWolfUnitDef,
             battle.unitIndex ++,
@@ -168,4 +168,15 @@ export function arePositionsEqual(pos1: TileCoord, pos2: TileCoord) {
 
 export function cloneCoord(coord: TileCoord) {
     return { x: coord.x, y: coord.y };
+}
+
+export function lerp(value1: number, value2: number, percent: number) {
+    return (1 - percent) * value1 + percent * value2;
+}
+
+export function lerpPosition(pos1: GamePosition, pos2: GamePosition, percent: number) {
+    return {
+        x: lerp(pos1.x, pos2.x, percent),
+        y: lerp(pos1.y, pos2.y, percent),
+    }
 }

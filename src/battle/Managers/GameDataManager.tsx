@@ -6,6 +6,7 @@ import Battle from "../../../object_defs/Campaign/Mission/Battle/Battle";
 import AnimationManager from "./AnimationManager";
 import BattleUnit from "../BattleUnits/BattleUnit";
 import BaseAbility from "../UnitAbilities/BaseAbility";
+import User from "../../../object_defs/User";
 
 export default class GameDataManager {
     unitManager: UnitManager;
@@ -16,9 +17,9 @@ export default class GameDataManager {
 
     selectedUnit: BattleUnit | null;
     selectedAbility: BaseAbility | null;
-    constructor(battle: Battle) {
+    constructor(battle: Battle, user: User, darknessContainer: PIXI.Sprite) {
         this.unitManager = new UnitManager();
-        this.orderManager = new OrderManager();
+        this.orderManager = new OrderManager(this, user, darknessContainer);
         this.interactionHandler = new InteractionHandler(this.unitManager);
         this.clientBattleMap = new ClientBattleMap(battle.battleMap);
         this.animationManager = new AnimationManager();
@@ -40,5 +41,9 @@ export default class GameDataManager {
         this.selectedAbility = ability;
         this.interactionHandler.setSelectedAbility(ability);
         this.clientBattleMap.showAbilitySelectedState(ability, this.selectedUnit);
+    }
+
+    tickerTick(delta: number): void {
+        this.animationManager.playAnimations();
     }
 }

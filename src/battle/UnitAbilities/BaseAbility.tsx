@@ -33,33 +33,35 @@ export type AbilityDisplayDetails = {
 export default abstract class BaseAbility implements AbilityInterface {
     minRange: number = 1;
     maxRange: number = 1;
-    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {}
+    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
-    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) { return false; }
+    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, unit: BattleUnit, targets: Array<AbilityTarget>) { return false; }
     getDisplayDetails(): AbilityDisplayDetails { return { icon: SpriteList.CIRCLE, tempDisplayLetter: '?' } }
-    doesUnitHaveResourcesForAbility(user: BattleUnit) {
+    doesUnitHaveResourcesForAbility(unit: BattleUnit) {
         return false;
     }
+
+    spendResources(unit: BattleUnit) { }
 
     getMinMaxRange(): [number, number] {
         return [0, this.maxRange];
     }
 
-    isValidTarget(targetIndex: number, target: AbilityTarget, user: BattleUnit, clientBattleMap: ClientBattleMap): boolean {
+    isValidTarget(targetIndex: number, target: AbilityTarget, unit: BattleUnit, clientBattleMap: ClientBattleMap): boolean {
         const targetRestrictions = this.getTargetRestrictions();
         if (targetIndex < 0 || targetIndex >= targetRestrictions.length) { return false; }
         const restrictions = targetRestrictions[targetIndex];
-        if (targetMeetsRestrictions(user, target, restrictions, clientBattleMap)) { return true; }
+        if (targetMeetsRestrictions(unit, target, restrictions, clientBattleMap)) { return true; }
         return false;
     }
 
-    getTilesInRange(user: BattleUnit): Array<TileCoord> {
+    getTilesInRange(unit: BattleUnit): Array<TileCoord> {
         const [minRange, maxRange] = this.getMinMaxRange();
-        const userPos = user.tileCoord;
+        const unitPos = unit.tileCoord;
 
         const tilesInRange = []; 
         if (minRange === 0) {
-            tilesInRange.push({ ...userPos });
+            tilesInRange.push({ ...unitPos });
         }
         for (let range = Math.max(minRange, 1); range <= maxRange; range++) {
             /*
@@ -70,13 +72,13 @@ export default abstract class BaseAbility implements AbilityInterface {
             */
             for (let i = 0; i < range; i++) {
                 // Up to Right
-                tilesInRange.push({ x: userPos.x + i, y: userPos.y + range - i });
+                tilesInRange.push({ x: unitPos.x + i, y: unitPos.y + range - i });
                 // Right to Down
-                tilesInRange.push({ x: userPos.x + range - i, y: userPos.y -i });
+                tilesInRange.push({ x: unitPos.x + range - i, y: unitPos.y -i });
                 // Down to Left
-                tilesInRange.push({ x: userPos.x - i, y: userPos.y - (range - i) });
+                tilesInRange.push({ x: unitPos.x - i, y: unitPos.y - (range - i) });
                 // Left to Up
-                tilesInRange.push({ x: userPos.x - (range - i), y: userPos.y + i });
+                tilesInRange.push({ x: unitPos.x - (range - i), y: unitPos.y + i });
             }
         }
         return tilesInRange;
@@ -98,7 +100,7 @@ function determineIfTargetIsBattleUnit(toBeDetermined: AbilityTarget): toBeDeter
 }
 
 function targetMeetsRestrictions(
-    user: BattleUnit,
+    unit: BattleUnit,
     target: AbilityTarget,
     restrictions: AbilityTargetRestrictions,
     clientBattleMap: ClientBattleMap,
@@ -113,7 +115,7 @@ function targetMeetsRestrictions(
 
     if (restrictions.enemyUnit) {
         if (determineIfTargetIsBattleUnit(target)) {
-            if (!user.isOnOppositeTeam(target.team)) {
+            if (!unit.isOnOppositeTeam(target.team)) {
                 return false;
             }
         } else {
@@ -122,10 +124,10 @@ function targetMeetsRestrictions(
     }
 
     if (restrictions.maxRange !== undefined) {
-        if (determineIfTargetIsTileCoord(target) && getManhattenDistance(user.tileCoord, target) > restrictions.maxRange) {
+        if (determineIfTargetIsTileCoord(target) && getManhattenDistance(unit.tileCoord, target) > restrictions.maxRange) {
             return false;
         }
-        if (determineIfTargetIsBattleUnit(target) && getManhattenDistance(user.tileCoord, target.tileCoord) > restrictions.maxRange) {
+        if (determineIfTargetIsBattleUnit(target) && getManhattenDistance(unit.tileCoord, target.tileCoord) > restrictions.maxRange) {
             return false;
         }
     }

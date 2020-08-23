@@ -14,24 +14,27 @@ export default class AbilityBasicAttack extends BaseAbility {
         return [{ enemyUnit: true, maxRange: this.maxRange }];
     }
 
-    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {
-        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, user, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
+        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, unit, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
-        user.useAbilityPoints(AbilityPointType.ACTION, 1);
         const targetUnit = gameDataManager.unitManager.getUnitAtTileCoord(
             targets[0] as TileCoord,
             gameDataManager.clientBattleMap
         );
         targetUnit.dealDamage(1);
-        //unitManager.moveUnit(user, targets[0] as TileCoord);
+        doneCallback();
     }
 
-    doesUnitHaveResourcesForAbility(user: BattleUnit) {
-        return user.hasAbilityPoints(AbilityPointType.ACTION, 1);
+    doesUnitHaveResourcesForAbility(unit: BattleUnit) {
+        return unit.hasAbilityPoints(AbilityPointType.ACTION, 1);
     }
 
-    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
+    spendResources(unit: BattleUnit) {
+        unit.useAbilityPoints(AbilityPointType.ACTION, 1);
+    }
+
+    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
         if (targets.length !== 1) {
             return false;
         }
@@ -40,9 +43,9 @@ export default class AbilityBasicAttack extends BaseAbility {
             return false;
         }
 
-        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > this.maxRange) { return false; }
+        if (getManhattenDistance(unit.tileCoord, targets[0] as TileCoord) > this.maxRange) { return false; }
         
-        return this.doesUnitHaveResourcesForAbility(user);
+        return true;
     }
 
     getDisplayDetails(): AbilityDisplayDetails {

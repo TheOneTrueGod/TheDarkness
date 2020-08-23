@@ -6,6 +6,7 @@ import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { getManhattenDistance } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
 import GameDataManager from '../Managers/GameDataManager';
+import UnitMoveAnimation from "../Managers/Animations/UnitMoveAnimation";
 
 export default class AbilityBasicMove extends BaseAbility {
     minRange = 1;
@@ -14,19 +15,29 @@ export default class AbilityBasicMove extends BaseAbility {
         return [{ emptyTile: true, maxRange: this.maxRange }];
     }
 
-    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>) {
-        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, user, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
+        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, unit, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
-        user.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
-        gameDataManager.unitManager.moveUnit(user, targets[0] as TileCoord, gameDataManager.clientBattleMap);
+        const targetPos = targets[0] as TileCoord;
+        const previousCoord = unit.tileCoord;
+        gameDataManager.unitManager.moveUnit(unit, targetPos, gameDataManager.clientBattleMap);
+        gameDataManager.animationManager.addAnimation(
+            new UnitMoveAnimation(unit, previousCoord)
+        ).whenDone(() => {
+            doneCallback();
+        });
     }
 
-    doesUnitHaveResourcesForAbility(user: BattleUnit) {
-        return user.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
+    doesUnitHaveResourcesForAbility(unit: BattleUnit) {
+        return unit.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
     }
 
-    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, user: BattleUnit, targets: Array<AbilityTarget>) {
+    spendResources(unit: BattleUnit) {
+        unit.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
+    }
+
+    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
         if (targets.length !== 1) {
             return false;
         }
@@ -39,11 +50,11 @@ export default class AbilityBasicMove extends BaseAbility {
             return false;
         }
 
-        if (getManhattenDistance(user.tileCoord, targets[0] as TileCoord) > this.maxRange) {
+        if (getManhattenDistance(unit.tileCoord, targets[0] as TileCoord) > this.maxRange) {
             return false;
         }
-        
-        return this.doesUnitHaveResourcesForAbility(user);
+
+        return true;
     }
 
     getDisplayDetails(): AbilityDisplayDetails {

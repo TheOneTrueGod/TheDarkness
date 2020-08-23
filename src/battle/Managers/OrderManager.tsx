@@ -1,24 +1,57 @@
 import UnitOrder from "../BattleUnits/UnitOrder";
-import UnitManager from "./UnitManager";
-import ClientBattleMap from "../BattleMap/ClientBattleMap";
 import User from "../../../object_defs/User";
 import GameDataManager from "./GameDataManager";
 
 export default class OrderManager {
     orderList: Array<UnitOrder> = [];
     orderOn: number = 0;
+    playingOrder: boolean;
+    allDoneCallbacks: Array<Function> = [];
+    gameDataManager: GameDataManager;
+    user: User;
+    darknessContainer: PIXI.Sprite;
 
-    constructor() {}
+    constructor(
+        gameDataManager: GameDataManager,
+        user: User,
+        darknessContainer: PIXI.Sprite,
+    ) {
+        this.gameDataManager = gameDataManager;
+        this.user = user;
+        this.darknessContainer = darknessContainer;
+    }
 
     addUnitOrder(unitOrder: UnitOrder) {
+        unitOrder.spendResources();
         this.orderList.push(unitOrder);
     }
 
-    playNextOrder(gameDataManager: GameDataManager, user: User, darknessContainer: PIXI.Sprite) {
+    playNextOrder(
+        allOrdersDoneCallback: Function | null = null
+    ) {
+        allOrdersDoneCallback && this.allDoneCallbacks.push(allOrdersDoneCallback);
+        if (this.playingOrder) { return; }
+        if (this.orderOn >= this.orderList.length) {
+            const callbacksToCall = this.allDoneCallbacks;
+            this.allDoneCallbacks = [];
+            callbacksToCall.forEach(callback => callback());
+            return;
+        }
+
+        this.playingOrder = true;
         const order = this.orderList[this.orderOn];
-        order.playOutOrder(gameDataManager);
+
         this.orderOn += 1;
-        gameDataManager.clientBattleMap.updateLightnessLevels(darknessContainer, gameDataManager.unitManager, user);
-        gameDataManager.unitManager.cleanupStep(gameDataManager.clientBattleMap);
+        
+        order.playOutOrder(this.gameDataManager, () => {
+            this.gameDataManager.clientBattleMap.updateLightnessLevels(
+                this.darknessContainer,
+                this.gameDataManager.unitManager,
+                this.user
+            );
+            this.gameDataManager.unitManager.cleanupStep(this.gameDataManager.clientBattleMap);
+            this.playingOrder = false;
+            this.playNextOrder();
+        });
     }
 }
