@@ -2,7 +2,8 @@
 export type AnimationCallbackFunction = () => void;
 
 export enum AnimationEventTypes {
-    ANIMATION_EVENT_DONE = 'ANIMATION_EVENT_DONE'
+    ANIMATION_EVENT_DONE = 'ANIMATION_EVENT_DONE',
+    FIRST_PART_DONE = 'FIRST_PART_DONE',
 }
 
 export default class BaseAnimation {
@@ -32,6 +33,7 @@ export default class BaseAnimation {
     }
 
     callListeners(event: AnimationEventTypes) {
+        if (!this.listeners[event]) { return; }
         this.listeners[event].forEach((callback: AnimationCallbackFunction) => {
             callback();
         });

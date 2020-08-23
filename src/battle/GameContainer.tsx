@@ -94,7 +94,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             user,
             this.pixiContainer,
             this.setSelectedUnit,
-            this.issueUnitOrder,
+            this.issueUnitOrderFromPlayer,
             this.gameDataManager.clientBattleMap,
         );
         this.gameDataManager.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.gameDataManager.unitManager, user);
@@ -106,11 +106,18 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         this.gameDataManager.tickerTick(delta);
     }
 
-    issueUnitOrder = (unitOrder: UnitOrder) => {
+    issueUnitOrderFromPlayer = (unitOrder: UnitOrder) => {
         const { user } = this.props;
         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
         this.gameDataManager.orderManager.playNextOrder();
         this.gameDataManager.refreshAbilitySelectedState();
+        if (
+            this.gameDataManager.selectedAbility &&
+            this.gameDataManager.selectedUnit &&
+            !this.gameDataManager.selectedAbility.doesUnitHaveResourcesForAbility(this.gameDataManager.selectedUnit)
+        ) {
+            this.setSelectedAbility(null);
+        }
         this.setState({});
     }
 

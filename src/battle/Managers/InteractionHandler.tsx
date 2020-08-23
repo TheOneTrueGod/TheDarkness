@@ -103,11 +103,11 @@ export default class InteractionHandler {
 
                     if (
                         targetUnit &&
-                        attackAbility.isValidTarget(0, tileCoord, this.selectedUnit, clientBattleMap) &&
-                        attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [tileCoord]) &&
+                        attackAbility.isValidTarget(0, targetUnit, this.selectedUnit, clientBattleMap) &&
+                        attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetUnit]) &&
                         attackAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
                     ) {
-                        issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [tileCoord], attackAbility));
+                        issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetUnit], attackAbility));
                     } else {
 
                         const angle = Math.atan2(

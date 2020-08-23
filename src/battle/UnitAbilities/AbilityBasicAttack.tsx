@@ -1,11 +1,11 @@
 import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetRestrictions, determineIfTargetIsBattleUnit } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
-import { TileCoord } from '../BattleTypes';
-import { getManhattenDistance } from '../BattleHelpers';
+
 import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { SpriteList } from '../SpriteUtils';
 import GameDataManager from '../Managers/GameDataManager';
+import UnitStepForwardBackAnimation from '../Managers/Animations/UnitStepForwardBackAnimation';
 
 export default class AbilityBasicAttack extends BaseAbility {
     minRange = 1;
@@ -20,6 +20,14 @@ export default class AbilityBasicAttack extends BaseAbility {
         }
         const targetUnit = targets[0] as BattleUnit;
         targetUnit.dealDamage(1);
+        gameDataManager.animationManager.addAnimation(
+            new UnitStepForwardBackAnimation(unit, targetUnit.tileCoord)
+        ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
+            console.log("Bam");
+        })
+        .whenDone(() => {
+            doneCallback();
+        });
         doneCallback();
     }
 
