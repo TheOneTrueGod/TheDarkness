@@ -19,9 +19,13 @@ export default class UnitMoveAnimation extends BaseAnimation {
     }
 
     playAnimation() {
+        const previousTick = this.tickOn;
         this.tickOn += 1;
         const percentDone = Math.min(this.tickOn / this.duration, 1);
         this.unit.setSpriteOffset(lerpPosition(this.targetPos, { x: 0, y: 0 }, percentDone));
+        if (previousTick / this.duration < 0.5 && this.tickOn / this.duration >= 0.5) {
+            this.callListeners(BaseAnimation.ANIMATION_EVENT_HALF_DONE);
+        }
         if (this.isDone()) {
             this.callListeners(BaseAnimation.ANIMATION_EVENT_DONE);
         }

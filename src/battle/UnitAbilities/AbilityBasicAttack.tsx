@@ -10,7 +10,7 @@ import UnitStepForwardBackAnimation from '../Managers/Animations/UnitStepForward
 export default class AbilityBasicAttack extends BaseAbility {
     minRange = 1;
     maxRange = 1;
-    damage = 2;
+    damage = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ enemyUnit: true, maxRange: this.maxRange }];
     }
@@ -25,7 +25,6 @@ export default class AbilityBasicAttack extends BaseAbility {
             new UnitStepForwardBackAnimation(unit, targetUnit.tileCoord)
         ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
             targetUnit.dealDisplayDamage(this.damage);
-            console.log("Bam");
         })
         .whenDone(() => {
             doneCallback();

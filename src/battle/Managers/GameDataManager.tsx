@@ -17,7 +17,7 @@ export default class GameDataManager {
 
     selectedUnit: BattleUnit | null;
     selectedAbility: BaseAbility | null;
-    constructor(battle: Battle, user: User, pixiLoader: PIXI.Loader, darknessContainer: PIXI.Sprite, effectsContainer: PIXI.Sprite) {
+    constructor(battle: Battle, user: User, pixiLoader: PIXI.Loader, darknessContainer: PIXI.Sprite, effectsContainer: PIXI.Container) {
         this.unitManager = new UnitManager();
         this.orderManager = new OrderManager(this, user, darknessContainer);
         this.interactionHandler = new InteractionHandler(this.unitManager);

@@ -36,7 +36,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
         units: PIXI.Container,
         debug: PIXI.Sprite,
         darkness: PIXI.Sprite,
-        effects: PIXI.Sprite,
+        effects: PIXI.Container,
     };
     gameDataManager: GameDataManager;
 
@@ -52,7 +52,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             units: new PIXI.Container(),
             debug: new PIXI.Sprite(),
             darkness: new PIXI.Sprite(),
-            effects: new PIXI.Sprite(),
+            effects: new PIXI.Container(),
         };
         this.gameDataManager = new GameDataManager(
             props.battle,

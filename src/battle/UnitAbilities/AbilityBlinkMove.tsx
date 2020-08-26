@@ -39,10 +39,17 @@ export default class AbilityBlinkMove extends BaseAbility {
         // animation
         unit.setSpriteOffset(tileCoordToPosition({ x: startCoord.x - targetCoord.x, y: startCoord.y - targetCoord.y }));
         gameDataManager.animationManager.addAnimation(
-            new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.BlueExplosion], startCoord, 200, 0)
-        ).whenDone(() => {
+            new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.BlueExplosion], startCoord, 20, 0)
+        ).whenHalfDone(() => {
+            unit.setVisible(false);
             unit.setSpriteOffset({ x: 0, y: 0 });
-            doneCallback();
+            gameDataManager.animationManager.addAnimation(
+                new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.BlueExplosion], targetCoord, 20, 0)
+            ).whenHalfDone(() => {
+                unit.setVisible(true);
+            }).whenDone(() => {
+                doneCallback();
+            });
         });
     }
 

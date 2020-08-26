@@ -1,9 +1,9 @@
 import BaseAnimation from "./Animations/BaseAnimation";
 export default class AnimationManager {
     animations: Array<BaseAnimation> = [];
-    effectContainer: PIXI.Sprite;
+    effectContainer: PIXI.Container;
     pixiLoader: PIXI.Loader;
-    constructor(effectContainer: PIXI.Sprite, pixiLoader: PIXI.Loader) {
+    constructor(effectContainer: PIXI.Container, pixiLoader: PIXI.Loader) {
         this.effectContainer = effectContainer;
         this.pixiLoader = pixiLoader;
     }

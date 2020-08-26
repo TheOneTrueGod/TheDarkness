@@ -46,6 +46,10 @@ export default class UnitStepForwardBackAnimation extends BaseAnimation {
         } else {
             this.unit.setSpriteOffset(lerpPosition(this.targetPos, { x: 0, y: 0 }, percentDone));
         }
+
+        if (lastTick / this.duration < 0.5 && this.tickOn / this.duration >= 0.5) {
+            this.callListeners(BaseAnimation.ANIMATION_EVENT_HALF_DONE);
+        }
         
         if (this.isDone()) {
             this.callListeners(BaseAnimation.ANIMATION_EVENT_DONE);
