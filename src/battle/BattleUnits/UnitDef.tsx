@@ -17,7 +17,7 @@ export const TempPlayerUnitDef: UnitDef = {
     movementPoints: 2,
     actionPoints: 2,
     size: { x: 1, y: 1 },
-    abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack, AbilityMap.BlinkMove],
+    abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack, AbilityMap.BlinkMove, AbilityMap.SwordSlash],
 }
 
 export const CaravanUnitDef: UnitDef = {

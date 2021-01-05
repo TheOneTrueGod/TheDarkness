@@ -44,7 +44,7 @@ export default class GameDataManager {
     }
 
     refreshAbilitySelectedState() {
-        this.clientBattleMap.showAbilitySelectedState(this.selectedAbility, this.selectedUnit, this.interactionHandler.abilityTargets.length, this.clientBattleMap);
+        this.clientBattleMap.showAbilitySelectedState(this.selectedAbility, this.selectedUnit, this.interactionHandler.abilityTargets.length, this);
     }
 
     tickerTick(delta: number): void {

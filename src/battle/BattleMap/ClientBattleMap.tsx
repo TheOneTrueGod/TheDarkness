@@ -7,6 +7,7 @@ import BaseAbility from "../UnitAbilities/BaseAbility";
 import BattleUnit from "../BattleUnits/BattleUnit";
 import TerrainSprite, { TerrainEffects } from "./TerrainSprite";
 import { tileCoordToInteger } from "../BattleHelpers";
+import GameDataManager from "../Managers/GameDataManager";
 
 export default class ClientBattleMap {
     mapSize: { x: number, y: number };
@@ -56,7 +57,7 @@ export default class ClientBattleMap {
     }
 
     // Previews of abilities
-    showAbilitySelectedState(ability: BaseAbility | null, unit: BattleUnit, targetIndex: number, clientBattleMap: ClientBattleMap) {
+    showAbilitySelectedState(ability: BaseAbility | null, unit: BattleUnit, targetIndex: number, gameDataManager: GameDataManager) {
         this.hidePreviousAbilitySelectedState();
         if (ability === null) { return; }
         const displayDetails = ability.getDisplayDetails();
@@ -67,7 +68,7 @@ export default class ClientBattleMap {
         tilesInRange.forEach((tile) => {
             if (
                 tile.x >= 0 && tile.x < mapSize.x && tile.y >= 0 && tile.y < mapSize.y &&
-                ability.isValidTarget(0, tile, unit, clientBattleMap)
+                ability.isValidTarget(0, tile, unit, gameDataManager)
             ) {
                 this.previouslyTargettedTiles.push(tile);
                 this.terrainSprites[tileCoordToInteger(tile, mapSize)].showTerrainEffect(TerrainEffects.TARGETTER_MOVE);

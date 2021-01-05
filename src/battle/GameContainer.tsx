@@ -100,7 +100,7 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.pixiContainer,
             this.setSelectedUnit,
             this.issueUnitOrderFromPlayer,
-            this.gameDataManager.clientBattleMap,
+            this.gameDataManager,
         );
         this.gameDataManager.clientBattleMap.updateLightnessLevels(this.renderContainers.darkness, this.gameDataManager.unitManager, user);
         this.startTurn(battle.currentTurn);
@@ -162,9 +162,8 @@ class GameContainer extends React.Component<GameContainerProps, GameContainerSta
             this.gameDataManager.unitManager.cleanupStep(this.gameDataManager.clientBattleMap);
             if (isAITurn(nextTurn)) {
                 AIManager.doAIActionsAtTurnStart(
-                    this.gameDataManager.unitManager,
+                    this.gameDataManager,
                     nextTurn,
-                    this.gameDataManager.clientBattleMap,
                     (unitOrder: UnitOrder) => {
                         this.gameDataManager.orderManager.addUnitOrder(unitOrder);
                         this.gameDataManager.orderManager.playNextOrder();

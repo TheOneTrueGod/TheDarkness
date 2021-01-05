@@ -7,6 +7,7 @@ import { MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT } from "../BattleConstants";
 import User from "../../../object_defs/User";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
 import BaseAbility, { AbilityTarget } from "../UnitAbilities/BaseAbility";
+import GameDataManager from "./GameDataManager";
 
 export default class InteractionHandler {
     currentTurn: CurrentTurn;
@@ -31,16 +32,16 @@ export default class InteractionHandler {
     clickOnUnit(
         selectedUnit: BattleUnit,
         unitSelectedCallback: Function,
-        clientBattleMap: ClientBattleMap,
+        gameDataManager: GameDataManager,
         issueUnitOrder: Function,
     ) {
         if (this.selectedAbility && this.selectedAbility.isValidTarget(
             this.abilityTargets.length,
             selectedUnit,
             this.selectedUnit,
-            clientBattleMap,
+            gameDataManager,
         )) {
-            this.addAbilityTarget(selectedUnit, issueUnitOrder, clientBattleMap);
+            this.addAbilityTarget(selectedUnit, issueUnitOrder, gameDataManager.clientBattleMap);
         } else {
             unitSelectedCallback(selectedUnit);
         }
@@ -51,10 +52,10 @@ export default class InteractionHandler {
         this.abilityTargets = [];
     }
 
-    clickOnTerrain(tileCoord: TileCoord, clientBattleMap: ClientBattleMap, issueUnitOrder: Function) {
+    clickOnTerrain(tileCoord: TileCoord, gameDataManager: GameDataManager, issueUnitOrder: Function) {
         if (this.selectedAbility) {
-            if (this.selectedAbility.isValidTarget(this.abilityTargets.length, tileCoord, this.selectedUnit, clientBattleMap)) {
-                this.addAbilityTarget(tileCoord, issueUnitOrder, clientBattleMap);
+            if (this.selectedAbility.isValidTarget(this.abilityTargets.length, tileCoord, this.selectedUnit, gameDataManager)) {
+                this.addAbilityTarget(tileCoord, issueUnitOrder, gameDataManager.clientBattleMap);
             }
         }
     }
@@ -73,7 +74,7 @@ export default class InteractionHandler {
         container: HTMLDivElement,
         unitSelectedCallback: Function,
         issueUnitOrder: Function,
-        clientBattleMap: ClientBattleMap,
+        gameDataManager: GameDataManager,
     ) {
         container.addEventListener("mousedown", (event: MouseEvent) => {
             const tileCoord = positionToTileCoord({
@@ -81,13 +82,13 @@ export default class InteractionHandler {
                 y: event.offsetY
             });
             
-            const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
+            const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, gameDataManager.clientBattleMap);
 
             if (event.button === MOUSE_BUTTON_LEFT) {
                 if (targetUnit && this.canClickOnUnit(targetUnit)) {
-                    this.clickOnUnit(targetUnit, unitSelectedCallback, clientBattleMap, issueUnitOrder);
+                    this.clickOnUnit(targetUnit, unitSelectedCallback, gameDataManager, issueUnitOrder);
                 } else {
-                    this.clickOnTerrain(tileCoord, clientBattleMap, issueUnitOrder);
+                    this.clickOnTerrain(tileCoord, gameDataManager, issueUnitOrder);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
                 const moveAbility = this.selectedUnit.getBasicMoveAbility();
@@ -99,12 +100,12 @@ export default class InteractionHandler {
                     tileCoord.x !== this.selectedUnit.tileCoord.x ||
                     tileCoord.y !== this.selectedUnit.tileCoord.y
                 )) {
-                    const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, clientBattleMap);
+                    const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, gameDataManager.clientBattleMap);
 
                     if (
                         targetUnit &&
-                        attackAbility.isValidTarget(0, targetUnit, this.selectedUnit, clientBattleMap) &&
-                        attackAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetUnit]) &&
+                        attackAbility.isValidTarget(0, targetUnit, this.selectedUnit, gameDataManager) &&
+                        attackAbility.canUnitUseAbility(gameDataManager, this.selectedUnit, [targetUnit]) &&
                         attackAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
                     ) {
                         issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetUnit], attackAbility));
@@ -125,7 +126,7 @@ export default class InteractionHandler {
                                 + (direction === CardinalDirection.SOUTH ? 1 : 0),
                         };
                         if (
-                            moveAbility.canUnitUseAbility(clientBattleMap, this.unitManager, this.selectedUnit, [targetCoord]) &&
+                            moveAbility.canUnitUseAbility(gameDataManager, this.selectedUnit, [targetCoord]) &&
                             moveAbility.doesUnitHaveResourcesForAbility(this.selectedUnit)
                         ) {
                             issueUnitOrder(new UnitOrder(this.selectedUnit, OrderType.USE_ABILITY, [targetCoord], moveAbility));

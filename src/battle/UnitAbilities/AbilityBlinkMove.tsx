@@ -1,4 +1,4 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions, getTileCoordFromAbilityTarget } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import UnitManager from '../Managers/UnitManager';
 import { TileCoord } from '../BattleTypes';
@@ -29,10 +29,10 @@ export default class AbilityBlinkMove extends BaseAbility {
     }
 
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
-        if (!this.canUnitUseAbility(gameDataManager.clientBattleMap, gameDataManager.unitManager, unit, targets)) {
+        if (!this.canUnitUseAbility(gameDataManager, unit, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
-        const targetCoord = targets[0] as TileCoord;
+        const targetCoord = getTileCoordFromAbilityTarget(targets[0]);
         const startCoord = unit.tileCoord;
         gameDataManager.unitManager.moveUnit(unit, targetCoord, gameDataManager.clientBattleMap);
 
@@ -53,20 +53,20 @@ export default class AbilityBlinkMove extends BaseAbility {
         });
     }
 
-    canUnitUseAbility(clientBattleMap: ClientBattleMap, unitManager: UnitManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
+    canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
         if (targets.length !== 1) {
             return false;
         }
 
-        if (!clientBattleMap.isTileEmpty(targets[0] as TileCoord)) {
+        if (!gameDataManager.clientBattleMap.isTileEmpty(getTileCoordFromAbilityTarget(targets[0]))) {
             return false;
         }
 
-        if (unitManager.getUnitAtTileCoord(targets[0] as TileCoord, clientBattleMap)) {
+        if (gameDataManager.unitManager.getUnitAtTileCoord(getTileCoordFromAbilityTarget(targets[0]), gameDataManager.clientBattleMap)) {
             return false;
         }
 
-        if (getManhattenDistance(unit.tileCoord, targets[0] as TileCoord) > this.maxRange) {
+        if (getManhattenDistance(unit.tileCoord, getTileCoordFromAbilityTarget(targets[0])) > this.maxRange) {
             return false;
         }
         

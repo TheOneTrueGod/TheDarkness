@@ -4,6 +4,7 @@ import BattleUnit from "../BattleUnits/BattleUnit";
 import { getManhattenDistance, getShortestPath, arePositionsEqual, cloneCoord, isTileWalkable } from "../BattleHelpers";
 import UnitOrder, { OrderType } from "../BattleUnits/UnitOrder";
 import ClientBattleMap from "../BattleMap/ClientBattleMap";
+import GameDataManager from "./GameDataManager";
 
 function isAbleToAttack(actingUnit: BattleUnit, targetUnit: BattleUnit, unitManager: UnitManager, clientBattleMap: ClientBattleMap) {
     if (getManhattenDistance(actingUnit.tileCoord, targetUnit.tileCoord) <= 1) { return true; }
@@ -33,12 +34,12 @@ function findTargetForUnit(actingUnit: BattleUnit, enemyUnits: Array<BattleUnit>
     }, null);
 }
 
-function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: number, clientBattleMap: ClientBattleMap, unitManager: UnitManager, issueUnitOrder: Function) {
+function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: number, gameDataManager: GameDataManager, issueUnitOrder: Function) {
     if (arePositionsEqual(unit.tileCoord, target)) {
         return;
     }
     
-    const shortestPath = getShortestPath(unit.tileCoord, target, clientBattleMap, unitManager);
+    const shortestPath = getShortestPath(unit.tileCoord, target, gameDataManager.clientBattleMap, gameDataManager.unitManager);
 
     unit.debugPathing.previousPosition = cloneCoord(unit.tileCoord);
     unit.debugPathing.path = shortestPath;
@@ -48,8 +49,8 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
     const moveAbility = unit.getBasicMoveAbility();
     while (
         i < shortestPath.length &&
-        moveAbility.isValidTarget(0, shortestPath[i], unit, clientBattleMap) &&
-        moveAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [shortestPath[i]]) &&
+        moveAbility.isValidTarget(0, shortestPath[i], unit, gameDataManager) &&
+        moveAbility.canUnitUseAbility(gameDataManager, unit, [shortestPath[i]]) &&
         moveAbility.doesUnitHaveResourcesForAbility(unit)
     ) {
         issueUnitOrder(new UnitOrder(
@@ -62,12 +63,12 @@ function moveUnitToDesiredRange(unit: BattleUnit, target: TileCoord, range: numb
     }
 }
 
-function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBattleMap: ClientBattleMap, unitManager: UnitManager, issueUnitOrder: Function) {
+function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, gameDataManager: GameDataManager, issueUnitOrder: Function) {
     const attackAbility = unit.getBasicAttackAbility();
     let iterCount = 0;
     while (
-        attackAbility.canUnitUseAbility(clientBattleMap, unitManager, unit, [targetUnit]) &&
-        attackAbility.isValidTarget(0, targetUnit, unit, clientBattleMap) &&
+        attackAbility.canUnitUseAbility(gameDataManager, unit, [targetUnit]) &&
+        attackAbility.isValidTarget(0, targetUnit, unit, gameDataManager) &&
         attackAbility.doesUnitHaveResourcesForAbility(unit)
     ) {
         iterCount += 1;
@@ -83,24 +84,23 @@ function useAttackAbilities(unit: BattleUnit, targetUnit: BattleUnit, clientBatt
 
 export default {
     doAIActionsAtTurnStart(
-        unitManager: UnitManager,
+        gameDataManager: GameDataManager,
         currentTurn: CurrentTurn,
-        clientBattleMap: ClientBattleMap,
         issueUnitOrder: Function,
     ) {
-        const controlledUnits = unitManager.getUnitsControlledByTeams(
+        const controlledUnits = gameDataManager.unitManager.getUnitsControlledByTeams(
             [currentTurn.team],
             (unit: BattleUnit) => unit.owner === currentTurn.owner,
         );
         if (!controlledUnits) { return; }
         
-        const enemyUnits = unitManager.getUnitsOnOppositeTeam(currentTurn.team);
+        const enemyUnits = gameDataManager.unitManager.getUnitsOnOppositeTeam(currentTurn.team);
 
         controlledUnits.forEach((unit: BattleUnit) => {
-            const targetUnit = findTargetForUnit(unit, enemyUnits, unitManager, clientBattleMap);
+            const targetUnit = findTargetForUnit(unit, enemyUnits, gameDataManager.unitManager, gameDataManager.clientBattleMap);
             if (!targetUnit) { return }
-            moveUnitToDesiredRange(unit, targetUnit.tileCoord, 1, clientBattleMap, unitManager, issueUnitOrder);
-            useAttackAbilities(unit, targetUnit, clientBattleMap, unitManager, issueUnitOrder);
+            moveUnitToDesiredRange(unit, targetUnit.tileCoord, 1, gameDataManager, issueUnitOrder);
+            useAttackAbilities(unit, targetUnit, gameDataManager, issueUnitOrder);
         });
     }
 };
