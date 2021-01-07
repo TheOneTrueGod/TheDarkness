@@ -30,6 +30,17 @@ export default class ClientBattleMap {
         return true;
     }
 
+    canUnitMoveIntoTile(unit: BattleUnit, tileCoord: TileCoord, gameDataManager: GameDataManager) {
+        if (!gameDataManager.clientBattleMap.isTileEmpty(tileCoord)) {
+            return false;
+        }
+
+        if (gameDataManager.unitManager.getUnitAtTileCoord(tileCoord, gameDataManager.clientBattleMap) !== null) {
+            return false;
+        }
+        return true;
+    }
+
     updateLightnessLevels(darknessContainer: PIXI.Sprite, unitManager: UnitManager, user: User) {
         this.lightnessMap.update(this, unitManager, user);
         this.lightnessMap.updateDarknessContainer(darknessContainer, this);
@@ -63,7 +74,7 @@ export default class ClientBattleMap {
         const displayDetails = ability.getDisplayDetails();
         const mapSize = this.getMapSize();
 
-        const tilesInRange = ability.getTilesInRange(unit);
+        const tilesInRange = ability.getTilesInRange(unit, targetIndex);
 
         tilesInRange.forEach((tile) => {
             if (

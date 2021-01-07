@@ -6,12 +6,10 @@ import UnitStepForwardBackAnimation from '../Managers/Animations/UnitStepForward
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from '../Managers/Animations/SpriteEffectAnimation';
 
 export default class AbilityBasicAttack extends BaseAbility {
-    minRange = 1;
-    maxRange = 1;
     damage = 1;
     actionPointCost = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
-        return [{ enemyUnit: true, maxRange: this.maxRange }];
+        return [{ enemyUnit: true, minRange: 1, maxRange: 1 }];
     }
 
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {

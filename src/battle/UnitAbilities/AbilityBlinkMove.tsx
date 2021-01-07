@@ -12,10 +12,8 @@ import SpriteEffectAnimation, { SpriteEffects, SpriteEffectNames } from '../Mana
 export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
     movementPointCost = 1;
-    maxRange = 3;
-    minRange = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
-        return [{ emptyTile: true, maxRange: this.maxRange }];
+        return [{ emptyTile: true, minRange: 1, maxRange: 3 }];
     }
 
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {
@@ -58,15 +56,9 @@ export default class AbilityBlinkMove extends BaseAbility {
             return false;
         }
 
-        if (!gameDataManager.clientBattleMap.isTileEmpty(getTileCoordFromAbilityTarget(targets[0]))) {
-            return false;
-        }
+        const target = getTileCoordFromAbilityTarget(targets[0]);
 
-        if (gameDataManager.unitManager.getUnitAtTileCoord(getTileCoordFromAbilityTarget(targets[0]), gameDataManager.clientBattleMap)) {
-            return false;
-        }
-
-        if (getManhattenDistance(unit.tileCoord, getTileCoordFromAbilityTarget(targets[0])) > this.maxRange) {
+        if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(unit, target, gameDataManager)) {
             return false;
         }
         

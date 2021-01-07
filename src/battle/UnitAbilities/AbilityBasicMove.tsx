@@ -9,10 +9,8 @@ import GameDataManager from '../Managers/GameDataManager';
 import UnitMoveAnimation from "../Managers/Animations/UnitMoveAnimation";
 
 export default class AbilityBasicMove extends BaseAbility {
-    minRange = 1;
-    maxRange = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
-        return [{ emptyTile: true, maxRange: this.maxRange }];
+        return [{ emptyTile: true, minRange: 1, maxRange: 1 }];
     }
 
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
@@ -41,16 +39,9 @@ export default class AbilityBasicMove extends BaseAbility {
         if (targets.length !== 1) {
             return false;
         }
+        const target = getTileCoordFromAbilityTarget(targets[0]);
 
-        if (!gameDataManager.clientBattleMap.isTileEmpty(getTileCoordFromAbilityTarget(targets[0]))) {
-            return false;
-        }
-
-        if (gameDataManager.unitManager.getUnitAtTileCoord(getTileCoordFromAbilityTarget(targets[0]), gameDataManager.clientBattleMap)) {
-            return false;
-        }
-
-        if (getManhattenDistance(unit.tileCoord, getTileCoordFromAbilityTarget(targets[0])) > this.maxRange) {
+        if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(unit, target, gameDataManager)) {
             return false;
         }
 

@@ -9,22 +9,30 @@ import { AbilityAoE, getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares 
 import { getManhattenDistance } from "../../BattleHelpers";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 
-export default class AbilitySwordSlash extends AbilityBasicAttack {
-    actionPointCost = 1;
-    energyCost = 3;
-    getTargetRestrictions(): Array<AbilityTargetRestrictions> {
-        return [{ minRange: 1, maxRange: 1, enemyUnitInAoE: true }];
-    }
+function getMoveTargetTile(source: TileCoord, target: TileCoord, gameDataManager: GameDataManager): TileCoord {
+    const deltaTarget = { x: target.x - source.x, y: target.y - source.y };
+    const moveTargetTile = { x: source.x + deltaTarget.x, y: source.y + deltaTarget.y };
 
-    getAbilityAoE(): AbilityAoE {
-        return {
-            centerOffset: { x: 1, y: 1 },
-            square: [
-                0, 0, 0,
-                1, 1, 1,
-                0, 0, 0,
-            ],
-        }
+    return moveTargetTile;
+}
+
+function customTargetValidation(user: BattleUnit, source: TileCoord, target: AbilityTarget, gameDataManager: GameDataManager) {
+    const moveTargetTile = getMoveTargetTile(user.tileCoord, getTileCoordFromAbilityTarget(target), gameDataManager);
+    if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(user, moveTargetTile, gameDataManager)) {
+        return false;
+    }
+    return true;
+}
+
+export default class AbilitySwordStrikethrough extends AbilityBasicAttack {
+    actionPointCost = 1;
+    getTargetRestrictions(): Array<AbilityTargetRestrictions> {
+        return [{ 
+            minRange: 1,
+            maxRange: 1,
+            enemyUnit: true,
+            customFunction: customTargetValidation
+        }];
     }
 
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
@@ -60,13 +68,19 @@ export default class AbilitySwordSlash extends AbilityBasicAttack {
         if (targets.length !== 1) {
             return false;
         }
+
+        const target = getTileCoordFromAbilityTarget(targets[0]);
+
+        if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(unit, target, gameDataManager)) {
+            return false;
+        }
         
         return true;
     }
 
     getDisplayDetails(): AbilityDisplayDetails {
         return {
-            tempDisplayLetter: 'Sw',
+            tempDisplayLetter: 'St',
             icon: SpriteList.POSITION_MARKER,
         }
     }

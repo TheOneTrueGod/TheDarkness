@@ -25,7 +25,9 @@ export type AbilityTargetRestrictions = {
     emptyTile? : boolean;
     enemyUnit? : boolean;
     enemyUnitInAoE? : boolean;
-    maxRange? : number;
+    minRange : number;
+    maxRange : number;
+    customFunction?: (user: BattleUnit, source: TileCoord, target: AbilityTarget, gameDataManager: GameDataManager) => boolean;
 }
 
 export type AbilityDisplayDetails = {
@@ -34,8 +36,6 @@ export type AbilityDisplayDetails = {
 }
 
 export default abstract class BaseAbility implements AbilityInterface {
-    minRange: number = 1;
-    maxRange: number = 1;
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
     canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) { return false; }
@@ -53,10 +53,6 @@ export default abstract class BaseAbility implements AbilityInterface {
 
     spendResources(unit: BattleUnit) { }
 
-    getMinMaxRange(): [number, number] {
-        return [0, this.maxRange];
-    }
-
     isValidTarget(targetIndex: number, target: AbilityTarget, unit: BattleUnit, gameDataManager: GameDataManager): boolean {
         const targetRestrictions = this.getTargetRestrictions();
         if (targetIndex < 0 || targetIndex >= targetRestrictions.length) { return false; }
@@ -65,8 +61,8 @@ export default abstract class BaseAbility implements AbilityInterface {
         return false;
     }
 
-    getTilesInRange(unit: BattleUnit): Array<TileCoord> {
-        const [minRange, maxRange] = this.getMinMaxRange();
+    getTilesInRange(unit: BattleUnit, targetIndex: number): Array<TileCoord> {
+        const { minRange, maxRange } = this.getTargetRestrictions()[targetIndex];
         const unitPos = unit.tileCoord;
 
         const tilesInRange = []; 
@@ -120,6 +116,8 @@ function targetMeetsRestrictions(
     ability: BaseAbility,
     gameDataManager: GameDataManager,
 ) {
+    const tileTarget = getTileCoordFromAbilityTarget(target);
+
     if (restrictions.emptyTile) {
         if (determineIfTargetIsTileCoord(target)) {
             if (!gameDataManager.clientBattleMap.isTileEmpty(target)) { return false; }
@@ -146,11 +144,20 @@ function targetMeetsRestrictions(
         }
     }
 
-    if (restrictions.maxRange !== undefined) {
-        if (determineIfTargetIsTileCoord(target) && getManhattenDistance(unit.tileCoord, target) > restrictions.maxRange) {
+    if (restrictions.minRange !== undefined) {
+        if (getManhattenDistance(unit.tileCoord, tileTarget) < restrictions.minRange) {
             return false;
         }
-        if (determineIfTargetIsBattleUnit(target) && getManhattenDistance(unit.tileCoord, target.tileCoord) > restrictions.maxRange) {
+    }
+
+    if (restrictions.maxRange !== undefined) {
+        if (getManhattenDistance(unit.tileCoord, tileTarget) > restrictions.maxRange) {
+            return false;
+        }
+    }
+
+    if (restrictions.customFunction !== undefined) {
+        if (!restrictions.customFunction(unit, unit.tileCoord, target, gameDataManager)) {
             return false;
         }
     }
