@@ -3,6 +3,7 @@ import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
 import { SpriteList } from '../SpriteUtils';
 import GameDataManager from '../Managers/GameDataManager';
 import UnitStepForwardBackAnimation from '../Managers/Animations/UnitStepForwardBackAnimation';
+import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from '../Managers/Animations/SpriteEffectAnimation';
 
 export default class AbilityBasicAttack extends BaseAbility {
     minRange = 1;
@@ -23,11 +24,13 @@ export default class AbilityBasicAttack extends BaseAbility {
             new UnitStepForwardBackAnimation(unit, targetUnit.tileCoord)
         ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
             targetUnit.dealDisplayDamage(this.damage);
+            gameDataManager.animationManager.addAnimation(
+                new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.SwordSlashes], targetUnit.tileCoord, 30, 0, 2)
+            );
         })
         .whenDone(() => {
             doneCallback();
         });
-        doneCallback();
     }
 
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {

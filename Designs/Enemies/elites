@@ -8,3 +8,6 @@ Mimic
 If a player has left line of sight of all the others for too long, then a mimic may spawn.
 They look like that player until they get in melee range, then they transform.
 Strong melee attack.
+
+Slime
+Splits into X minions after being killed.  Transfer all debuffs & buffs to those minions.

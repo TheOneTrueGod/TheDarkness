@@ -16,6 +16,7 @@ export default class AssetLoader {
             .add(SpriteList.TERRAIN, '/assets/terrain.png')
             // abilities
             .add(SpriteList.ABILITY_BLUE_EXPLOSION, '/assets/blue-explosion.png')
+            .add(SpriteList.ABILITY_SWORD_SLASH, '/assets/sword-slash.png')
             
             ;
 

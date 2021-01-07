@@ -10,7 +10,8 @@ export enum SpriteList {
 
     TERRAIN = 'terrain',
 
-    ABILITY_BLUE_EXPLOSION = 'ability_blue_explosion'
+    ABILITY_BLUE_EXPLOSION = 'ability_blue_explosion',
+    ABILITY_SWORD_SLASH = 'ability_sword_slash',
 }
 
 export declare const SpriteNames: { [key in SpriteList]: SpriteList };

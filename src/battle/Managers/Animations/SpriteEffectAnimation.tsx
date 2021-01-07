@@ -9,10 +9,14 @@ type SpriteEffectDef = {
     xTiles: number,
     yTiles: number,
 };
-export enum SpriteEffectNames { BlueExplosion = 'BlueExplosion', }
+export enum SpriteEffectNames { BlueExplosion = 'BlueExplosion', SwordSlashes = 'SwordSlashes' }
 export const SpriteEffects: Record<SpriteEffectNames, SpriteEffectDef> = {
     [SpriteEffectNames.BlueExplosion]: {
         sprite: SpriteList.ABILITY_BLUE_EXPLOSION,
+        xTiles: 3, yTiles: 3,
+    },
+    [SpriteEffectNames.SwordSlashes]: {
+        sprite: SpriteList.ABILITY_SWORD_SLASH,
         xTiles: 3, yTiles: 3,
     }
 };

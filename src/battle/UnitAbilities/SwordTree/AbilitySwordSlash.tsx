@@ -5,8 +5,9 @@ import GameDataManager from "../../Managers/GameDataManager";
 import { TileCoord } from "../../BattleTypes";
 import { SpriteList } from "../../SpriteUtils";
 import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
-import { AbilityAoE, getUnitsInAoE } from "../AbilityHelpers";
+import { AbilityAoE, getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares } from "../AbilityHelpers";
 import { getManhattenDistance } from "../../BattleHelpers";
+import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 
 export default class AbilitySwordSlash extends AbilityBasicAttack {
     actionPointCost = 1;
@@ -35,18 +36,26 @@ export default class AbilitySwordSlash extends AbilityBasicAttack {
 
         const sourceCoord = unit.tileCoord;
         const targetCoord = getTileCoordFromAbilityTarget(targets[0]);
-        const targetUnits = getUnitsInAoE(sourceCoord, targetCoord, this.getAbilityAoE(), gameDataManager);
+        const abilityAoE = this.getAbilityAoE();
+        const targetUnits = getUnitsInAoE(sourceCoord, targetCoord, abilityAoE, gameDataManager);
         
         targetUnits.forEach((unit: BattleUnit) => { unit.dealDamage(this.damage) });
         gameDataManager.animationManager.addAnimation(
             new UnitStepForwardBackAnimation(unit, targetCoord)
         ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
             targetUnits.forEach((unit: BattleUnit) => { unit.dealDisplayDamage(this.damage) });
+            const rotatedAoE = getRotatedTargetSquares(sourceCoord, targetCoord, abilityAoE);
+            const targetCoords = convertAoEToCoords(targetCoord, rotatedAoE);
+            targetCoords.forEach((effectCoord) => {
+                gameDataManager.animationManager.addAnimation(
+                    new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.SwordSlashes], effectCoord, 30, 0, 2)
+                );
+            })
+            
         })
         .whenDone(() => {
             doneCallback();
         });
-        doneCallback();
     }
 
     canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
@@ -67,7 +76,7 @@ export default class AbilitySwordSlash extends AbilityBasicAttack {
 
     getDisplayDetails(): AbilityDisplayDetails {
         return {
-            tempDisplayLetter: 'SS',
+            tempDisplayLetter: 'Sw',
             icon: SpriteList.POSITION_MARKER,
         }
     }
