@@ -1,6 +1,6 @@
 import AbilityBasicAttack from "../AbilityBasicAttack";
 import BattleUnit from '../../BattleUnits/BattleUnit';
-import { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget } from "../BaseAbility";
+import { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget, determineIfTargetIsBattleUnit } from "../BaseAbility";
 import GameDataManager from "../../Managers/GameDataManager";
 import { TileCoord } from "../../BattleTypes";
 import { SpriteList } from "../../SpriteUtils";
@@ -18,9 +18,6 @@ function getMoveTargetTile(source: TileCoord, target: TileCoord, gameDataManager
 
 function customTargetValidation(user: BattleUnit, source: TileCoord, target: AbilityTarget, gameDataManager: GameDataManager) {
     const moveTargetTile = getMoveTargetTile(user.tileCoord, getTileCoordFromAbilityTarget(target), gameDataManager);
-    console.log(user.tileCoord);
-    console.log(moveTargetTile);
-    console.log(gameDataManager.clientBattleMap.canUnitMoveIntoTile(user, moveTargetTile, gameDataManager));
     if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(user, moveTargetTile, gameDataManager)) {
         return false;
     }
@@ -34,7 +31,6 @@ export default class AbilitySwordStrikethrough extends AbilityBasicAttack {
         return [{ 
             minRange: 1,
             maxRange: 1,
-            enemyUnit: true,
             customFunction: customTargetValidation
         }];
     }
@@ -44,8 +40,8 @@ export default class AbilitySwordStrikethrough extends AbilityBasicAttack {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
 
-        const targetUnit = targets[0] as BattleUnit;
-        targetUnit.dealDamage(this.damage);
+        const targetUnit = determineIfTargetIsBattleUnit(targets[0]) ? targets[0] as BattleUnit : undefined;
+        targetUnit && targetUnit.dealDamage(this.damage);
 
         const targetPos = getTileCoordFromAbilityTarget(targets[0]);
         const moveTarget = getMoveTargetTile(unit.tileCoord, targetPos, gameDataManager);
@@ -54,9 +50,11 @@ export default class AbilitySwordStrikethrough extends AbilityBasicAttack {
         gameDataManager.animationManager.addAnimation(
             new UnitMoveAnimation(unit, previousCoord)
         ).whenHalfDone(() => {
-            targetUnit.dealDisplayDamage(this.damage);
+            if (targetUnit) {
+                targetUnit.dealDisplayDamage(this.damage);
+            }
             gameDataManager.animationManager.addAnimation(
-                new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.SwordSlashes], targetUnit.tileCoord, 30, 0, 2)
+                new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.SwordSlashes], targetPos, 30, 0, 2)
             );
         }).whenDone(() => {
             doneCallback();

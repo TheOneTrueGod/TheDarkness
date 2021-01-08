@@ -8,6 +8,7 @@ import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from '../Mana
 export default class AbilityBasicAttack extends BaseAbility {
     damage = 1;
     actionPointCost = 1;
+    movePointCost = 0;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ enemyUnit: true, minRange: 1, maxRange: 1 }];
     }
@@ -32,11 +33,12 @@ export default class AbilityBasicAttack extends BaseAbility {
     }
 
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {
-        return unit.hasAbilityPoints(AbilityPointType.ACTION, this.actionPointCost);
+        return unit.hasAbilityPoints(AbilityPointType.ACTION, this.actionPointCost) && unit.hasAbilityPoints(AbilityPointType.MOVEMENT, this.movePointCost);
     }
 
     spendResources(unit: BattleUnit) {
         unit.useAbilityPoints(AbilityPointType.ACTION, this.actionPointCost);
+        unit.useAbilityPoints(AbilityPointType.MOVEMENT, this.movePointCost);
     }
 
     canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
