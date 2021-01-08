@@ -4,6 +4,7 @@ import AbilityBasicAttack from './AbilityBasicAttack';
 import AbilityBlinkMove from './AbilityBlinkMove';
 
 import AbilitySwordSlash from './SwordTree/AbilitySwordSlash';
+import AbilitySwordStrikethrough from './SwordTree/AbilitySwordStrikethrough';
 
 const AbilityMap = {
     'BasicMove': new AbilityBasicMove,
@@ -12,6 +13,7 @@ const AbilityMap = {
     'BlinkMove': new AbilityBlinkMove,
 
     'SwordSlash': new AbilitySwordSlash,
+    'SwordStrikethrough': new AbilitySwordStrikethrough,
 };
 
 export default AbilityMap;

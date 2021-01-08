@@ -62,7 +62,11 @@ export default abstract class BaseAbility implements AbilityInterface {
     }
 
     getTilesInRange(unit: BattleUnit, targetIndex: number): Array<TileCoord> {
-        const { minRange, maxRange } = this.getTargetRestrictions()[targetIndex];
+        const restrictions = this.getTargetRestrictions();
+        if (restrictions.length <= targetIndex) {
+            return [];
+        }
+        const { minRange, maxRange } = restrictions[targetIndex];
         const unitPos = unit.tileCoord;
 
         const tilesInRange = []; 

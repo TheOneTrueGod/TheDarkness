@@ -2,11 +2,9 @@ import AbilityBasicAttack from "../AbilityBasicAttack";
 import BattleUnit from '../../BattleUnits/BattleUnit';
 import { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget } from "../BaseAbility";
 import GameDataManager from "../../Managers/GameDataManager";
-import { TileCoord } from "../../BattleTypes";
 import { SpriteList } from "../../SpriteUtils";
 import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
 import { AbilityAoE, getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares } from "../AbilityHelpers";
-import { getManhattenDistance } from "../../BattleHelpers";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 
 export default class AbilitySwordSlash extends AbilityBasicAttack {
