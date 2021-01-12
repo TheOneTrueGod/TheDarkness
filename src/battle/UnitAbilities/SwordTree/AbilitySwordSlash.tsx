@@ -9,6 +9,7 @@ import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../M
 export default class AbilitySwordSlash extends BaseAbility {
     actionPointCost = 1;
     energyCost = 3;
+    damage = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ minRange: 1, maxRange: 1, enemyUnitInAoE: true }];
     }

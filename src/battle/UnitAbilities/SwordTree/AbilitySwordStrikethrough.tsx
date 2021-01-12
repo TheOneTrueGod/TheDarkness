@@ -24,6 +24,7 @@ function customTargetValidation(user: BattleUnit, source: TileCoord, target: Abi
 export default class AbilitySwordStrikethrough extends BaseAbility {
     actionPointCost = 1;
     movementPointCost = 1;
+    damage = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ 
             minRange: 1,
