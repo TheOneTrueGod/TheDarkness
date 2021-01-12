@@ -1,13 +1,12 @@
-import AbilityBasicAttack from "../AbilityBasicAttack";
 import BattleUnit from '../../BattleUnits/BattleUnit';
-import { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget } from "../BaseAbility";
+import BaseAbility, { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget } from "../BaseAbility";
 import GameDataManager from "../../Managers/GameDataManager";
 import { SpriteList } from "../../SpriteUtils";
 import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
 import { AbilityAoE, getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares } from "../AbilityHelpers";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 
-export default class AbilitySwordSlash extends AbilityBasicAttack {
+export default class AbilitySwordSlash extends BaseAbility {
     actionPointCost = 1;
     energyCost = 3;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
@@ -52,14 +51,6 @@ export default class AbilitySwordSlash extends AbilityBasicAttack {
         .whenDone(() => {
             doneCallback();
         });
-    }
-
-    canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
-        if (targets.length !== 1) {
-            return false;
-        }
-        
-        return true;
     }
 
     getDisplayDetails(): AbilityDisplayDetails {

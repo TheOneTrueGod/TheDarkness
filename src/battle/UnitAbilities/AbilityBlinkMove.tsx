@@ -1,10 +1,7 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions, getTileCoordFromAbilityTarget } from './BaseAbility';
+import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetRestrictions, getTileCoordFromAbilityTarget } from './BaseAbility';
 import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
-import UnitManager from '../Managers/UnitManager';
-import { TileCoord } from '../BattleTypes';
-import ClientBattleMap from '../BattleMap/ClientBattleMap';
 import { UnitResourceTypes } from '../BattleUnits/UnitResources';
-import { getManhattenDistance, tileCoordToPosition } from '../BattleHelpers';
+import { tileCoordToPosition } from '../BattleHelpers';
 import { SpriteList } from '../SpriteUtils';
 import GameDataManager from '../Managers/GameDataManager';
 import SpriteEffectAnimation, { SpriteEffects, SpriteEffectNames } from '../Managers/Animations/SpriteEffectAnimation';
@@ -17,8 +14,7 @@ export default class AbilityBlinkMove extends BaseAbility {
     }
 
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {
-        return unit.hasAbilityPoints(AbilityPointType.MOVEMENT, this.movementPointCost) && 
-        unit.hasResource(UnitResourceTypes.BLINK_ENERGY, this.energyCost);
+        return unit.hasResource(UnitResourceTypes.BLINK_ENERGY, this.energyCost) && super.doesUnitHaveResourcesForAbility(unit);
     }
 
     spendResources(unit: BattleUnit) {

@@ -1,4 +1,3 @@
-import Battle from "../../../object_defs/Campaign/Mission/Battle/Battle";
 import { rotateMatrix } from "../../app/helpers";
 import { TileCoord } from "../BattleTypes";
 import BattleUnit from "../BattleUnits/BattleUnit";

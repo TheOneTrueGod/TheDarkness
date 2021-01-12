@@ -1,11 +1,8 @@
-import AbilityBasicAttack from "../AbilityBasicAttack";
 import BattleUnit from '../../BattleUnits/BattleUnit';
-import { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget, determineIfTargetIsBattleUnit } from "../BaseAbility";
+import BaseAbility, { AbilityTarget, AbilityTargetRestrictions, AbilityDisplayDetails, getTileCoordFromAbilityTarget, determineIfTargetIsBattleUnit } from "../BaseAbility";
 import GameDataManager from "../../Managers/GameDataManager";
 import { TileCoord } from "../../BattleTypes";
 import { SpriteList } from "../../SpriteUtils";
-import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
-import { getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares } from "../AbilityHelpers";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 import UnitMoveAnimation from "../../Managers/Animations/UnitMoveAnimation";
 
@@ -24,7 +21,7 @@ function customTargetValidation(user: BattleUnit, source: TileCoord, target: Abi
     return true;
 }
 
-export default class AbilitySwordStrikethrough extends AbilityBasicAttack {
+export default class AbilitySwordStrikethrough extends BaseAbility {
     actionPointCost = 1;
     movementPointCost = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {

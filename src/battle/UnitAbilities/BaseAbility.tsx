@@ -1,7 +1,5 @@
 import { TileCoord } from "../BattleTypes";
-import BattleUnit from "../BattleUnits/BattleUnit";
-import UnitManager from "../Managers/UnitManager";
-import ClientBattleMap from "../BattleMap/ClientBattleMap";
+import BattleUnit, { AbilityPointType } from "../BattleUnits/BattleUnit";
 import { SpriteList } from "../SpriteUtils";
 import { getManhattenDistance } from "../BattleHelpers";
 import GameDataManager from "../Managers/GameDataManager";
@@ -36,12 +34,26 @@ export type AbilityDisplayDetails = {
 }
 
 export default abstract class BaseAbility implements AbilityInterface {
+    actionPointCost = 0;
+    movePointCost = 0;
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
-    canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) { return false; }
     getDisplayDetails(): AbilityDisplayDetails { return { icon: SpriteList.CIRCLE, tempDisplayLetter: '?' } }
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {
-        return false;
+        return unit.hasAbilityPoints(AbilityPointType.ACTION, this.actionPointCost) && unit.hasAbilityPoints(AbilityPointType.MOVEMENT, this.movePointCost);
+    }
+
+    spendResources(unit: BattleUnit) {
+        unit.useAbilityPoints(AbilityPointType.ACTION, this.actionPointCost);
+        unit.useAbilityPoints(AbilityPointType.MOVEMENT, this.movePointCost);
+    }
+
+    canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
+        if (targets.length !== 1) {
+            return false;
+        }
+        
+        return true;
     }
 
     getAbilityAoE(): AbilityAoE {
@@ -50,8 +62,6 @@ export default abstract class BaseAbility implements AbilityInterface {
             square: [1],
         }
     }
-
-    spendResources(unit: BattleUnit) { }
 
     isValidTarget(targetIndex: number, target: AbilityTarget, unit: BattleUnit, gameDataManager: GameDataManager): boolean {
         const targetRestrictions = this.getTargetRestrictions();

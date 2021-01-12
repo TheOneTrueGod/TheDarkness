@@ -9,6 +9,7 @@ import GameDataManager from '../Managers/GameDataManager';
 import UnitMoveAnimation from "../Managers/Animations/UnitMoveAnimation";
 
 export default class AbilityBasicMove extends BaseAbility {
+    movePointCost = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ emptyTile: true, minRange: 1, maxRange: 1 }];
     }
@@ -25,14 +26,6 @@ export default class AbilityBasicMove extends BaseAbility {
         ).whenDone(() => {
             doneCallback();
         });
-    }
-
-    doesUnitHaveResourcesForAbility(unit: BattleUnit) {
-        return unit.hasAbilityPoints(AbilityPointType.MOVEMENT, 1);
-    }
-
-    spendResources(unit: BattleUnit) {
-        unit.useAbilityPoints(AbilityPointType.MOVEMENT, 1);
     }
 
     canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
