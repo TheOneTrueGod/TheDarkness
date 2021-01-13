@@ -89,7 +89,9 @@ export default class BattleUnit {
     }
 
     getBasicAttackAbility(): BaseAbility {
-        return AbilityMap.BasicAttack;
+        const basicAttack =  this.abilities.find((ability) => ability.isBasicAttack());
+        console.log(basicAttack);
+        return basicAttack || AbilityMap.BasicAttack;
     }
 
     useAbilityPoints(type: AbilityPointType, amount: number) {
@@ -289,6 +291,15 @@ export default class BattleUnit {
         }
         if (this.team === 'enemies') {
             return team === 'allies' || team === 'players';
+        }
+    }
+
+    isOnSameTeam(team: Team) {
+        if (this.team === 'allies' || this.team === 'players') {
+            return team === 'allies' || team === 'players';
+        }
+        if (this.team === 'enemies') {
+            return team === 'enemies';
         }
     }
 

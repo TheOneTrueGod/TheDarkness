@@ -5,6 +5,7 @@ import { TileCoord } from "../../BattleTypes";
 import { SpriteList } from "../../SpriteUtils";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
 import UnitMoveAnimation from "../../Managers/Animations/UnitMoveAnimation";
+import { isCriticalHit } from './SwordHelpers';
 
 function getMoveTargetTile(source: TileCoord, target: TileCoord, gameDataManager: GameDataManager): TileCoord {
     const deltaTarget = { x: target.x - source.x, y: target.y - source.y };
@@ -25,6 +26,8 @@ export default class AbilitySwordStrikethrough extends BaseAbility {
     actionPointCost = 1;
     movementPointCost = 1;
     damage = 1;
+    criticalDamageBonus = 1;
+    isCriticalHit = isCriticalHit;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ 
             minRange: 1,
@@ -33,23 +36,23 @@ export default class AbilitySwordStrikethrough extends BaseAbility {
         }];
     }
 
-    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
-        if (!this.canUnitUseAbility(gameDataManager, unit, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
+        if (!this.canUnitUseAbility(gameDataManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
 
         const targetUnit = determineIfTargetIsBattleUnit(targets[0]) ? targets[0] as BattleUnit : undefined;
+        const damage = this.getDamage(user, targetUnit, gameDataManager);
         targetUnit && targetUnit.dealDamage(this.damage);
-
         const targetPos = getTileCoordFromAbilityTarget(targets[0]);
-        const moveTarget = getMoveTargetTile(unit.tileCoord, targetPos, gameDataManager);
-        const previousCoord = unit.tileCoord;
-        gameDataManager.unitManager.moveUnit(unit, moveTarget, gameDataManager.clientBattleMap);
+        const moveTarget = getMoveTargetTile(user.tileCoord, targetPos, gameDataManager);
+        const previousCoord = user.tileCoord;
+        gameDataManager.unitManager.moveUnit(user, moveTarget, gameDataManager.clientBattleMap);
         gameDataManager.animationManager.addAnimation(
-            new UnitMoveAnimation(unit, previousCoord)
+            new UnitMoveAnimation(user, previousCoord)
         ).whenHalfDone(() => {
             if (targetUnit) {
-                targetUnit.dealDisplayDamage(this.damage);
+                targetUnit.dealDisplayDamage(damage);
             }
             gameDataManager.animationManager.addAnimation(
                 new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.SwordSlashes], targetPos, 30, 0, 2)

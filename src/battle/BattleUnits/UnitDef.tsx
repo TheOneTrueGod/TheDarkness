@@ -17,7 +17,7 @@ export const TempPlayerUnitDef: UnitDef = {
     movementPoints: 2,
     actionPoints: 2,
     size: { x: 1, y: 1 },
-    abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack, AbilityMap.BlinkMove, AbilityMap.SwordSlash, AbilityMap.SwordStrikethrough],
+    abilities: [AbilityMap.BasicMove, AbilityMap.SwordBasic, AbilityMap.BlinkMove, AbilityMap.SwordSlash, AbilityMap.SwordStrikethrough],
 }
 
 export const CaravanUnitDef: UnitDef = {
@@ -31,7 +31,7 @@ export const CaravanUnitDef: UnitDef = {
 
 export const EnemyWolfUnitDef: UnitDef = {
     image: SpriteList.ENEMY_WOLF,
-    health: 4,
+    health: 8,
     movementPoints: 2,
     actionPoints: 1,
     size: { x: 1, y: 1 },

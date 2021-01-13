@@ -5,11 +5,14 @@ import { SpriteList } from "../../SpriteUtils";
 import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
 import { AbilityAoE, getUnitsInAoE, convertAoEToCoords, getRotatedTargetSquares } from "../AbilityHelpers";
 import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from "../../Managers/Animations/SpriteEffectAnimation";
+import { isCriticalHit } from './SwordHelpers';
 
 export default class AbilitySwordSlash extends BaseAbility {
     actionPointCost = 1;
     energyCost = 3;
     damage = 1;
+    criticalDamageBonus = 1;
+    isCriticalHit = isCriticalHit;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ minRange: 1, maxRange: 1, enemyUnitInAoE: true }];
     }
@@ -25,21 +28,24 @@ export default class AbilitySwordSlash extends BaseAbility {
         }
     }
 
-    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
-        if (!this.canUnitUseAbility(gameDataManager, unit, targets)) {
+    playOutAbility(gameDataManager: GameDataManager, user: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
+        if (!this.canUnitUseAbility(gameDataManager, user, targets)) {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
 
-        const sourceCoord = unit.tileCoord;
+        const sourceCoord = user.tileCoord;
         const targetCoord = getTileCoordFromAbilityTarget(targets[0]);
         const abilityAoE = this.getAbilityAoE();
         const targetUnits = getUnitsInAoE(sourceCoord, targetCoord, abilityAoE, gameDataManager);
+        const damage = this.getDamage(user, targetCoord, gameDataManager)
         
-        targetUnits.forEach((unit: BattleUnit) => { unit.dealDamage(this.damage) });
+        targetUnits.forEach((target: BattleUnit) => { 
+            target.dealDamage(damage)
+        });
         gameDataManager.animationManager.addAnimation(
-            new UnitStepForwardBackAnimation(unit, targetCoord)
+            new UnitStepForwardBackAnimation(user, targetCoord)
         ).addListener(UnitStepForwardBackAnimation.FIRST_PART_DONE, () => {
-            targetUnits.forEach((unit: BattleUnit) => { unit.dealDisplayDamage(this.damage) });
+            targetUnits.forEach((target: BattleUnit) => { target.dealDisplayDamage(damage) });
             const rotatedAoE = getRotatedTargetSquares(sourceCoord, targetCoord, abilityAoE);
             const targetCoords = convertAoEToCoords(targetCoord, rotatedAoE);
             targetCoords.forEach((effectCoord) => {

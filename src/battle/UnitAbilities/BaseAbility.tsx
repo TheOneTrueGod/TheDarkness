@@ -36,11 +36,18 @@ export type AbilityDisplayDetails = {
 export default abstract class BaseAbility implements AbilityInterface {
     actionPointCost = 0;
     movePointCost = 0;
+    damage = 0;
+    criticalDamageBonus = 0;
+    isCriticalHit: Function | undefined = undefined;
+    isBasic = false;
     playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {}
     getTargetRestrictions(): Array<AbilityTargetRestrictions> { return []; }
     getDisplayDetails(): AbilityDisplayDetails { return { icon: SpriteList.CIRCLE, tempDisplayLetter: '?' } }
     doesUnitHaveResourcesForAbility(unit: BattleUnit) {
         return unit.hasAbilityPoints(AbilityPointType.ACTION, this.actionPointCost) && unit.hasAbilityPoints(AbilityPointType.MOVEMENT, this.movePointCost);
+    }
+    isBasicAttack() {
+        return this.isBasic;
     }
 
     spendResources(unit: BattleUnit) {
@@ -102,6 +109,13 @@ export default abstract class BaseAbility implements AbilityInterface {
             }
         }
         return tilesInRange;
+    }
+
+    getDamage(user: BattleUnit, target: AbilityTarget, gameDataManager: GameDataManager) {
+        if (this.isCriticalHit && this.isCriticalHit(user, target, gameDataManager)) {
+            return this.damage + this.criticalDamageBonus;
+        }
+        return this.damage;
     }
 }
 

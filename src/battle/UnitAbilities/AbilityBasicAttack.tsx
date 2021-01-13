@@ -8,6 +8,7 @@ import SpriteEffectAnimation, { SpriteEffectNames, SpriteEffects } from '../Mana
 export default class AbilityBasicAttack extends BaseAbility {
     actionPointCost = 1;
     damage = 1;
+    isBasic = true;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ enemyUnit: true, minRange: 1, maxRange: 1 }];
     }
