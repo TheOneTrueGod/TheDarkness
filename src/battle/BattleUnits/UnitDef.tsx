@@ -31,7 +31,7 @@ export const CaravanUnitDef: UnitDef = {
 
 export const EnemyWolfUnitDef: UnitDef = {
     image: SpriteList.ENEMY_WOLF,
-    health: 8,
+    health: 6,
     movementPoints: 2,
     actionPoints: 1,
     size: { x: 1, y: 1 },
