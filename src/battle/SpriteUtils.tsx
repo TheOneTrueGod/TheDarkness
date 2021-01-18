@@ -4,6 +4,7 @@ export enum SpriteList {
     POSITION_MARKER = 'position_marker',
 
     BROADSWORD = 'broadsword',
+    CROSSBOW = 'crossbow',
     CARAVAN = 'caravan',
 
     ENEMY_WOLF = 'enemy_wolf',

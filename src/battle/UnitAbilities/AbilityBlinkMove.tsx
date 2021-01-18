@@ -18,7 +18,7 @@ export default class AbilityBlinkMove extends BaseAbility {
     }
 
     spendResources(unit: BattleUnit) {
-        unit.useAbilityPoints(AbilityPointType.MOVEMENT, this.movementPointCost);
+        super.spendResources(unit);
         unit.useResource(UnitResourceTypes.BLINK_ENERGY, this.energyCost);
     }
 

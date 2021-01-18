@@ -1,6 +1,7 @@
 import { SpriteList } from "../SpriteUtils"
 import BaseAbility from "../UnitAbilities/BaseAbility"
 import AbilityMap from "../UnitAbilities/AbilityMap"
+import { UnitResourceTypes } from "./UnitResources"
 
 export type UnitDef = {
     image: SpriteList;
@@ -9,15 +10,27 @@ export type UnitDef = {
     actionPoints: number;
     size: { x: number, y: number };
     abilities: Array<BaseAbility>;
+    resources: Array<UnitResourceTypes>;
 }
 
-export const TempPlayerUnitDef: UnitDef = {
+export const SwordPlayerUnitDef: UnitDef = {
     image: SpriteList.BROADSWORD,
     health: 8,
     movementPoints: 2,
     actionPoints: 2,
     size: { x: 1, y: 1 },
     abilities: [AbilityMap.BasicMove, AbilityMap.SwordBasic, AbilityMap.BlinkMove, AbilityMap.SwordSlash, AbilityMap.SwordStrikethrough],
+    resources: [UnitResourceTypes.BLINK_ENERGY],
+}
+
+export const CrossbowPlayerUnitDef: UnitDef = {
+    image: SpriteList.CROSSBOW,
+    health: 8,
+    movementPoints: 2,
+    actionPoints: 2,
+    size: { x: 1, y: 1 },
+    abilities: [AbilityMap.BasicMove, AbilityMap.CrossbowBasic, AbilityMap.CrossbowReload],
+    resources: [UnitResourceTypes.CROSSBOW_BOLTS],
 }
 
 export const CaravanUnitDef: UnitDef = {
@@ -27,6 +40,7 @@ export const CaravanUnitDef: UnitDef = {
     actionPoints: 0,
     size: { x: 2, y: 2 },
     abilities: [],
+    resources: [],
 }
 
 export const EnemyWolfUnitDef: UnitDef = {
@@ -36,4 +50,5 @@ export const EnemyWolfUnitDef: UnitDef = {
     actionPoints: 1,
     size: { x: 1, y: 1 },
     abilities: [AbilityMap.BasicMove, AbilityMap.BasicAttack],
+    resources: [],
 }

@@ -9,6 +9,7 @@ export default class AssetLoader {
             .add(SpriteList.POSITION_MARKER, '/assets/position-marker.png')
             // players
             .add(SpriteList.BROADSWORD, '/assets/broadsword.png')
+            .add(SpriteList.CROSSBOW, '/assets/crossbow.png')
             .add(SpriteList.CARAVAN, '/assets/old-wagon.png')
             // enemies
             .add(SpriteList.ENEMY_WOLF, '/assets/wolf-head.png')

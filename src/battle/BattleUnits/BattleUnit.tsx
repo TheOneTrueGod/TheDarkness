@@ -5,10 +5,11 @@ import { getTileSize, DEBUG_MODE } from "../BattleConstants";
 import { tileCoordToPosition } from "../BattleHelpers";
 import BaseAbility from "../UnitAbilities/BaseAbility.js";
 import AbilityMap from "../UnitAbilities/AbilityMap";
-import { UnitDef, TempPlayerUnitDef } from "./UnitDef";
+import { UnitDef, SwordPlayerUnitDef, CrossbowPlayerUnitDef } from "./UnitDef";
 import User from "../../../object_defs/User.js";
 import ClientBattleMap from "../BattleMap/ClientBattleMap.js";
-import UnitResource, { UnitResourceTypes } from './UnitResources';
+import UnitResource, { UnitResourceMetadata, UnitResourceTypes } from './UnitResources';
+import { CrossbowBoltTypes } from "../UnitAbilities/TreeCrossbow/CrossbowHelpers";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -63,8 +64,15 @@ export default class BattleUnit {
             selected: null,
         };
 
-        this.health = new UnitResource(UnitResourceTypes.HEALTH, unitDef.health);
-        this.energyResources = [new UnitResource(UnitResourceTypes.BLINK_ENERGY, 12, 9)];
+        this.health = new UnitResource(UnitResourceTypes.HEALTH, undefined, unitDef.health);
+        this.energyResources = [];
+        if (this.unitDef.resources.includes(UnitResourceTypes.BLINK_ENERGY)) {
+            this.energyResources.push(new UnitResource(UnitResourceTypes.BLINK_ENERGY, undefined, 12, 9));
+        }
+
+        if (this.unitDef.resources.includes(UnitResourceTypes.CROSSBOW_BOLTS)) {
+            this.energyResources.push(new UnitResource(UnitResourceTypes.CROSSBOW_BOLTS, { crossbowBoltType: CrossbowBoltTypes.NORMAL }, 2, 2));
+        }
 
         this.unitDef.abilities.forEach((ability) => {
             this.abilities.push(ability);
@@ -90,7 +98,6 @@ export default class BattleUnit {
 
     getBasicAttackAbility(): BaseAbility {
         const basicAttack =  this.abilities.find((ability) => ability.isBasicAttack());
-        console.log(basicAttack);
         return basicAttack || AbilityMap.BasicAttack;
     }
 
@@ -182,12 +189,14 @@ export default class BattleUnit {
                     pixiLoader.resources[SpriteList.CIRCLE].texture
                 )
             );
-        })
-
+        });
     }
 
     static fromMissionUnit(id: number, missionUnit: MissionUnit, tileCoord: TileCoord) {
-        return new BattleUnit(TempPlayerUnitDef, id, missionUnit.ownerId, 'players', tileCoord);
+        if (id == 3) {
+            return new BattleUnit(CrossbowPlayerUnitDef, id, missionUnit.ownerId, 'players', tileCoord);
+        }
+        return new BattleUnit(SwordPlayerUnitDef, id, missionUnit.ownerId, 'players', tileCoord);
     }
 
     getSpriteTexture(pixiLoader: PIXI.Loader): PIXI.Texture {
@@ -347,6 +356,22 @@ export default class BattleUnit {
     isDisplayDead() {
         return this.health.displayCurrent <= 0;
     }
+    
+    gainResource(resourceType: UnitResourceTypes, amount: number, metaData: UnitResourceMetadata = {}, updateDisplayAmount: boolean = false) {
+        const resource = this.energyResources.find(resource => 
+            resource.type === resourceType
+        );
+        resource.gainResource(amount, metaData);
+        if (updateDisplayAmount) {
+            this.gainDisplayResource(resourceType, amount);
+        }
+    }
+
+    gainDisplayResource(resourceType: UnitResourceTypes, amount: number, metaData: UnitResourceMetadata = {}) {
+        this.energyResources.find(resource => 
+            resource.type === resourceType
+        ).gainDisplayResource(amount);
+    }
 
     hasResource(resourceType: UnitResourceTypes, amount: number): boolean {
         return this.energyResources.find((resource) => 
@@ -356,5 +381,9 @@ export default class BattleUnit {
 
     useResource(resourceType: UnitResourceTypes, amount: number) {
         this.energyResources.find((resource) => resource.type === resourceType).spendResource(amount);
+    }
+
+    getResource(resourceType: UnitResourceTypes): UnitResource {
+        return this.energyResources.find(resource => resource.type === resourceType);
     }
 };
