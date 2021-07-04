@@ -27,7 +27,6 @@ export default class AbilityCrossbowBasic extends BaseAbility {
             throw new Error(`Unit can't use ability: ${this.constructor.name}`)
         }
         const abilityMetadata = user.getResourceMetadata(UnitResourceTypes.CROSSBOW_BOLTS, -1);
-        console.log(abilityMetadata);
         const targetUnit = targets[0] as BattleUnit;
         BoltTypeToAbility[abilityMetadata.crossbowBoltType].playOutAbilityInstantEffects(gameDataManager, user, targets, doneCallback);
         gameDataManager.animationManager.addAnimation(

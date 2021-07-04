@@ -71,7 +71,6 @@ export default class UnitResource {
                 this.dataValues.push({ ...metaData });
             }
         }
-        console.log(this);
     }
 
     gainDisplayResource(amount: number) {

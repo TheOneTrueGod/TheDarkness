@@ -389,7 +389,6 @@ export default class BattleUnit {
 
     getResourceMetadata(resourceType: UnitResourceTypes, index: number): UnitResourceMetadata {
         const resource = this.energyResources.find(resource => resource.type === resourceType);
-        console.log(resource);
         if (index < 0) {
             index = resource.current - (index + 1);
         }
