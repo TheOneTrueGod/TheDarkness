@@ -44,19 +44,12 @@ export default class UnitResource {
     loseResource(amount: number, updateDisplay: boolean = false) {
         const current = this.current;
         this.current -= amount;
-        for (let i = this.current; i < current; i++) {
-            this.dataValues[i] = {};
-        }
         if (updateDisplay) { this.displayCurrent = this.current; }
     }
 
     spendResource(amount: number) {
         if (this.current < amount) { throw new Error(`Unit doesn't have enough of ${this.type} resource!`)}
-        const current = this.current;
         this.current -= amount;
-        for (let i = this.current; i < current; i++) {
-            this.dataValues[i] = {};
-        }
     }
 
     loseDisplayResource(amount: number) {
@@ -64,11 +57,21 @@ export default class UnitResource {
     }
 
     gainResource(amount: number, metaData: UnitResourceMetadata) {
-        const start = this.current;
+        /*const start = this.current;
         this.current = Math.min(this.current + amount, this.max);
         for (let i = start; i < this.current; i++) {
-            this.dataValues.push(metaData);
+            this.dataValues[i] = { ...metaData };
+        }*/
+        for (let i = 0; i < amount; i++) {
+            if (this.current < this.max) {
+                this.current += 1;
+                this.dataValues[this.current] = { ...metaData };
+            } else {
+                this.dataValues.shift();
+                this.dataValues.push({ ...metaData });
+            }
         }
+        console.log(this);
     }
 
     gainDisplayResource(amount: number) {

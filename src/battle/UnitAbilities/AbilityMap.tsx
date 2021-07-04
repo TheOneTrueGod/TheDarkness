@@ -9,6 +9,7 @@ import AbilitySwordStrikethrough from './TreeSword/AbilitySwordStrikethrough';
 
 import AbilityCrossbowBasic from './TreeCrossbow/AbilityCrossbowBasic';
 import AbilityCrossbowReload from './TreeCrossbow/AbilityCrossbowReload';
+import AbilityCrossbowLoadExplosive from './TreeCrossbow/AbilityCrossbowLoadExplosive';
 
 const AbilityMap = {
     'BasicMove': new AbilityBasicMove,
@@ -22,6 +23,7 @@ const AbilityMap = {
 
     'CrossbowBasic': new AbilityCrossbowBasic,
     'CrossbowReload': new AbilityCrossbowReload,
+    'CrossbowLoadExplosive': new AbilityCrossbowLoadExplosive,
 
 };
 

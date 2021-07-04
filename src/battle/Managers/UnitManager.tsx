@@ -70,6 +70,19 @@ export default class UnitManager {
         return unit || null;
     }
 
+    getUnitsInSquare(topLeft: TileCoord, bottomRight: TileCoord, clientBattleMap: ClientBattleMap): Array<BattleUnit> {
+        const unitList: Array<BattleUnit> = [];
+        for (let x = topLeft.x; x <= bottomRight.x; x++) {
+            for (let y = topLeft.y; y <= bottomRight.y; y++) {
+                let unit = this.getUnitAtTileCoord({ x, y }, clientBattleMap);
+                if (unit && unitList.indexOf(unit) === -1) {
+                    unitList.push(unit);
+                }
+            }
+        }
+        return unitList;
+    }
+
     onStartTurn(currentTurn: CurrentTurn) {
         this.unitList.forEach((unit) => {
             // TODO: This needs to include things like 'does the unit have any actions left'

@@ -29,7 +29,7 @@ export const CrossbowPlayerUnitDef: UnitDef = {
     movementPoints: 2,
     actionPoints: 2,
     size: { x: 1, y: 1 },
-    abilities: [AbilityMap.BasicMove, AbilityMap.CrossbowBasic, AbilityMap.CrossbowReload],
+    abilities: [AbilityMap.BasicMove, AbilityMap.CrossbowBasic, AbilityMap.CrossbowReload, AbilityMap.CrossbowLoadExplosive],
     resources: [UnitResourceTypes.CROSSBOW_BOLTS],
 }
 

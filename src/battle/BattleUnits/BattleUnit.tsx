@@ -386,4 +386,13 @@ export default class BattleUnit {
     getResource(resourceType: UnitResourceTypes): UnitResource {
         return this.energyResources.find(resource => resource.type === resourceType);
     }
+
+    getResourceMetadata(resourceType: UnitResourceTypes, index: number): UnitResourceMetadata {
+        const resource = this.energyResources.find(resource => resource.type === resourceType);
+        console.log(resource);
+        if (index < 0) {
+            index = resource.current - (index + 1);
+        }
+        return resource.dataValues[index];
+    }
 };
