@@ -11,6 +11,8 @@ import AbilityCrossbowBasic from './TreeCrossbow/AbilityCrossbowBasic';
 import AbilityCrossbowReload from './TreeCrossbow/AbilityCrossbowReload';
 import AbilityCrossbowLoadExplosive from './TreeCrossbow/AbilityCrossbowLoadExplosive';
 
+import AbilityKineticMeleeRelease from './TreeKineticMelee/AbilityKineticMeleeRelease';
+
 const AbilityMap = {
     'BasicMove': new AbilityBasicMove,
     'BasicAttack': new AbilityBasicAttack,
@@ -24,6 +26,8 @@ const AbilityMap = {
     'CrossbowBasic': new AbilityCrossbowBasic,
     'CrossbowReload': new AbilityCrossbowReload,
     'CrossbowLoadExplosive': new AbilityCrossbowLoadExplosive,
+
+    'KineticMeleeRelease': new AbilityKineticMeleeRelease,
 
 };
 

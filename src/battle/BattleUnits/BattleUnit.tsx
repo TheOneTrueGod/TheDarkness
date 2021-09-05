@@ -74,6 +74,10 @@ export default class BattleUnit {
             this.energyResources.push(new UnitResource(UnitResourceTypes.CROSSBOW_BOLTS, { crossbowBoltType: CrossbowBoltTypes.NORMAL }, 2, 2));
         }
 
+        if (this.unitDef.resources.includes(UnitResourceTypes.KINETIC_ENERGY)) {
+            this.energyResources.push(new UnitResource(UnitResourceTypes.KINETIC_ENERGY, undefined, 40, 10));
+        }
+
         this.unitDef.abilities.forEach((ability) => {
             this.abilities.push(ability);
         })

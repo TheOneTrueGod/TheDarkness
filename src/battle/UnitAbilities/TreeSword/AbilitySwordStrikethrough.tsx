@@ -24,7 +24,7 @@ function customTargetValidation(user: BattleUnit, source: TileCoord, target: Abi
 
 export default class AbilitySwordStrikethrough extends BaseAbility {
     actionPointCost = 1;
-    movementPointCost = 1;
+    movePointCost = 1;
     damage = 1;
     criticalDamageBonus = 1;
     isCriticalHit = isCriticalHit;

@@ -4,6 +4,7 @@ export enum UnitResourceTypes {
     HEALTH = 'health',
     BLINK_ENERGY = 'blink energy',
     CROSSBOW_BOLTS = 'crossbow bolts',
+    KINETIC_ENERGY = 'kinetic energy',
 }
 
 export type UnitResourceMetadata = {
@@ -95,5 +96,9 @@ const UnitResourceDisplayDefs: Record<UnitResourceTypes, UnitResourceDisplayDefT
     [UnitResourceTypes.CROSSBOW_BOLTS]: {
         color: 'gray',
         pointsPerPip: 1,
+    },
+    [UnitResourceTypes.KINETIC_ENERGY]: {
+        color: 'yellow',
+        pointsPerPip: 10,
     }
 }

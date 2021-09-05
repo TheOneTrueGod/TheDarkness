@@ -8,7 +8,7 @@ import SpriteEffectAnimation, { SpriteEffects, SpriteEffectNames } from '../Mana
 
 export default class AbilityBlinkMove extends BaseAbility {
     energyCost = 3;
-    movementPointCost = 1;
+    movePointCost = 1;
     getTargetRestrictions(): Array<AbilityTargetRestrictions> {
         return [{ emptyTile: true, minRange: 1, maxRange: 3 }];
     }
