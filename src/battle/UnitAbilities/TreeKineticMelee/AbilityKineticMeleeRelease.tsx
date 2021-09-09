@@ -47,7 +47,6 @@ export default class AbilityKineticMeleeRelease extends BaseAbility {
                     new SpriteEffectAnimation(SpriteEffects[SpriteEffectNames.BlueExplosion], targetCoord, 20, 0)
                 ).whenHalfDone(() => {
                     if (targetUnit) {
-                        console.log(damage);
                         targetUnit.dealDisplayDamage(damage);
                     }
                 }).whenDone(() => {

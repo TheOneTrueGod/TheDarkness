@@ -10,6 +10,7 @@ import User from "../../../object_defs/User.js";
 import ClientBattleMap from "../BattleMap/ClientBattleMap.js";
 import UnitResource, { UnitResourceMetadata, UnitResourceTypes } from './UnitResources';
 import { CrossbowBoltTypes } from "../UnitAbilities/TreeCrossbow/CrossbowHelpers";
+import EventThrower, { addEventListener, throwEvent } from "../../events/EventThrower";
 
 export enum AbilityPointType {
     ACTION = 'action',
@@ -21,7 +22,16 @@ interface SpriteDecorations {
     selected: PIXI.Sprite | null,
 };
 
-export default class BattleUnit {
+export default class BattleUnit implements EventThrower {
+    /* From EventThrower */
+    EVENT_NAMES = {
+        'TAKING_DAMAGE': 'TAKING_DAMAGE',
+        'TAKING_DISPLAY_DAMAGE': 'TAKING_DISPLAY_DAMAGE'
+    };
+    listeners = {};
+    addEventListener = addEventListener;
+    throwEvent = throwEvent;
+    /******************* */
     sprite: PIXI.Sprite | null = null;
     tileCoord: TileCoord;
     spriteOffset: GamePosition;
@@ -76,6 +86,19 @@ export default class BattleUnit {
 
         if (this.unitDef.resources.includes(UnitResourceTypes.KINETIC_ENERGY)) {
             this.energyResources.push(new UnitResource(UnitResourceTypes.KINETIC_ENERGY, undefined, 40, 10));
+            this.addEventListener(
+                this.EVENT_NAMES.TAKING_DAMAGE,
+                (event: { amount: number, unit: BattleUnit }) => {
+                    event.unit.gainResource(UnitResourceTypes.KINETIC_ENERGY, event.amount * 3);
+                }
+            );
+
+            this.addEventListener(
+                this.EVENT_NAMES.TAKING_DISPLAY_DAMAGE,
+                (event: { amount: number, unit: BattleUnit }) => {
+                    event.unit.gainDisplayResource(UnitResourceTypes.KINETIC_ENERGY, event.amount * 3);
+                }
+            );
         }
 
         this.unitDef.abilities.forEach((ability) => {
@@ -338,10 +361,12 @@ export default class BattleUnit {
     // Resources
     dealDamage(amount: number, updateDisplayDamage: boolean = false) {
         this.health.loseResource(amount, updateDisplayDamage);
+        this.throwEvent(this.EVENT_NAMES.TAKING_DAMAGE, { unit: this, amount })
     }
 
     dealDisplayDamage(amount: number) {
         this.health.loseDisplayResource(amount);
+        this.throwEvent(this.EVENT_NAMES.TAKING_DISPLAY_DAMAGE, { unit: this, amount })
         if (this.isDisplayDead()) {
             this.doDeathEffect()
         }
