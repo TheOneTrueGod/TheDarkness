@@ -1,0 +1,80 @@
+A campaign will consist of some number of players.  Each of those players manages a kingdom.
+
+Gameplay Loop -- Missions
+The main gameplay loop will consist of sending out caravans on missions.
+At the start, only a single caravan can be out at once.  Later on, the kingdoms may be able to research enough to send out a second one.
+When creating a caravan, every player will create one (or maybe later on with research, two) heroes to go on the caravan.  They will also vote on the mission target.
+Possible mission targets:  Bosses, Resources (metal, food, wood, etc)
+In the case of a tie, a random mission target from those with the highest votes is chosen.
+The caravan will then be created, and based on the number of days in the mission target, a bunch of random nodes will be created to form the caravan path.
+A caravan path might look like;
+C - X - O - X - X - *
+C = caravan.  X = Battle.  O = Treasure.  * = target
+
+Each "day" (turn), all caravans advance, and then they must be resolved -- either through a battle, or through an event.
+Days also cause time to pass at the kingdom, which can have a variety of effects.  Advancing research, constructing buildings, tasks such as dissecting a body or processing resources, Food consumption, energy consumption, etc...
+
+Caravans -- Creating a Hero
+When a caravan is sent out, a hero needs to be created for it.
+The hero will always start at "level 1", and with each battle that they complete in the caravan, they will "level up".
+When the hero is created, there should be three attributes chosen for them.  Weapon, Armour, and Magic.
+Each of these represents a skill tree that the kingdom will have research in.
+For example, TJ's kingdom might do most of its research in swords, bows, heavy armour, light armour, healing magic, and fire magic.
+The game should be set up in a way that each player should be expected to research a couple of different types of each, but not be able to access everything.
+Then, they can do research on the specific skill type in order to unlock additional abilities / passives for use in the rogue-like caravan. 
+Each player also has "trunk space" on the caravan, to fill with items or food.
+
+Heros -- Levelling up
+This should act kind of like a rogue like game.  The kingdom will have unlocked abilities for the players to select.
+The abilities are internally laid out as a tree, but every level up the hero will only have access to three upgrades, chosen at random from all available upgrades.
+So, if the skill trees look like this;
+Sword
+*slash > *thrust > retreating slash
+               --> spin
+Medium Armour
+*HP up > Movement up
+     --> Armour up --> Armour up 2
+     --> *Inventory up
+
+and the player currently has all *'d abilities, then the random pool of upgrades would be [retreating slash, spin, movement up, armour up], and the player would get to choose 3 from them.
+
+This makes progression re-doable, and results in each caravan being slightly different, and also means that death means little.
+
+Heros -- Death
+If a hero dies, they are considered knocked unconscious, and revive for the start of the next fight at full health, but food consumption is doubled.
+If all heroes die, or the caravan runs out of food, the caravan is unsuccessful and stops immediately.
+
+Caravans -- end of mission.
+Throughout a caravan's journey, the players will have the chance to add things to it.  Corpses of monsters, resources found, and special relics.
+If the caravan makes it home, each player gets a "copy" of those items in their kingdom's stocks.
+
+Kingdoms -- actions
+Each player should be able to specialize in one or two things.
+Processing an item should give rewards to all players equally -- this will encourage players to do things according to their specialty.
+Possible resources and actions;
+Food.  Obtainable from farms, and from dessicating corpses brought back from adventures.
+Building materials -- Bone, lumber, stone, metal.  Obtainable from processing resources brought back from missions.
+
+Kingdoms -- "tier"
+I'm unsure exactly how to go about this, but players research should be restricted by tiers, so that no one can get too far ahead of the others in researching abilities.
+This can also act as a gate to force players to specialize in a couple of different skills.  So, for example, weapons could each have 4 tiers of skills in their skill tree.
+Players unlock abilities at the same pace as each other, and the next tier is only unlocked once X research points have been spent.
+
+Kingdoms -- research
+Each kingdom has its own research tree.  The research they do unlocks or upgrades actions, and upgrades battle skills by unlocking higher tier skills.
+There should probably be two types of research -- combat, and noncombat
+Research should require both research points, and some items.
+The items for research should be chosen to encourage players to fight challenging things, and to go on caravan missions.
+Time cannot progress unless research has been selected.
+Possible research;
+Each skill has its own research tree.  Over the course of the game, players should expect to be able to 
+
+Extracting resources from corpses
+Extracing food from corpses
+Unlocking more building slots
+Upgrading buildings
+
+Kingdoms -- buildings
+Each player has access to some number of building slots.
+Each building gives some passive effect -- food every day from farms, free resources every day, faster research for everyone, etc.
+The buildings should impact all players, not just the one who built it.
