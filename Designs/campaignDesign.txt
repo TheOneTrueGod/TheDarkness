@@ -1,3 +1,6 @@
+A thing I'm excited about;  With this setup, I can probably make it so that I control the enemies in missions,
+and I can just ask the players what they want to research, and then code it in.  I can basically build the game in front of them as they play it.
+
 A campaign will consist of some number of players.  Each of those players manages a kingdom.
 
 Gameplay Loop -- Missions

@@ -1,50 +1,69 @@
-import BaseAbility, { AbilityTarget, AbilityDisplayDetails, AbilityTargetTypes, AbilityTargetRestrictions, getTileCoordFromAbilityTarget } from './BaseAbility';
-import BattleUnit, { AbilityPointType } from '../BattleUnits/BattleUnit';
-import UnitManager from '../Managers/UnitManager';
-import { TileCoord } from '../BattleTypes';
-import ClientBattleMap from '../BattleMap/ClientBattleMap';
-import { getManhattenDistance } from '../BattleHelpers';
-import { SpriteList } from '../SpriteUtils';
-import GameDataManager from '../Managers/GameDataManager';
+import BaseAbility, {
+  AbilityTarget,
+  AbilityDisplayDetails,
+  AbilityTargetRestrictions,
+  getTileCoordFromAbilityTarget,
+} from "./BaseAbility";
+import BattleUnit from "../BattleUnits/BattleUnit";
+import { SpriteList } from "../SpriteUtils";
+import GameDataManager from "../Managers/GameDataManager";
 import UnitMoveAnimation from "../Managers/Animations/UnitMoveAnimation";
+import { KennyIconName } from "../../interface/KennyIcon/KennyIconConstants";
 
 export default class AbilityBasicMove extends BaseAbility {
-    movePointCost = 1;
-    getTargetRestrictions(): Array<AbilityTargetRestrictions> {
-        return [{ emptyTile: true, minRange: 1, maxRange: 1 }];
+  displayProps = {
+    name: "Move",
+    icon: "Move" as KennyIconName,
+    tempDisplayLetter: "M",
+  };
+  movePointCost = 1;
+  getTargetRestrictions(): Array<AbilityTargetRestrictions> {
+    return [{ emptyTile: true, minRange: 1, maxRange: 1 }];
+  }
+
+  playOutAbility(
+    gameDataManager: GameDataManager,
+    unit: BattleUnit,
+    targets: Array<AbilityTarget>,
+    doneCallback: Function
+  ) {
+    if (!this.canUnitUseAbility(gameDataManager, unit, targets)) {
+      throw new Error(`Unit can't use ability: ${this.constructor.name}`);
+    }
+    const targetPos = getTileCoordFromAbilityTarget(targets[0]);
+    const previousCoord = unit.tileCoord;
+    gameDataManager.unitManager.moveUnit(
+      unit,
+      targetPos,
+      gameDataManager.clientBattleMap
+    );
+    gameDataManager.animationManager
+      .addAnimation(new UnitMoveAnimation(unit, previousCoord))
+      .whenDone(() => {
+        doneCallback();
+      });
+  }
+
+  canUnitUseAbility(
+    gameDataManager: GameDataManager,
+    unit: BattleUnit,
+    targets: Array<AbilityTarget>
+  ) {
+    if (targets.length !== 1) {
+      return false;
+    }
+    const target = getTileCoordFromAbilityTarget(targets[0]);
+
+    if (
+      !gameDataManager.clientBattleMap.canUnitMoveIntoTile(
+        unit,
+        target,
+        gameDataManager
+      )
+    ) {
+      return false;
     }
 
-    playOutAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>, doneCallback: Function) {
-        if (!this.canUnitUseAbility(gameDataManager, unit, targets)) {
-            throw new Error(`Unit can't use ability: ${this.constructor.name}`)
-        }
-        const targetPos = getTileCoordFromAbilityTarget(targets[0]);
-        const previousCoord = unit.tileCoord;
-        gameDataManager.unitManager.moveUnit(unit, targetPos, gameDataManager.clientBattleMap);
-        gameDataManager.animationManager.addAnimation(
-            new UnitMoveAnimation(unit, previousCoord)
-        ).whenDone(() => {
-            doneCallback();
-        });
-    }
-
-    canUnitUseAbility(gameDataManager: GameDataManager, unit: BattleUnit, targets: Array<AbilityTarget>) {
-        if (targets.length !== 1) {
-            return false;
-        }
-        const target = getTileCoordFromAbilityTarget(targets[0]);
-
-        if (!gameDataManager.clientBattleMap.canUnitMoveIntoTile(unit, target, gameDataManager)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    getDisplayDetails(): AbilityDisplayDetails {
-        return {
-            tempDisplayLetter: 'M',
-            icon: SpriteList.CROSSHAIR,
-        }
-    }
+    return true;
+  }
 }

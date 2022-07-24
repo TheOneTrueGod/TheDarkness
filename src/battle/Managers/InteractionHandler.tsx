@@ -91,8 +91,6 @@ export default class InteractionHandler {
                     this.clickOnTerrain(tileCoord, gameDataManager, issueUnitOrder);
                 }
             } else if (event.button === MOUSE_BUTTON_RIGHT) {
-                const moveAbility = this.selectedUnit.getBasicMoveAbility();
-                const attackAbility = this.selectedUnit.getBasicAttackAbility();
 
                 if (this.selectedUnit !== null && 
                     this.selectedUnit.canReceiveOrders(user, this.currentTurn) &&
@@ -100,6 +98,9 @@ export default class InteractionHandler {
                     tileCoord.x !== this.selectedUnit.tileCoord.x ||
                     tileCoord.y !== this.selectedUnit.tileCoord.y
                 )) {
+                    const moveAbility = this.selectedUnit.getBasicMoveAbility();
+                    const attackAbility = this.selectedUnit.getBasicAttackAbility();
+                    
                     const targetUnit = this.unitManager.getUnitAtTileCoord(tileCoord, gameDataManager.clientBattleMap);
 
                     if (
