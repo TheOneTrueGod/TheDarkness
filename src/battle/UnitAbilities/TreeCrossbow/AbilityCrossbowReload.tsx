@@ -17,7 +17,7 @@ import SpriteEffectAnimation, {
   SpriteEffectNames,
   SpriteEffects,
 } from "../../Managers/Animations/SpriteEffectAnimation";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityCrossbowReload
   extends BaseAbility
@@ -25,8 +25,7 @@ export default class AbilityCrossbowReload
 {
   displayProps = {
     name: "Reload",
-    icon: "Bow" as KennyIconName,
-    tempDisplayLetter: "R",
+    icon: "Arrowhead" as GameIconName,
   };
   actionPointCost = 1;
   movePointCost = 1;

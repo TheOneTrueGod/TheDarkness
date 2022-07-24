@@ -15,7 +15,7 @@ import SpriteEffectAnimation, {
 } from "../../Managers/Animations/SpriteEffectAnimation";
 import UnitMoveAnimation from "../../Managers/Animations/UnitMoveAnimation";
 import { isCriticalHit } from "./SwordHelpers";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 function getMoveTargetTile(
   source: TileCoord,
@@ -57,8 +57,7 @@ function customTargetValidation(
 export default class AbilitySwordStrikethrough extends BaseAbility {
   displayProps = {
     name: "Strikethrough",
-    icon: "Sword" as KennyIconName,
-    tempDisplayLetter: "St",
+    icon: "SwordDash" as GameIconName,
   };
   actionPointCost = 1;
   movePointCost = 1;

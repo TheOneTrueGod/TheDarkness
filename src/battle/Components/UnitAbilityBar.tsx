@@ -3,8 +3,8 @@ import BattleUnit from "../BattleUnits/BattleUnit";
 import styled from "styled-components";
 import BaseAbility from "../UnitAbilities/BaseAbility";
 import ReactTooltip from "react-tooltip";
-import { KennyIconConstants } from "../../interface/KennyIcon/KennyIconConstants";
-import KennyIcon from "../../interface/KennyIcon/KennyIcon";
+import { GameIconConstants } from "../../interface/GameIcon/GameIconConstants";
+import GameIcon from "../../interface/GameIcon/GameIcon";
 
 const Container = styled.div`
   display: flex;
@@ -73,6 +73,9 @@ export default class UnitResourceBar extends React.Component<
           const displayDetails = ability && ability.getDisplayDetails();
           const Element = ability ? AbilityInSlot : AbilitySlot;
           const abilityIcon = ability ? ability.displayProps.icon : undefined;
+          const displayLetter = ability
+            ? displayDetails.tempDisplayLetter
+            : undefined;
 
           return (
             <Element
@@ -88,12 +91,12 @@ export default class UnitResourceBar extends React.Component<
             >
               {abilityIcon && (
                 <AbilityContent>
-                  <KennyIcon icon={abilityIcon} size="sm" />
+                  <GameIcon icon={abilityIcon} size="sm" />
                 </AbilityContent>
               )}
-              <AbilityContentLetter>
-                {ability && displayDetails.tempDisplayLetter}
-              </AbilityContentLetter>
+              {displayLetter && (
+                <AbilityContentLetter>{displayLetter}</AbilityContentLetter>
+              )}
             </Element>
           );
         })}

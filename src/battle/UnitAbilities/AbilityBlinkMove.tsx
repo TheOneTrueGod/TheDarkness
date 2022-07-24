@@ -1,25 +1,22 @@
 import BaseAbility, {
   AbilityTarget,
-  AbilityDisplayDetails,
   AbilityTargetRestrictions,
   getTileCoordFromAbilityTarget,
 } from "./BaseAbility";
-import BattleUnit, { AbilityPointType } from "../BattleUnits/BattleUnit";
+import BattleUnit from "../BattleUnits/BattleUnit";
 import { UnitResourceTypes } from "../BattleUnits/UnitResources";
 import { tileCoordToPosition } from "../BattleHelpers";
-import { SpriteList } from "../SpriteUtils";
 import GameDataManager from "../Managers/GameDataManager";
 import SpriteEffectAnimation, {
   SpriteEffects,
   SpriteEffectNames,
 } from "../Managers/Animations/SpriteEffectAnimation";
-import { KennyIconName } from "../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityBlinkMove extends BaseAbility {
   displayProps = {
     name: "Blink",
-    icon: "Sword" as KennyIconName,
-    tempDisplayLetter: "Bl",
+    icon: "Teleport" as GameIconName,
   };
   energyCost = 3;
   movePointCost = 1;

@@ -12,12 +12,12 @@ import SpriteEffectAnimation, {
   SpriteEffectNames,
   SpriteEffects,
 } from "../Managers/Animations/SpriteEffectAnimation";
-import { KennyIconName } from "../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityBasicAttack extends BaseAbility {
   displayProps = {
     name: "Basic Attack",
-    icon: "Sword" as KennyIconName,
+    icon: "Sword" as GameIconName,
     tempDisplayLetter: "A",
   };
   actionPointCost = 1;

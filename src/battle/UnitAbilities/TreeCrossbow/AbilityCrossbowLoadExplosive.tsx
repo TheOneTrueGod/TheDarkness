@@ -17,7 +17,7 @@ import SpriteEffectAnimation, {
   SpriteEffectNames,
   SpriteEffects,
 } from "../../Managers/Animations/SpriteEffectAnimation";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityCrossbowLoadExplosive
   extends BaseAbility
@@ -25,8 +25,7 @@ export default class AbilityCrossbowLoadExplosive
 {
   displayProps = {
     name: "Load Explosive Bolt",
-    icon: "Bow" as KennyIconName,
-    tempDisplayLetter: "R2",
+    icon: "ExplosiveArrow" as GameIconName,
   };
   actionPointCost = 1;
   movePointCost = 1;

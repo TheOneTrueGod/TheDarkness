@@ -1,20 +1,17 @@
 import BaseAbility, {
   AbilityTarget,
-  AbilityDisplayDetails,
   AbilityTargetRestrictions,
   getTileCoordFromAbilityTarget,
 } from "./BaseAbility";
 import BattleUnit from "../BattleUnits/BattleUnit";
-import { SpriteList } from "../SpriteUtils";
 import GameDataManager from "../Managers/GameDataManager";
 import UnitMoveAnimation from "../Managers/Animations/UnitMoveAnimation";
-import { KennyIconName } from "../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityBasicMove extends BaseAbility {
   displayProps = {
     name: "Move",
-    icon: "Move" as KennyIconName,
-    tempDisplayLetter: "M",
+    icon: "Move" as GameIconName,
   };
   movePointCost = 1;
   getTargetRestrictions(): Array<AbilityTargetRestrictions> {

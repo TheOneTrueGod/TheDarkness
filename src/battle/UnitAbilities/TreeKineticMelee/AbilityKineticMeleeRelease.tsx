@@ -12,12 +12,12 @@ import SpriteEffectAnimation, {
   SpriteEffects,
   SpriteEffectNames,
 } from "../../Managers/Animations/SpriteEffectAnimation";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityKineticMeleeRelease extends BaseAbility {
   displayProps = {
     name: "Basic Attack",
-    icon: "Sword" as KennyIconName,
+    icon: "Sword" as GameIconName,
     tempDisplayLetter: "KR",
   };
   energyCost = 5;

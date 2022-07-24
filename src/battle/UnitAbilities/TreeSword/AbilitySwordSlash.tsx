@@ -19,13 +19,12 @@ import SpriteEffectAnimation, {
   SpriteEffects,
 } from "../../Managers/Animations/SpriteEffectAnimation";
 import { isCriticalHit } from "./SwordHelpers";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilitySwordSlash extends BaseAbility {
   displayProps = {
     name: "Sword Slash",
-    icon: "Sword" as KennyIconName,
-    tempDisplayLetter: "Sw",
+    icon: "Slash" as GameIconName,
   };
   actionPointCost = 1;
   energyCost = 3;

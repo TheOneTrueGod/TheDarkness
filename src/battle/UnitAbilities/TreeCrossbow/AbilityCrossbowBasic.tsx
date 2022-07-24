@@ -9,13 +9,12 @@ import GameDataManager from "../../Managers/GameDataManager";
 import UnitStepForwardBackAnimation from "../../Managers/Animations/UnitStepForwardBackAnimation";
 import { BoltTypeToAbility } from "./CrossbowBoltTypeMap";
 import { UnitResourceTypes } from "../../BattleUnits/UnitResources";
-import { KennyIconName } from "../../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityCrossbowBasic extends BaseAbility {
   displayProps = {
     name: "Fire Crossbow",
-    icon: "Bow" as KennyIconName,
-    tempDisplayLetter: "A",
+    icon: "Crossbow" as GameIconName,
   };
   actionPointCost = 1;
   isBasic = true;

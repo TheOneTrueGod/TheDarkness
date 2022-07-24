@@ -4,12 +4,12 @@ import { SpriteList } from "../SpriteUtils";
 import { getManhattenDistance } from "../BattleHelpers";
 import GameDataManager from "../Managers/GameDataManager";
 import { AbilityAoE, getUnitsInAoE } from "./AbilityHelpers";
-import { KennyIconName } from "../../interface/KennyIcon/KennyIconConstants";
+import { GameIconName } from "../../interface/GameIcon/GameIconConstants";
 
 export type AbilityDisplayProps = {
   name: string;
   description?: string;
-  icon: KennyIconName;
+  icon: GameIconName;
   tempDisplayLetter?: string;
 };
 
@@ -44,7 +44,7 @@ export type AbilityTargetRestrictions = {
 
 export type AbilityDisplayDetails = {
   name: string;
-  icon: SpriteList | KennyIconName;
+  icon: SpriteList | GameIconName;
   tempDisplayLetter: string;
 };
 
