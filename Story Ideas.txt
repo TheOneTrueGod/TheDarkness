@@ -1,0 +1,67 @@
+Story Ideas
+
+"""
+1000 years ago The Darkness invaded the world you came from, like it did countless others.
+When all seemed lost the <DEFENDERS_NAME> opened a portal for the last survivors, like it did with countless others.
+But that's ancient history now.
+
+You were born in the <DEFENDERS_NAME> collective, and have been recruited as part of the caravan squads.
+Caravan missions into the darkness have become relatively safe and routine, as the Light Crystals are able to keep The Darkness at bay.
+This one is different.
+"""
+
+- In the first mission, you are a well equipped soldier on a caravan mission to save some people from a recently attacked world
+- One of the darkness titans shows up and destroys the caravan.
+- You and your group have Light Crystals in your armour, so you're able to escape.
+- The titan does not chase you, and you are able to find your way to an old, destroyed outpost
+- The outpost has a working light generator, where you put your armour crystals into in order to start it up
+
+Now you have your base, some recruits, and you have to rebuild enough
+
+Story beats;
+- At the beginning
+- You have very little and need to scavenge what you can
+- You need to build an anti-titan defense, and become self sufficient with food and light power
+- If a unit dies, you don't get it back.
+
+- In the early middle
+- You learn about the different ways of improving.
+  - Tech (Armour, weapons, gadgets)
+  - Magic (the secondary powers this game is kind of built around)
+  - Darkness (Drawing power from the darkness to improve your units raw stats, and to keep them alive if they'd die)
+  - <Is this enough?>
+- You'll only be able to strongly align with one, and weakly align with a second.  You'll need to (mostly) forego the third.
+- You'll rebuild the base, grow in power, find new recruits, and learn about the <4?  5?  3?  Whatever> enemy titans.
+- You'll send units on many caravan outings.
+- You'll discover limited ways of keeping your units if they die
+  - Tech (Recover gear on death)
+  - Magic (Recover 'magic shard' on death)
+  - Darkness (Replace a living person's soul with a deceased person's.  You lose the sacrificed person, but you get the dead person's stats and skills)
+
+- In the late middle
+- You'll link back up with the <DEFENDERS_NAME> portal network, and they'll ask you to continue your work
+- You'll discover that they've been using the darkness to empower their soldiers and have been using the sacrifice effect to keep the elders alive 
+  - Try to frame it as the morally gray side of evil -- they've been using the power to help countless worlds, but also themselves.
+- Part of the empowering involves mind wiping people who go through the process
+- Players get to choose if they want to side with <DEFENDERS> against the darkness, or if they want to go against both
+  - <Is this enough?  Should there be another path?>
+
+- End game involves tracking down the titans and killing them
+
+
+
+Note:  If I want to switch this plot line over to that exalted system, it's doable.
+The city has been creating its army using the super soldier serum.
+    It re-rolls all of your stats (you get to keep the higher of the two rolls for each stat), and also rerolls your backstory.
+    The city found a way to force the backstory change to be one that's sympathetic to them
+The factions are;
+- The police / military (join with the city to defeat its opponents)
+   - Trying to crack down on crime locally, and trying to defeat enemies.
+   - Sometimes actually the invader, but frequently the defender.
+- The priests (Access to some magic, but still mostly aligned with the city.)
+   - Trying to track down and contain / destroy magic
+   - Trying to keep the status quo as it is
+   - Trying to abolish the use of the super soldier serum
+- Yourselves (Easy access to money, but you'll kind of be against everyone)
+   - ???? What are they trying to do?  By switching sides, they'll piss off everyone.
+- Magic users (Also kind of against everyone, but get access to magic)
