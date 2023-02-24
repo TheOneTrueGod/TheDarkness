@@ -1,12 +1,9 @@
 import BaseAbility, {
   AbilityTarget,
-  AbilityDisplayDetails,
   AbilityTargetRestrictions,
-  getTileCoordFromAbilityTarget,
 } from "../BaseAbility";
 import BattleUnit from "../../BattleUnits/BattleUnit";
 import { UnitResourceTypes } from "../../BattleUnits/UnitResources";
-import { SpriteList } from "../../SpriteUtils";
 import GameDataManager from "../../Managers/GameDataManager";
 import SpriteEffectAnimation, {
   SpriteEffects,
@@ -16,7 +13,7 @@ import { GameIconName } from "../../../interface/GameIcon/GameIconConstants";
 
 export default class AbilityKineticMeleeRelease extends BaseAbility {
   displayProps = {
-    name: "Basic Attack",
+    name: "Kinetic Explosion",
     icon: "Sword" as GameIconName,
     tempDisplayLetter: "KR",
   };
