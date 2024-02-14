@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { makeAPICall } from '../app/helpers';
 import { NetworkableJSONObject, NetworkableObject } from '../../object_defs/NetworkableObject';
-import Mission from '../../object_defs/Campaign/Mission/Mission';
 
-interface IAPICaller<T extends NetworkableObject> {
+export interface IAPICaller<T extends NetworkableObject> {
     isLoading: boolean;
     error: {
         code: number;
@@ -16,8 +15,8 @@ type NetworkAPIResponse = {
     data: NetworkableJSONObject,
 };
 
-type MakeCallFunctionType = (
-    data: object,
+export type MakeCallFunctionType<submitT extends object> = (
+    data: submitT,
 ) => Promise<void>;
 
 type SetNetworkObjectFunctionType<T extends NetworkableObject> = (
@@ -26,16 +25,16 @@ type SetNetworkObjectFunctionType<T extends NetworkableObject> = (
 
 type NetworkObjectTransformerFunc<T extends NetworkableObject> = (responseData: NetworkableJSONObject) => T;
 
-type CreateAPICallableType<T extends NetworkableObject> = {
+type CreateAPICallableType<submitT extends object, T extends NetworkableObject> = {
     apiCallableState: IAPICaller<T>,
-    makeCall: MakeCallFunctionType,
+    makeCall: MakeCallFunctionType<submitT>,
     setNetworkObject: SetNetworkObjectFunctionType<T>,
 };
 
-export function CreateAPICallableState<T extends NetworkableObject>(
+export function CreateAPICallableState<submitT extends object, T extends NetworkableObject>(
     uri: string, // The URI to call to fetch the data
     networkObjectTransformer: NetworkObjectTransformerFunc<T>
-): CreateAPICallableType<T> {
+): CreateAPICallableType<submitT, T> {
     const [ apiCallableState, setAPICallableState ] = 
         useState<IAPICaller<T>>({
             isLoading: true,
@@ -44,7 +43,7 @@ export function CreateAPICallableState<T extends NetworkableObject>(
         });
 
     // networkObjectTransformer should be one of NetworkObjectType.fromJSONObject
-    let makeCall: MakeCallFunctionType = (data) => {
+    let makeCall: MakeCallFunctionType<submitT> = (data: submitT) => {
         return makeAPICall(uri, data)
             .then((response: NetworkAPIResponse) => {
                 // networkableObjectType.fromJSONObject(response.data)

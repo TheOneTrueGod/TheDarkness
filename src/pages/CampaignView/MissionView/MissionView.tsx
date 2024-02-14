@@ -11,6 +11,7 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
+import { GetMissionParams } from '../../../components/APITypes.js';
 
 export type MissionProps = {
     user: User;
@@ -31,7 +32,7 @@ export default function MissionView ({ campaign, missionId, user } : MissionProp
         apiCallableState: missionData,
         makeCall,
         setNetworkObject: setMissionData
-    } = CreateAPICallableState<Mission>(
+    } = CreateAPICallableState<GetMissionParams, Mission>(
         '/api/missions',
         Mission.fromJSONObject
     );

@@ -5,6 +5,7 @@ import { CreateAPICallableState } from '../../../../components/APICallableState'
 import Campaign from '../../../../../object_defs/Campaign/Campaign.js';
 import Mission from '../../../../../object_defs/Campaign/Mission/Mission.js';
 import GameContainer from '../../../../battle/GameContainer';
+import { GetBattleParams } from '../../../../components/APITypes.js';
 
 export type BattleViewProps = {
     user: User;
@@ -21,7 +22,7 @@ export default function BattleView ({ campaign, mission, battleId, user } : Batt
     const { 
         apiCallableState: battleData,
         makeCall
-    } = CreateAPICallableState<Battle>(
+    } = CreateAPICallableState<GetBattleParams, Battle>(
         '/api/battle',
         Battle.fromJSONObject
     );
@@ -38,7 +39,7 @@ export default function BattleView ({ campaign, mission, battleId, user } : Batt
     const battle = battleData.networkObject;
     return (
         <>
-            <GameContainer mission={mission} battle={battle} user={user} />
+            <GameContainer campaign={campaign} mission={mission} battle={battle} user={user} />
         </>
     );
 };

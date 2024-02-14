@@ -19,12 +19,15 @@ import User from "../../object_defs/User";
 import AIManager from "./Managers/AIManager";
 import { DEBUG_MODE } from "./BattleConstants";
 import BaseAbility from "./UnitAbilities/BaseAbility";
+import Campaign from '../../object_defs/Campaign/Campaign';
 
 const canvasSize = { width: 800, height: 600 };
 
 export type GameContainerProps = {
+
   battle: Battle;
   mission: Mission;
+  campaign: Campaign;
   user: User;
 };
 
@@ -64,6 +67,8 @@ class GameContainer extends React.Component<
       effects: new PIXI.Container(),
     };
     this.gameDataManager = new GameDataManager(
+      props.campaign,
+      props.mission,
       props.battle,
       props.user,
       this.pixiLoader,
@@ -163,13 +168,13 @@ class GameContainer extends React.Component<
     alert("Battle Complete? " + isBattleComplete(battle));
     if (!isBattleComplete(battle)) {
       this.setState({ turnEnding: false });
+      console.log("TODO: Save to server now!");
       this.startTurn(getNextTurn(currentTurn, battle.playerIDs));
     }
   };
 
   startTurn(nextTurn: CurrentTurn) {
     const { currentTurn } = this.state;
-    const { user } = this.props;
 
     if (currentTurn !== nextTurn) {
       this.setState({

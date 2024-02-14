@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import { CreateAPICallableState } from '../../components/APICallableState';
 import { makeAPICall } from '../../app/helpers';
+import { GetCampaignParams } from '../../components/APITypes.js';
 
 export type CampaignProps = {
     user: User;
@@ -18,7 +19,7 @@ export type CampaignProps = {
 
 export default function CampaignView ({ campaignId, user } : CampaignProps) {
     const [ joinAPICall, setJoinAPICall ] = useState({ isLoading: false, error: false });
-    const { apiCallableState: campaignData, makeCall } = CreateAPICallableState<Campaign>(
+    const { apiCallableState: campaignData, makeCall } = CreateAPICallableState<GetCampaignParams, Campaign>(
         '/api/campaign',
         Campaign.fromJSONObject
     );
